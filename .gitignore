@@ -1,0 +1,8 @@
+api.txt
+*.key
+__pycache__/
+state.json
+research_result.json
+prices_*.csv
+*.exe
+*.exe

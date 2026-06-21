@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>1306 ボット状況</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1B2B; --surface:#102739; --surface2:#15324a;
+    --ink:#EAF2F8; --muted:#7C99B2; --hair:#23425e;
+    --buy:#3FB984; --sell:#E8A13C; --hold:#5B8BC4; --loss:#E2614B;
+    --accent:var(--hold);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:"Zen Kaku Gothic New",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  body{max-width:480px;margin:0 auto;padding:18px 16px 40px;
+    min-height:100dvh}
+  .mono{font-family:"JetBrains Mono","Zen Kaku Gothic New",monospace}
+
+  /* top bar */
+  .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    padding-bottom:14px;border-bottom:1px solid var(--hair)}
+  .sym{font-weight:900;font-size:20px;letter-spacing:.04em}
+  .sym small{font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}
+  .spacer{flex:1}
+  .badge{font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;
+    border:1px solid var(--hair);color:var(--muted);letter-spacing:.06em}
+  .badge.go{color:var(--buy);border-color:color-mix(in srgb,var(--buy) 45%,transparent)}
+  .badge.nogo{color:var(--loss);border-color:color-mix(in srgb,var(--loss) 45%,transparent)}
+  .badge.mode{color:var(--sell);border-color:color-mix(in srgb,var(--sell) 45%,transparent)}
+
+  /* hero signal */
+  .hero{padding:22px 2px 8px}
+  .eyebrow{font-size:12px;color:var(--muted);letter-spacing:.18em;
+    text-transform:uppercase}
+  .signal{font-size:52px;font-weight:900;line-height:1.05;margin-top:6px;
+    color:var(--accent);letter-spacing:.02em}
+  .reason{margin-top:10px;color:#BFD3E4;font-size:14px;line-height:1.6}
+
+  /* tide gauge (signature) */
+  .gauge-wrap{display:flex;gap:18px;margin-top:22px;
+    background:var(--surface);border:1px solid var(--hair);
+    border-radius:18px;padding:18px 16px}
+  .gauge{position:relative;width:64px;height:260px;flex:none;
+    background:linear-gradient(#0d2034,#0a1827);
+    border:1px solid var(--hair);border-radius:12px;overflow:hidden}
+  .buyzone{position:absolute;left:0;right:0;bottom:0;
+    background:color-mix(in srgb,var(--buy) 20%,transparent);
+    border-top:1px dashed color-mix(in srgb,var(--buy) 60%,transparent)}
+  .exitline{position:absolute;left:0;right:0;height:0;
+    border-top:1px dashed color-mix(in srgb,var(--sell) 70%,transparent)}
+  .fill{position:absolute;left:0;right:0;bottom:0;
+    background:linear-gradient(color-mix(in srgb,var(--accent) 55%,transparent),
+      color-mix(in srgb,var(--accent) 18%,transparent));
+    height:0;transition:height .9s cubic-bezier(.22,1,.36,1)}
+  .marker{position:absolute;left:-2px;right:-2px;height:2px;
+    background:var(--accent);bottom:0;transition:bottom .9s cubic-bezier(.22,1,.36,1)}
+  .marker::after{content:attr(data-rsi);position:absolute;right:72px;
+    top:50%;transform:translateY(-50%);white-space:nowrap;
+    font-family:"JetBrains Mono",monospace;font-weight:700;font-size:22px;
+    color:var(--accent)}
+  .gauge-legend{display:flex;flex-direction:column;justify-content:center;gap:16px}
+  .leg{display:flex;flex-direction:column;gap:2px}
+  .leg b{font-family:"JetBrains Mono",monospace;font-size:15px}
+  .leg span{font-size:12px;color:var(--muted)}
+  .leg .buy b{color:var(--buy)} .leg .exit b{color:var(--sell)}
+  .gap-note{margin-top:4px;font-size:13px;color:#BFD3E4;line-height:1.5}
+
+  /* position card */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .cell{background:var(--surface);border:1px solid var(--hair);
+    border-radius:14px;padding:13px 14px}
+  .cell.full{grid-column:1/-1}
+  .k{font-size:12px;color:var(--muted);letter-spacing:.04em}
+  .v{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:20px;
+    margin-top:5px}
+  .v.pos{color:var(--buy)} .v.neg{color:var(--loss)}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;
+    border-radius:999px;margin-top:5px}
+  .pill.on{background:color-mix(in srgb,var(--buy) 18%,transparent);color:var(--buy)}
+  .pill.off{background:#1a3045;color:var(--muted)}
+
+  /* footer / loader */
+  .foot{margin-top:22px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  button,label.btn{font-family:inherit;font-size:13px;font-weight:700;
+    color:var(--ink);background:var(--surface2);border:1px solid var(--hair);
+    padding:10px 14px;border-radius:10px;cursor:pointer}
+  button:active,label.btn:active{transform:translateY(1px)}
+  .updated{font-size:12px;color:var(--muted);margin-left:auto}
+  input[type=file]{display:none}
+  .hint{margin-top:12px;font-size:12px;color:var(--muted);line-height:1.6}
+  .demo-tag{font-size:11px;color:var(--sell);font-weight:700}
+  @media (prefers-reduced-motion: reduce){
+    .fill,.marker{transition:none}
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="sym" id="sym">1306 <small id="symName">TOPIX連動ETF</small></div>
+    <div class="spacer"></div>
+    <span class="badge mode" id="mode">—</span>
+    <span class="badge" id="verdict">—</span>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow" id="eyebrow">今日の判断</div>
+    <div class="signal" id="signal">—</div>
+    <div class="reason" id="reason">state.json を読み込むと、ボットの今の状態が表示されます。</div>
+  </div>
+
+  <div class="gauge-wrap">
+    <div class="gauge" id="gauge">
+      <div class="buyzone" id="buyzone"></div>
+      <div class="exitline" id="exitline"></div>
+      <div class="fill" id="fill"></div>
+      <div class="marker" id="marker" data-rsi="--"></div>
+    </div>
+    <div class="gauge-legend">
+      <div class="leg exit"><b id="legExit">RSI 50</b><span>利確ライン（回復で売り）</span></div>
+      <div class="leg buy"><b id="legBuy">RSI 35</b><span>買いゾーン（押し目）</span></div>
+      <div class="gap-note" id="gapNote">—</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="cell"><div class="k">現在値（調整後）</div><div class="v mono" id="price">—</div></div>
+    <div class="cell"><div class="k">ポジション</div><div id="posPill" class="pill off">—</div></div>
+    <div class="cell"><div class="k">取得単価</div><div class="v mono" id="entry">—</div></div>
+    <div class="cell"><div class="k">保有株数</div><div class="v mono" id="qty">—</div></div>
+    <div class="cell full"><div class="k">含み損益</div><div class="v mono" id="pl">—</div></div>
+  </div>
+
+  <div class="foot">
+    <label class="btn" for="file">state.json を選ぶ</label>
+    <input type="file" id="file" accept=".json,application/json">
+    <button id="refresh">更新</button>
+    <span class="updated" id="updated"></span>
+  </div>
+  <div class="hint" id="hint"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+const SIGNALS={
+  BUY:{ja:"買い",accent:"var(--buy)"},
+  SELL:{ja:"売り",accent:"var(--sell)"},
+  HOLD:{ja:"待機",accent:"var(--hold)"}
+};
+
+function fmtYen(n){ if(n==null||isNaN(n))return"—"; return Number(n).toLocaleString("ja-JP"); }
+
+function render(s){
+  // accent by signal
+  const sig=SIGNALS[s.signal]||SIGNALS.HOLD;
+  document.documentElement.style.setProperty('--accent',sig.accent);
+
+  $("sym").firstChild.textContent=(s.symbol||"1306")+" ";
+  $("mode").textContent=s.mode||"—";
+  const v=$("verdict"); v.textContent="判定 "+(s.verdict||"—");
+  v.className="badge "+(s.verdict==="GO"?"go":(s.verdict&&s.verdict!=="GO"?"nogo":""));
+
+  $("signal").textContent=sig.ja;
+  $("reason").textContent=s.reason||"";
+
+  // gauge
+  const rsi=Number(s.rsi); const over=Number(s.rsi_oversold||35); const exit=Number(s.rsi_exit||50);
+  const clamp=x=>Math.max(0,Math.min(100,x));
+  $("buyzone").style.height=clamp(over)+"%";
+  $("exitline").style.bottom=clamp(exit)+"%";
+  $("legBuy").textContent="RSI "+Math.round(over);
+  $("legExit").textContent="RSI "+Math.round(exit);
+  if(!isNaN(rsi)){
+    requestAnimationFrame(()=>{
+      $("fill").style.height=clamp(rsi)+"%";
+      $("marker").style.bottom=clamp(rsi)+"%";
+    });
+    $("marker").setAttribute("data-rsi",rsi.toFixed(1));
+    // gap note: how far to the buy line
+    if(s.has_position){
+      const d=(exit-rsi);
+      $("gapNote").textContent = d>0
+        ? `利確まで RSI あと ${d.toFixed(1)}`
+        : `利確圏（RSI ${rsi.toFixed(1)} ≧ ${exit}）`;
+    }else{
+      const d=(rsi-over);
+      $("gapNote").textContent = d>0
+        ? `買いまで RSI あと ${d.toFixed(1)} 下落`
+        : `買いゾーン（RSI ${rsi.toFixed(1)} < ${over}）`;
+    }
+  }
+
+  // position
+  $("price").textContent=s.last_price!=null?Number(s.last_price).toFixed(1)+"円":"—";
+  const on=!!s.has_position;
+  const pp=$("posPill"); pp.textContent=on?"保有あり":"ノーポジ"; pp.className="pill "+(on?"on":"off");
+  $("entry").textContent=on?Number(s.entry_price).toFixed(1)+"円":"—";
+  $("qty").textContent=on?fmtYen(s.quantity)+"株":"—";
+  const pl=$("pl"); const v2=Number(s.unrealized_pl);
+  pl.textContent=on?((v2>=0?"+":"")+fmtYen(v2)+"円"):"—";
+  pl.className="v mono "+(on?(v2>=0?"pos":"neg"):"");
+
+  $("updated").textContent=s.updated?("更新 "+s.updated.replace("T"," ")):"";
+}
+
+const DEMO={symbol:"1306",mode:"DRY-RUN",verdict:"GO",signal:"HOLD",
+  reason:"押し目待ち: RSI=49 ≧ 35（サンプル表示）",rsi:48.8,rsi_oversold:35,rsi_exit:50,
+  last_price:398.5,has_position:false,entry_price:0,quantity:0,unrealized_pl:0,
+  updated:"サンプル"};
+
+function showDemo(){ render(DEMO); $("hint").innerHTML='<span class="demo-tag">サンプル表示中</span>　実データは「state.json を選ぶ」で読み込み。'; }
+
+async function tryFetch(){
+  try{
+    const r=await fetch("state.json?"+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw 0;
+    const s=await r.json(); render(s);
+    $("hint").textContent="state.json を自動読み込み（同フォルダをサーバー公開中）。60秒ごとに更新。";
+    return true;
+  }catch(e){ return false; }
+}
+
+$("file").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{ render(JSON.parse(rd.result)); $("hint").textContent="読み込み完了："+f.name; }
+    catch(err){ $("hint").textContent="このファイルは読めませんでした（JSON形式を確認）。"; } };
+  rd.readAsText(f);
+});
+$("refresh").addEventListener("click",async()=>{ if(!await tryFetch()) $("hint").textContent="自動更新できません。「state.json を選ぶ」で読み込んでください。"; });
+
+(async()=>{
+  if(await tryFetch()){ setInterval(tryFetch,60000); }
+  else showDemo();
+})();
+</script>
+</body>
+</html>
