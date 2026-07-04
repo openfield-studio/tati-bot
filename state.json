@@ -1,0 +1,17 @@
+{
+  "updated": "2026-07-04T20:29:33",
+  "date": "2026-07-04",
+  "symbol": "1306",
+  "last_price": 429.7,
+  "signal": "HOLD",
+  "confidence": 0.0,
+  "reason": "押し目待ち: RSI=59 ≧ 40",
+  "rsi": 59.1,
+  "rsi_oversold": 40.0,
+  "rsi_exit": 50.0,
+  "verdict": "GO",
+  "has_position": false,
+  "executed": false,
+  "execution_note": "",
+  "mode": "DRY-RUN"
+}

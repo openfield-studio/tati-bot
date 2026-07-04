@@ -81,8 +81,9 @@ class Config:
     password: str = "YOUR_PASSWORD"
 
     # --- ファイルパス --------------------------------------------------
-    state_path: str = "state.json"      # スマホダッシュボードが読むファイル
-    history_path: str = "history.jsonl" # 毎日の判定履歴(1行1レコード、追記式)
+    state_path: str = "state.json"      # スマホダッシュボード用(公開・GitHub Pages配信)
+    position_path: str = "position.json"  # ボット自身の正確な保有状態(非公開・.gitignore対象)
+    history_path: str = "history.jsonl" # 毎日の判定履歴(非公開・.gitignore対象、1行1レコード)
     kill_switch_path: str = "STOP"      # このファイルがあれば全停止
 
 
@@ -313,7 +314,7 @@ class ExecutionAgent(BaseAgent):
         live = (not self.cfg.dry_run) and self.cfg.enable_live_trading
         if not live:
             ctx.executed = True
-            ctx.execution_note = f"[DRY-RUN] {ctx.signal} {ctx.order_quantity}株 を発注した想定"
+            ctx.execution_note = f"[DRY-RUN] {ctx.signal} を発注した想定"
             self.log.info(ctx.execution_note)
             self._apply_paper_fill(ctx)
             return ctx
@@ -358,11 +359,15 @@ class ExecutionAgent(BaseAgent):
 # 7. ReporterAgent — スマホ用JSON出力＋ログ
 # ======================================================================
 class ReporterAgent(BaseAgent):
+    """state.json は GitHub Pages 経由で誰でも見られる公開ファイルのため、
+    金額情報（取得単価・保有株数・含み損益）は書き出さず、シグナル関連の情報だけにする。
+    ボット自身が翌日の判定に使う正確な保有状態は position.json（非公開・.gitignore対象）に書く。"""
+
     def run(self, ctx: TradingContext) -> TradingContext:
         if ctx.has_position:
             ctx.unrealized_pl = int((ctx.last_price - ctx.entry_price) * ctx.quantity)
 
-        snapshot = {
+        public_snapshot = {
             "updated": dt.datetime.now().isoformat(timespec="seconds"),
             "date": ctx.date,
             "symbol": ctx.symbol,
@@ -375,20 +380,28 @@ class ReporterAgent(BaseAgent):
             "rsi_exit": self.cfg.rsi_exit,
             "verdict": self.cfg.verdict,
             "has_position": ctx.has_position,
-            "entry_price": ctx.entry_price,
-            "quantity": ctx.quantity,
-            "unrealized_pl": ctx.unrealized_pl,
             "executed": ctx.executed,
             "execution_note": ctx.execution_note,
             "mode": "DRY-RUN" if self.cfg.dry_run else "LIVE",
         }
         with open(self.cfg.state_path, "w", encoding="utf-8") as f:
-            json.dump(snapshot, f, ensure_ascii=False, indent=2)
+            json.dump(public_snapshot, f, ensure_ascii=False, indent=2)
 
-        # 履歴ログに1行追記（state.jsonは上書きされるが、こちらは積み上がる）
-        self._append_history(snapshot)
+        # position.json: 金額を含む正確な保有状態（非公開・ボット自身の翌日判定用）
+        private_position = {
+            "date": ctx.date,
+            "has_position": ctx.has_position,
+            "entry_price": ctx.entry_price,
+            "quantity": ctx.quantity,
+            "unrealized_pl": ctx.unrealized_pl,
+        }
+        with open(self.cfg.position_path, "w", encoding="utf-8") as f:
+            json.dump(private_position, f, ensure_ascii=False, indent=2)
 
-        self.log.info("state.json 更新（スマホ表示用）/ 含み損益 %s円", f"{ctx.unrealized_pl:+,}")
+        # 履歴ログ（非公開）には金額込みの完全な記録を残す
+        self._append_history({**public_snapshot, **private_position})
+
+        self.log.info("state.json 更新（公開・シグナルのみ）/ position.json 更新（非公開・金額含む）")
         return ctx
 
     def _append_history(self, snapshot: dict) -> None:
@@ -439,9 +452,10 @@ class MasterAgent:
         ]
 
     def _load_position(self) -> dict:
-        if os.path.exists(self.cfg.state_path):
+        """保有状態は非公開の position.json から読む（state.jsonは公開用で金額を含まない）。"""
+        if os.path.exists(self.cfg.position_path):
             try:
-                with open(self.cfg.state_path, encoding="utf-8") as f:
+                with open(self.cfg.position_path, encoding="utf-8") as f:
                     return json.load(f)
             except Exception:
                 pass

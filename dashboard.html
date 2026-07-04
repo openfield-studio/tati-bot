@@ -141,9 +141,6 @@
   <div class="grid">
     <div class="cell"><div class="k">現在値（調整後）</div><div class="v mono" id="price">—</div></div>
     <div class="cell"><div class="k">ポジション</div><div id="posPill" class="pill off">—</div></div>
-    <div class="cell"><div class="k">取得単価</div><div class="v mono" id="entry">—</div></div>
-    <div class="cell"><div class="k">保有株数</div><div class="v mono" id="qty">—</div></div>
-    <div class="cell full"><div class="k">含み損益</div><div class="v mono" id="pl">—</div></div>
   </div>
 
   <div class="foot">
@@ -162,8 +159,6 @@ const SIGNALS={
   SELL:{ja:"売り",accent:"var(--sell)"},
   HOLD:{ja:"待機",accent:"var(--hold)"}
 };
-
-function fmtYen(n){ if(n==null||isNaN(n))return"—"; return Number(n).toLocaleString("ja-JP"); }
 
 function render(s){
   // accent by signal
@@ -205,15 +200,10 @@ function render(s){
     }
   }
 
-  // position
+  // position（金額は非公開のため、保有有無のみ表示）
   $("price").textContent=s.last_price!=null?Number(s.last_price).toFixed(1)+"円":"—";
   const on=!!s.has_position;
   const pp=$("posPill"); pp.textContent=on?"保有あり":"ノーポジ"; pp.className="pill "+(on?"on":"off");
-  $("entry").textContent=on?Number(s.entry_price).toFixed(1)+"円":"—";
-  $("qty").textContent=on?fmtYen(s.quantity)+"株":"—";
-  const pl=$("pl"); const v2=Number(s.unrealized_pl);
-  pl.textContent=on?((v2>=0?"+":"")+fmtYen(v2)+"円"):"—";
-  pl.className="v mono "+(on?(v2>=0?"pos":"neg"):"");
 
   $("updated").textContent=s.updated?("更新 "+s.updated.replace("T"," ")):"";
 
@@ -248,7 +238,7 @@ function checkStale(updatedStr){
 
 const DEMO={symbol:"1306",mode:"DRY-RUN",verdict:"GO",signal:"HOLD",
   reason:"押し目待ち: RSI=49 ≧ 35（サンプル表示）",rsi:48.8,rsi_oversold:35,rsi_exit:50,
-  last_price:398.5,has_position:false,entry_price:0,quantity:0,unrealized_pl:0,
+  last_price:398.5,has_position:false,
   updated:"サンプル"};
 
 function showDemo(){ render(DEMO); $("hint").innerHTML='<span class="demo-tag">サンプル表示中</span>　実データは「state.json を選ぶ」で読み込み。'; }
