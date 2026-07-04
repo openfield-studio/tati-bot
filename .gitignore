@@ -1,7 +1,7 @@
 api.txt
 *.key
 __pycache__/
-research_result.json
+research_result*.json
 prices_*.csv
 *.exe
 *.exe
