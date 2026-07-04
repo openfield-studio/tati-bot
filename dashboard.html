@@ -34,6 +34,14 @@
   .badge.nogo{color:var(--loss);border-color:color-mix(in srgb,var(--loss) 45%,transparent)}
   .badge.mode{color:var(--sell);border-color:color-mix(in srgb,var(--sell) 45%,transparent)}
 
+  /* stale/heartbeat warning */
+  .stale-banner{display:none;margin-top:14px;padding:12px 14px;border-radius:12px;
+    background:color-mix(in srgb,var(--loss) 16%,transparent);
+    border:1px solid color-mix(in srgb,var(--loss) 50%,transparent);
+    color:#FFD9CE;font-size:13px;line-height:1.6}
+  .stale-banner.show{display:block}
+  .stale-banner b{color:var(--loss)}
+
   /* hero signal */
   .hero{padding:22px 2px 8px}
   .eyebrow{font-size:12px;color:var(--muted);letter-spacing:.18em;
@@ -107,6 +115,8 @@
     <span class="badge mode" id="mode">—</span>
     <span class="badge" id="verdict">—</span>
   </div>
+
+  <div class="stale-banner" id="staleBanner"></div>
 
   <div class="hero">
     <div class="eyebrow" id="eyebrow">今日の判断</div>
@@ -206,6 +216,34 @@ function render(s){
   pl.className="v mono "+(on?(v2>=0?"pos":"neg"):"");
 
   $("updated").textContent=s.updated?("更新 "+s.updated.replace("T"," ")):"";
+
+  // heartbeat: state.jsonの更新が止まっていないかチェック
+  checkStale(s.updated);
+}
+
+function checkStale(updatedStr){
+  const banner=$("staleBanner");
+  if(!updatedStr || updatedStr==="サンプル"){ banner.className="stale-banner"; return; }
+  const updated=new Date(updatedStr);
+  if(isNaN(updated.getTime())){ banner.className="stale-banner"; return; }
+
+  const now=new Date();
+  const hours=(now-updated)/3600000;
+
+  // 土日は市場が閉まっているため許容時間を延ばす（金曜更新→月曜チェックでも警告しない）
+  let threshold=30; // 平日: 前回実行からこれ以上空いたら異常
+  const day=now.getDay(); // 0=日 1=月 ... 6=土
+  if(day===0) threshold=54;       // 日曜に見る場合(金曜更新から最大)
+  else if(day===1) threshold=78;  // 月曜に見る場合(金曜更新から最大)
+  else if(day===6) threshold=30;
+
+  if(hours>threshold){
+    const h=Math.floor(hours);
+    banner.innerHTML=`<b>⚠ 更新が止まっています</b><br>最終更新から約${h}時間経過（${updatedStr.replace("T"," ")}）。PCが起動しているか、タスクスケジューラが動いているか確認してください。`;
+    banner.className="stale-banner show";
+  }else{
+    banner.className="stale-banner";
+  }
 }
 
 const DEMO={symbol:"1306",mode:"DRY-RUN",verdict:"GO",signal:"HOLD",

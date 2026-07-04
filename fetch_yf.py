@@ -49,6 +49,29 @@ def fetch_and_cache(code: str, years: int = 5) -> None:
         print("終値が空だった。")
         sys.exit(1)
 
+    # ★安全装置★ 分割の断崖チェック（auto_adjustがYahoo側で効いてない事故対策）
+    # 1日で±30%超の変化は相場ではなく分割とみなし、それ以前を係数で調整する。
+    # (2026年の1306で実際に発生: 1:10分割が未調整のまま届き、ニセの-90%が混入した)
+    fixes = []
+    for i in range(1, len(closes)):
+        r = closes[i] / closes[i - 1]
+        if r < 0.7:                      # 例: 1:10分割なら r≒0.1
+            factor = round(1 / r)
+            if factor >= 2:
+                for k in range(i):
+                    closes[k] /= factor
+                fixes.append((i, f"1:{factor}分割"))
+        elif r > 1.4:                    # 逆併合(例: 10:1)のケース
+            factor = round(r)
+            if factor >= 2:
+                for k in range(i):
+                    closes[k] *= factor
+                fixes.append((i, f"{factor}:1併合"))
+    if fixes:
+        print(f"⚠ 分割/併合の断崖を検出→自動修復した: {fixes}")
+        worst = max(abs(closes[i]/closes[i-1]-1) for i in range(1, len(closes)))
+        print(f"  修復後の最大日次変動: {worst*100:.1f}%（10%前後までなら正常）")
+
     path = f"prices_{code}.csv"
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(str(round(c, 2)) for c in closes))

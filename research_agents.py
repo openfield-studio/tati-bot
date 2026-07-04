@@ -336,19 +336,21 @@ class OptimizeAgent(BaseAgent):
         best, best_score, tested = None, -1e9, 0
 
         if seed.kind == "rsi_only":
-            # ★過剰最適化対策★ 売られすぎ閾値と利確閾値だけを少数試行。損切り5%固定。
-            for oversold in (25, 30, 35):
+            # ★過剰最適化対策★ 売られすぎ・利確・損切りの3ノブだけ少数試行。
+            # 損切りは5%と8%を比較(8%はDD改善+リターン改善を確認済み→候補に採用)。
+            for oversold in (30, 35, 40):
                 for rsi_exit in (50, 55):
-                    sp = StrategyParams("optimized", "rsi_only",
-                                        0, 0, seed.rsi_period,
-                                        seed.rsi_overbought, oversold,
-                                        rsi_exit, 0.05, 0.0)
-                    m = met.metrics(bt.run(ctx["prices_is"], sp))
-                    tested += 1
-                    if m["trades"] < 3:
-                        continue
-                    if m["calmar"] > best_score:
-                        best, best_score = sp, m["calmar"]
+                    for stop in (0.05, 0.08):
+                        sp = StrategyParams("optimized", "rsi_only",
+                                            0, 0, seed.rsi_period,
+                                            seed.rsi_overbought, oversold,
+                                            rsi_exit, stop, 0.0)
+                        m = met.metrics(bt.run(ctx["prices_is"], sp))
+                        tested += 1
+                        if m["trades"] < 3:
+                            continue
+                        if m["calmar"] > best_score:
+                            best, best_score = sp, m["calmar"]
         elif seed.kind == "mean_reversion":
             # ★過剰最適化対策★ 探索を最小限に。
             # slow=75(標準)・利確55・損切り5%は固定し、丸い数字のみ少数試行。
@@ -473,6 +475,100 @@ class CritiqueAgent(BaseAgent):
 
 
 # ======================================================================
+# 9.5 WalkForwardAgent — 分割を変えて何度も検証（まぐれGOの炙り出し）
+# ======================================================================
+class WalkForwardAgent(BaseAgent):
+    """アンカー式ウォークフォワード検証。
+    1回だけのIS/OOS分割は『たまたまその区切りで良かった』可能性が残る。
+    区切り位置を 50%→62.5%→75%→87.5% と4回ずらし、毎回ISで最適化し直して
+    直後の未知区間(OOS)で答え合わせする。
+    合格基準: 4区間中3区間以上がプラス かつ 壊滅的な負け(-15%超)が無いこと。
+    不合格なら判定を格下げする（GO→CAUTION、それ以下→NO-GO）。"""
+
+    SPLITS = (0.50, 0.625, 0.75, 0.875)
+    RUIN_PCT = -15.0          # これより悪い区間が1つでもあれば不合格
+    MIN_POSITIVE = 3          # 4区間中この数以上プラスなら合格
+
+    def run(self, ctx: dict) -> dict:
+        sp = ctx.get("optimized")
+        if sp is None:
+            ctx["walk_forward"] = None
+            return ctx
+
+        bt = Backtester(self.cfg)
+        met = MetricsAgent(self.cfg)
+        prices = ctx["prices"]
+        folds = []
+
+        bounds = [int(len(prices) * r) for r in self.SPLITS] + [len(prices)]
+        for k in range(len(self.SPLITS)):
+            is_slice = prices[:bounds[k]]
+            oos_slice = prices[bounds[k]:bounds[k + 1]]
+            if len(oos_slice) < 30:
+                continue
+            best = self._optimize(is_slice, sp, bt, met)
+            if best is None:
+                folds.append({"fold": k + 1, "oos_return_pct": 0.0,
+                              "trades": 0, "note": "IS側で有効設定なし"})
+                continue
+            m = met.metrics(bt.run(oos_slice, best))
+            folds.append({"fold": k + 1,
+                          "oos_return_pct": round(m["return_pct"], 1),
+                          "max_dd_pct": round(m["max_dd_pct"], 1),
+                          "trades": m["trades"],
+                          "params": f"<{best.rsi_oversold:.0f}/>{best.rsi_exit:.0f}"})
+
+        positive = sum(1 for f in folds if f["oos_return_pct"] > 0)
+        ruined = [f for f in folds if f["oos_return_pct"] < self.RUIN_PCT]
+        total_trades = sum(f["trades"] for f in folds)
+        passed = (len(folds) >= 3 and positive >= min(self.MIN_POSITIVE, len(folds))
+                  and not ruined)
+
+        ctx["walk_forward"] = {"folds": folds, "positive": positive,
+                               "total": len(folds), "passed": passed}
+
+        for f in folds:
+            self.log.info("  WF区間%d: OOS利益率%+6.1f%% / 取引%2d回 %s",
+                          f["fold"], f["oos_return_pct"], f["trades"],
+                          f.get("params", ""))
+        self.log.info("ウォークフォワード: %d/%d 区間プラス → %s",
+                      positive, len(folds), "合格" if passed else "不合格")
+
+        if not passed:
+            ctx["warnings"].append(
+                f"ウォークフォワード不合格({positive}/{len(folds)}区間プラス"
+                + (f", 壊滅区間{len(ruined)}個" if ruined else "")
+                + f", 総取引{total_trades}回)。区切りを変えると成績が崩れる="
+                  "元のGOはまぐれの可能性。")
+            if ctx["verdict"] == "GO":
+                ctx["verdict"] = "CAUTION"
+            elif ctx["verdict"] == "CAUTION":
+                ctx["verdict"] = "NO-GO"
+            self.log.warning("判定を格下げ: %s", ctx["verdict"])
+        return ctx
+
+    def _optimize(self, prices_is, seed, bt, met):
+        """CritiqueAgent前のOptimizeAgentと同じ小さなグリッドで最適化。"""
+        best, best_score = None, -1e9
+        if seed.kind == "rsi_only":
+            for oversold in (30, 35, 40):
+                for rsi_exit in (50, 55):
+                    for stop in (0.05, 0.08):
+                        sp = StrategyParams("wf", "rsi_only", 0, 0, seed.rsi_period,
+                                            seed.rsi_overbought, oversold,
+                                            rsi_exit, stop, 0.0)
+                        m = met.metrics(bt.run(prices_is, sp))
+                        if m["trades"] < 3:
+                            continue
+                        if m["calmar"] > best_score:
+                            best, best_score = sp, m["calmar"]
+        else:
+            m = met.metrics(bt.run(prices_is, seed))
+            best = seed if m["trades"] >= 3 else None
+        return best
+
+
+# ======================================================================
 # 10. ResearchMasterAgent — 司令塔
 # ======================================================================
 class ResearchMasterAgent:
@@ -480,7 +576,8 @@ class ResearchMasterAgent:
         self.cfg = cfg
         self.log = logging.getLogger("ResearchMaster")
         self.pipeline = [IdeaAgent(cfg), BacktestAgent(cfg), MetricsAgent(cfg),
-                         OptimizeAgent(cfg), CritiqueAgent(cfg)]
+                         OptimizeAgent(cfg), CritiqueAgent(cfg),
+                         WalkForwardAgent(cfg)]
 
     def run(self) -> dict:
         prices = load_prices(self.cfg.symbol)
@@ -505,6 +602,7 @@ class ResearchMasterAgent:
                 ctx["metrics_is"], key=lambda k: ctx["metrics_is"][k]["calmar"])]
                 if ctx.get("metrics_is") else {}),
             "out_of_sample": ctx.get("metrics_oos", {}),
+            "walk_forward": ctx.get("walk_forward"),
             "note": "バックテストは過去の検証であり将来を保証しない。"
                     "判定がGOでも少額・DRY-RUNから始めること。",
         }

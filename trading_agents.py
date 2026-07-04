@@ -82,6 +82,7 @@ class Config:
 
     # --- ファイルパス --------------------------------------------------
     state_path: str = "state.json"      # スマホダッシュボードが読むファイル
+    history_path: str = "history.jsonl" # 毎日の判定履歴(1行1レコード、追記式)
     kill_switch_path: str = "STOP"      # このファイルがあれば全停止
 
 
@@ -383,8 +384,42 @@ class ReporterAgent(BaseAgent):
         }
         with open(self.cfg.state_path, "w", encoding="utf-8") as f:
             json.dump(snapshot, f, ensure_ascii=False, indent=2)
+
+        # 履歴ログに1行追記（state.jsonは上書きされるが、こちらは積み上がる）
+        self._append_history(snapshot)
+
         self.log.info("state.json 更新（スマホ表示用）/ 含み損益 %s円", f"{ctx.unrealized_pl:+,}")
         return ctx
+
+    def _append_history(self, snapshot: dict) -> None:
+        """同じ日に複数回実行されても、その日の行は1本に保つ（冪等）。
+        壊れた行があっても他の行に影響しないようJSON Lines形式で書く。"""
+        rows = []
+        if os.path.exists(self.cfg.history_path):
+            try:
+                with open(self.cfg.history_path, encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            row = json.loads(line)
+                            if row.get("date") != snapshot["date"]:
+                                rows.append(row)
+                        except json.JSONDecodeError:
+                            continue  # 壊れた行はスキップ（履歴全体を守る）
+            except Exception as e:
+                self.log.warning("history.jsonl 読み込み失敗（新規作成扱いにする）: %s", e)
+
+        rows.append(snapshot)
+        rows.sort(key=lambda r: r.get("date", ""))
+        try:
+            with open(self.cfg.history_path, "w", encoding="utf-8") as f:
+                for row in rows:
+                    f.write(json.dumps(row, ensure_ascii=False) + "\n")
+            self.log.info("history.jsonl 更新（累計%d日分）", len(rows))
+        except Exception as e:
+            self.log.warning("history.jsonl 書き込み失敗（state.jsonは正常に更新済み）: %s", e)
 
 
 # ======================================================================
