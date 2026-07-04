@@ -7,3 +7,4 @@ prices_*.csv
 *.exe
 position.json
 history.jsonl
+logs/
