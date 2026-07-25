@@ -3,6 +3,8 @@ api.txt
 __pycache__/
 research_result*.json
 prices_*.csv
+gdelt_cache_*.json
+fred_cache_*.csv
 *.exe
 *.exe
 position.json
