@@ -2,7 +2,10 @@ api.txt
 *.key
 *.pem
 *.der
-e_api_*
+e_api_authid.txt
+e_api_public_key.pem
+.auth/
+.env
 __pycache__/
 research_result*.json
 prices_*.csv
@@ -13,3 +16,5 @@ fred_cache_*.csv
 position.json
 history.jsonl
 logs/
+price_list_*.csv
+file_info_p_no.txt

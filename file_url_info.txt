@@ -1,0 +1,4 @@
+{
+    "sUrl": "https://kabuka.e-shiten.jp/e_api_v4r9/",
+    "sJsonOfmt": "5"
+}
