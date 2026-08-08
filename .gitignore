@@ -1,5 +1,8 @@
 api.txt
 *.key
+*.pem
+*.der
+e_api_*
 __pycache__/
 research_result*.json
 prices_*.csv
