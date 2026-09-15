@@ -1,10 +1,10 @@
 @echo off
 setlocal
-cd /d D:\tati
+cd /d %~dp0
 set PYTHONUTF8=1
 
-if not exist "D:\tati\logs" mkdir "D:\tati\logs"
-set LOGFILE=D:\tati\logs\daily_run.log
+if not exist "%~dp0logs" mkdir "%~dp0logs"
+set LOGFILE=%~dp0logs\daily_run.log
 
 echo [%date% %time%] === daily run start === >> "%LOGFILE%"
 
