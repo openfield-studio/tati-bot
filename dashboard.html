@@ -106,9 +106,44 @@
   @media (prefers-reduced-motion: reduce){
     .fill,.marker{transition:none}
   }
+
+  /* tabs */
+  .tabs{display:flex;gap:6px;margin-bottom:14px}
+  .tab{flex:1;text-align:center;font-size:13px;font-weight:700;padding:10px 8px;
+    border-radius:10px;border:1px solid var(--hair);color:var(--muted);
+    background:var(--surface);cursor:pointer}
+  .tab.active{color:var(--ink);background:var(--surface2);border-color:var(--hold)}
+  .page{display:none}
+  .page.active{display:block}
+
+  /* value ranking */
+  .vr-meta{font-size:12px;color:var(--muted);line-height:1.7;
+    background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+    padding:12px 14px;margin-bottom:14px}
+  .vr-meta b{color:#BFD3E4}
+  .vr-disclaimer{margin-top:6px;color:var(--sell);font-weight:700}
+  .vr-list{display:flex;flex-direction:column;gap:8px}
+  .vr-row{display:flex;align-items:center;gap:10px;background:var(--surface);
+    border:1px solid var(--hair);border-radius:12px;padding:10px 12px}
+  .vr-rank{font-family:"JetBrains Mono",monospace;font-weight:700;color:var(--muted);
+    width:24px;text-align:right;flex:none}
+  .vr-main{flex:1;min-width:0}
+  .vr-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vr-code{font-family:"JetBrains Mono",monospace;color:var(--muted);font-size:11px;margin-left:6px}
+  .vr-stats{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);margin-top:2px}
+  .vr-bar-wrap{width:44px;height:6px;background:#1a3045;border-radius:99px;overflow:hidden;flex:none}
+  .vr-bar{height:100%;background:var(--buy)}
+  .vr-score{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:13px;
+    color:var(--buy);width:38px;text-align:right;flex:none}
 </style>
 </head>
 <body>
+  <div class="tabs">
+    <div class="tab active" id="tabBot">1306ボット</div>
+    <div class="tab" id="tabValue">割安株ランキング</div>
+  </div>
+
+  <div class="page active" id="pageBot">
   <div class="top">
     <div class="sym" id="sym">1306 <small id="symName">TOPIX連動ETF</small></div>
     <div class="spacer"></div>
@@ -150,6 +185,12 @@
     <span class="updated" id="updated"></span>
   </div>
   <div class="hint" id="hint"></div>
+  </div>
+
+  <div class="page" id="pageValue">
+    <div class="vr-meta" id="vrMeta">value_ranking.json を読み込み中...</div>
+    <div class="vr-list" id="vrList"></div>
+  </div>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -266,6 +307,61 @@ $("refresh").addEventListener("click",async()=>{ if(!await tryFetch()) $("hint")
   if(await tryFetch()){ setInterval(tryFetch,60000); }
   else showDemo();
 })();
+
+// ---- タブ切り替え ----
+function showPage(name){
+  $("tabBot").className="tab"+(name==="bot"?" active":"");
+  $("tabValue").className="tab"+(name==="value"?" active":"");
+  $("pageBot").className="page"+(name==="bot"?" active":"");
+  $("pageValue").className="page"+(name==="value"?" active":"");
+}
+$("tabBot").addEventListener("click",()=>showPage("bot"));
+$("tabValue").addEventListener("click",()=>{ showPage("value"); loadValueRanking(); });
+
+// ---- 割安株ランキング ----
+let vrLoaded=false;
+function renderValueRanking(d){
+  const meta=$("vrMeta");
+  meta.innerHTML=
+    `更新: <b>${(d.updated||"—").replace("T"," ")}</b>　`+
+    `対象: <b>${d.universe==="nikkei225"?"日経225":d.universe}</b>（${d.screened}/${d.universe_size}銘柄が質フィルター通過）<br>`+
+    `算出方法: ${d.method||""}<br>`+
+    `質フィルター: ${d.quality_filter||""}`+
+    `<div class="vr-disclaimer">⚠ ${d.disclaimer||"検証済みの売買シグナルではない参考情報です。"}</div>`;
+
+  const list=$("vrList"); list.innerHTML="";
+  (d.ranking||[]).forEach(r=>{
+    const row=document.createElement("div"); row.className="vr-row";
+    const pct=Math.round((r.value_score||0)*100);
+    row.innerHTML=
+      `<div class="vr-rank">${r.rank}</div>`+
+      `<div class="vr-main">`+
+        `<div class="vr-name">${r.name}<span class="vr-code">${r.code}</span></div>`+
+        `<div class="vr-stats">${r.price!=null?r.price.toFixed(0)+"円 ":""}`+
+        `PER${r.per} PBR${r.pbr} 配当${r.dividend_yield_pct}% ROE${r.roe_pct}%</div>`+
+      `</div>`+
+      `<div class="vr-bar-wrap"><div class="vr-bar" style="width:${pct}%"></div></div>`+
+      `<div class="vr-score">${pct}</div>`;
+    list.appendChild(row);
+  });
+}
+
+const VR_DEMO={updated:"サンプル",universe:"nikkei225",universe_size:225,screened:0,
+  quality_filter:"—",method:"—",disclaimer:"検証済みの売買シグナルではなく、現時点の割安さのスナップショット。売買は自己判断で。",
+  ranking:[{rank:1,code:"0000",name:"サンプル銘柄",price:1000,per:10,pbr:0.8,dividend_yield_pct:3.5,roe_pct:8,value_score:0.9}]};
+
+async function loadValueRanking(){
+  if(vrLoaded) return;
+  try{
+    const r=await fetch("value_ranking.json?"+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw 0;
+    renderValueRanking(await r.json());
+    vrLoaded=true;
+  }catch(e){
+    renderValueRanking(VR_DEMO);
+    $("vrMeta").innerHTML+='<br><span class="demo-tag">サンプル表示中（value_ranking.jsonが同フォルダにありません）</span>';
+  }
+}
 </script>
 </body>
 </html>
