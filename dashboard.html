@@ -356,12 +356,16 @@ function renderValuePerformance(p){
   if(!p || !p.tracked_stocks){ box.style.display="none"; return; }
   const sign=v=>v>0?"pos":(v<0?"neg":"");
   box.style.display="block";
+  const confLine = p.confidence_pct!=null
+    ? `信用度 <b style="color:var(--ink)">${p.confidence_pct}%</b>（${p.confidence_note||""}）`
+    : `信用度 <span style="color:var(--sell)">${p.confidence_note||"計測中"}</span>`;
   box.innerHTML=
-    `<b>追跡成績</b>（累計${p.history_runs}回・${p.oldest_run_date}〜、追跡${p.tracked_stocks}銘柄）<br>`+
+    `<b>追跡成績</b>（累計${p.history_runs}営業日・${p.oldest_run_date}〜、追跡${p.tracked_stocks}銘柄）<br>`+
     `「初めてTOP50に入った時点で買い、持ち続けていたら」の仮想成績:<br>`+
     `平均 <span class="mono v ${sign(p.avg_return_pct)}" style="font-size:14px;display:inline">${p.avg_return_pct>0?'+':''}${p.avg_return_pct}%</span>`+
     `　勝率 ${p.win_rate_pct}%`+
-    (p.avg_excess_vs_nikkei225_pct!=null?`　日経225比 ${p.avg_excess_vs_nikkei225_pct>0?'+':''}${p.avg_excess_vs_nikkei225_pct}%`:"");
+    (p.avg_excess_vs_nikkei225_pct!=null?`　日経225比 ${p.avg_excess_vs_nikkei225_pct>0?'+':''}${p.avg_excess_vs_nikkei225_pct}%`:"")+
+    `<br>${confLine}`;
 }
 
 async function loadValueRanking(){

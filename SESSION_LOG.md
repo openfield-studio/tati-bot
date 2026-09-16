@@ -526,6 +526,17 @@ TOPIX-17業種別ETF等9銘柄(N=144)・1306単体(N=16)の3つのDSRラボで�
   value_performance.jsonの蓄積結果を見て、将来的にこのアプローチ自体の有効性を
   再評価する必要がある。
 
+**追記(同日): 「アプリ全体の信用度をパーセンテージで」の要望に対応**
+`value_performance.py`に`confidence_from_excess()`を追加。日経225に対する超過リターンの
+平均をt検定に近い考え方で0〜100%に変換する(1306のDeflated Sharpe Ratioの簡易版、
+`statistics.NormalDist()`のCDFで近似・scipy不要)。1306のDSR検証で「試行数が少ないと
+数字自体が無意味」と学んだ教訓を反映し、**追跡20営業日(MIN_DAYS_FOR_CONFIDENCE)未満は
+数値を一切出さず「計測中」と表示する**ガードを入れた。dashboard.htmlの追跡成績サマリーに
+信用度を追加表示。2026-09-16時点(追跡1営業日)は当然「計測中」表示を確認。
+また同日、ユーザー指示「バックグラウンドで毎日データ取って」を受け、
+`TatiBotValueScreenerWeekly`(週次)を`TatiBotValueScreenerDaily`(平日毎日20:20)に
+即座に変更済み(上記の追跡日数を早く貯める意図とも合致)。
+
 ---
 
 ## 残りの作業（次回やること）

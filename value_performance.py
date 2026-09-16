@@ -22,6 +22,8 @@ import statistics as pystats
 import yfinance as yf
 
 BENCHMARK = "^N225"
+NORM = pystats.NormalDist()
+MIN_DAYS_FOR_CONFIDENCE = 20  # 約1ヶ月分の営業日。これ未満は「計測中」扱い(1306のDSR教訓と同じ)
 
 
 def load_history() -> list[dict]:
@@ -73,6 +75,32 @@ def nearest_price(series: dict[str, float], target_date: str) -> float | None:
     return None
 
 
+def confidence_from_excess(excess: list[float], history_runs: int) -> tuple[float | None, str]:
+    """超過リターン(vs日経225)が偶然でないと言える度合いを、平均のt検定に近い
+    考え方で0〜100%のパーセンテージに変換する(1306のDeflated Sharpe Ratioと同じ発想を
+    簡略化したもの: 標準正規分布のCDFで近似)。
+
+    ★重要な限界★
+    - 同じ日にランクインした銘柄同士は完全に独立ではない(相場全体の動きを共有する)ため、
+      銘柄数=独立した試行数ではない。あくまで参考値。
+    - 何より、追跡日数(history_runs、営業日ベース)が少ないうちは統計的に無意味。
+      MIN_DAYS_FOR_CONFIDENCE(既定20営業日)未満は数値を出さず「計測中」とする。
+    """
+    if history_runs < MIN_DAYS_FOR_CONFIDENCE:
+        return None, f"計測中(追跡{history_runs}営業日 / 目安{MIN_DAYS_FOR_CONFIDENCE}営業日必要)"
+    n = len(excess)
+    if n < 2:
+        return None, "サンプル不足"
+    mean = pystats.mean(excess)
+    std = pystats.stdev(excess)
+    if std == 0:
+        return None, "分散ゼロで計算不可"
+    se = std / (n ** 0.5)
+    t = mean / se
+    confidence = NORM.cdf(t)  # 平均が0より大きいと言える確率の近似値
+    return round(confidence * 100, 1), "日経225に対する超過リターンが偶然ではないと言える度合い(参考値)"
+
+
 def main() -> None:
     rows = load_history()
     if not rows:
@@ -112,16 +140,20 @@ def main() -> None:
     rets = [e["return_pct"] for e in entries]
     excess = [e["excess_return_pct"] for e in entries if e["excess_return_pct"] is not None]
     win_rate = sum(1 for r in rets if r > 0) / len(rets)
+    history_runs = len(set(r["run_date"] for r in rows))
+    confidence_pct, confidence_note = confidence_from_excess(excess, history_runs)
 
     summary = {
         "updated": dt.datetime.now().isoformat(timespec="seconds"),
         "tracked_stocks": len(entries),
-        "history_runs": len(set(r["run_date"] for r in rows)),
+        "history_runs": history_runs,
         "oldest_run_date": min(r["run_date"] for r in rows),
         "avg_return_pct": round(pystats.mean(rets), 2),
         "median_return_pct": round(pystats.median(rets), 2),
         "win_rate_pct": round(win_rate * 100, 1),
         "avg_excess_vs_nikkei225_pct": round(pystats.mean(excess), 2) if excess else None,
+        "confidence_pct": confidence_pct,
+        "confidence_note": confidence_note,
         "note": "「初めてTOP50に入った時点で買い、今まで持ち続けていたら」という仮想追跡。"
                 "実際の売買記録ではなく、割安スコアの有効性を後から検証するための一次データ。",
         "entries": entries,
@@ -130,11 +162,15 @@ def main() -> None:
     with open("value_performance.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
 
-    print(f"\n=== 仮想追跡サマリー(蓄積{summary['history_runs']}回分、銘柄{len(entries)}件) ===")
+    print(f"\n=== 仮想追跡サマリー(蓄積{summary['history_runs']}営業日分、銘柄{len(entries)}件) ===")
     print(f"平均リターン: {summary['avg_return_pct']:+.2f}% / 中央値: {summary['median_return_pct']:+.2f}% "
           f"/ 勝率: {summary['win_rate_pct']:.1f}%")
     if summary["avg_excess_vs_nikkei225_pct"] is not None:
         print(f"日経225平均に対する超過リターン: {summary['avg_excess_vs_nikkei225_pct']:+.2f}%")
+    if confidence_pct is not None:
+        print(f"信用度: {confidence_pct:.1f}%({confidence_note})")
+    else:
+        print(f"信用度: {confidence_note}")
     print("\nvalue_performance.json に出力しました。")
 
 
