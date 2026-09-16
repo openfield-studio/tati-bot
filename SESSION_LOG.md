@@ -661,6 +661,23 @@ Equity」「Ordinary Shares Number」の**過去5期分(年次、FY2022-03〜FY2
 - 本体(value_screener.py)にはまだ組み込んでいない。次にやるなら、DSRでの
   補正確認、質フィルター込みの再検証、生存バイアスを軽減するためのユニバース拡大等。
 
+**追記(同日): 東証プライム全銘柄(1,556社)への拡張を試みたが、メモリ不足で断念**
+「日経の銘柄だけじゃなくて東証一部の全銘柄とかできるの?」を受け、`fetch_tse_universe.py`
+(新規)でJPX「東証上場銘柄一覧」(data_j.xlsx)からプライム市場(内国株式)全1,556社の
+リストを取得。`individual_value_backtest.py`に`--prime`フラグを追加し、
+`tse_prime_universe.csv`を使って全銘柄版を実行できるようにした。
+
+- バックグラウンドで実行したが、**約16分半経過した時点でシステムのメモリ不足により
+  強制終了**。全観測をメモリに溜めてから最後に一括でキャッシュ保存する実装だった
+  ため、進捗は一切保存されず(既存の日経225版キャッシュのみ残存)。
+  メインPCのRAM14GBがボトルネックという既知の制約([[project_pc_debloat_desktop]]、
+  memory参照)が実際に表面化した形。
+- ユーザーと相談し、**全プライムへの拡張はここで断念、日経225の結果
+  (項目27、外れ値除外後+18.9pt)を最終結果として確定**する方針で合意。
+- `fetch_tse_universe.py`・`individual_value_backtest.py`の`--prime`オプション自体は
+  コードとして残す(将来、逐次保存方式に作り直せば再挑戦できる)。
+  `tse_prime_universe.csv`は再生成可能なため`.gitignore`対象。
+
 ---
 
 ## 残りの作業（次回やること）
@@ -733,6 +750,7 @@ Equity」「Ordinary Shares Number」の**過去5期分(年次、FY2022-03〜FY2
 | `sector_valuation_percentile.py` | 業種別PER・PBRの現在の歴史的位置を分析 | 新規・本体には組み込まない |
 | `sector_valuation_backtest.py` | 業種PERパーセンタイルの予測力検証(結果:NO-GO) | 新規・本体には組み込まない |
 | `individual_value_backtest.py` | 個別銘柄PERの予測力検証(結果:プラス、要追加検証) | 新規・本体には組み込まない |
+| `fetch_tse_universe.py` | 東証プライム全銘柄リストの取得(全プライム検証はメモリ不足で断念) | 新規 |
 | `e_api_login_pubkey.py` | 立花証券API ログイン(公開鍵認証、Windows向けに改変) | 新規・API接続基盤 |
 | `e_api_encode_auth.py` | 認証情報の暗号化ユーティリティ(初回設定用) | 新規・API接続基盤 |
 | `e_api_get_kanougaku_genbutsu_pubkey.py` | 現物買付可能額の照会 | 新規・疎通確認済み |

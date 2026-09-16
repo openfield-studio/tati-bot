@@ -18,5 +18,6 @@ history.jsonl
 logs/
 price_list_*.csv
 jpx_sector_per_pbr_history.csv
-individual_value_backtest_cache.json
+individual_value_backtest_cache*.json
+tse_prime_universe.csv
 file_info_p_no.txt

@@ -29,17 +29,27 @@ sector_valuation_backtest.py(業種単位、13年×5業種)とは対照的に、
 使い方: python individual_value_backtest.py
 """
 from __future__ import annotations
+import csv
 import json
 import os
+import sys
 import statistics as pystats
 from collections import defaultdict
 
 import yfinance as yf
 
-from value_screener import NIKKEI225
-
 FORWARD_MONTHS = [6, 12]
 REPORT_LAG_DAYS = 60  # 決算期末から、市場に情報が織り込まれるまでの猶予
+
+
+def load_universe() -> list[tuple[str, str]]:
+    """デフォルトは日経225。 `python individual_value_backtest.py --prime` で
+    東証プライム全銘柄(tse_prime_universe.csv、fetch_tse_universe.pyで生成)を使う。"""
+    if "--prime" in sys.argv:
+        with open("tse_prime_universe.csv", encoding="utf-8-sig") as f:
+            return [(row["code"], row["name"]) for row in csv.DictReader(f)]
+    from value_screener import NIKKEI225
+    return NIKKEI225
 
 
 def to_price_map(hist) -> dict:
@@ -110,22 +120,24 @@ def collect_observations(code: str) -> list[dict]:
     return out
 
 
-CACHE_PATH = "individual_value_backtest_cache.json"
-
-
 def main() -> None:
-    if os.path.exists(CACHE_PATH):
-        print(f"キャッシュ({CACHE_PATH})から読み込み中...")
-        all_obs = json.load(open(CACHE_PATH, encoding="utf-8"))
+    universe = load_universe()
+    universe_tag = "prime" if "--prime" in sys.argv else "nikkei225"
+    cache_path = f"individual_value_backtest_cache_{universe_tag}.json"
+
+    if os.path.exists(cache_path):
+        print(f"キャッシュ({cache_path})から読み込み中...")
+        all_obs = json.load(open(cache_path, encoding="utf-8"))
     else:
-        print(f"日経225、{len(NIKKEI225)}銘柄の決算データ+株価を取得中(数分かかります)...")
+        print(f"{universe_tag}、{len(universe)}銘柄の決算データ+株価を取得中"
+              f"(数が多いので時間がかかります)...")
         all_obs = []
-        for i, (code, name) in enumerate(NIKKEI225, 1):
+        for i, (code, name) in enumerate(universe, 1):
             obs = collect_observations(code)
             all_obs += obs
-            if i % 30 == 0:
-                print(f"  {i}/{len(NIKKEI225)}件処理済み(観測数 累計{len(all_obs)})...")
-        json.dump(all_obs, open(CACHE_PATH, "w", encoding="utf-8"), ensure_ascii=False)
+            if i % 50 == 0:
+                print(f"  {i}/{len(universe)}件処理済み(観測数 累計{len(all_obs)})...")
+        json.dump(all_obs, open(cache_path, "w", encoding="utf-8"), ensure_ascii=False)
 
     print(f"\n合計観測数(銘柄×決算年度): {len(all_obs)}")
     years = sorted(set(o["fiscal_year"] for o in all_obs))
