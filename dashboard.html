@@ -141,6 +141,7 @@
   <div class="tabs">
     <div class="tab active" id="tabBot">1306ボット</div>
     <div class="tab" id="tabValue">割安株ランキング</div>
+    <div class="tab" id="tabResearch">週次リサーチ</div>
   </div>
 
   <div class="page active" id="pageBot">
@@ -191,6 +192,11 @@
     <div class="vr-meta" id="vrPerf" style="display:none"></div>
     <div class="vr-meta" id="vrMeta">value_ranking.json を読み込み中...</div>
     <div class="vr-list" id="vrList"></div>
+  </div>
+
+  <div class="page" id="pageResearch">
+    <div class="vr-meta" id="frMeta">factor_research_summary.json を読み込み中...</div>
+    <div class="vr-list" id="frLeaderboard"></div>
   </div>
 
 <script>
@@ -313,11 +319,56 @@ $("refresh").addEventListener("click",async()=>{ if(!await tryFetch()) $("hint")
 function showPage(name){
   $("tabBot").className="tab"+(name==="bot"?" active":"");
   $("tabValue").className="tab"+(name==="value"?" active":"");
+  $("tabResearch").className="tab"+(name==="research"?" active":"");
   $("pageBot").className="page"+(name==="bot"?" active":"");
   $("pageValue").className="page"+(name==="value"?" active":"");
+  $("pageResearch").className="page"+(name==="research"?" active":"");
 }
 $("tabBot").addEventListener("click",()=>showPage("bot"));
 $("tabValue").addEventListener("click",()=>{ showPage("value"); loadValueRanking(); });
+$("tabResearch").addEventListener("click",()=>{ showPage("research"); loadFactorResearch(); });
+
+// ---- 週次リサーチ ----
+let frLoaded=false;
+function renderFactorResearch(d){
+  const statusTxt = d.latest_run && d.latest_run.status==="blocked"
+    ? `<span style="color:var(--sell)">⚠ 前回はデータ接続がブロックされ未検証</span>`
+    : (d.latest_run ? `検証実施` : "");
+  $("frMeta").innerHTML=
+    `更新: <b>${(d.updated||"—").replace("T"," ")}</b>　実行間隔: ${d.loop_schedule||"—"}<br>`+
+    `累積試行数: <b>${d.cumulative_trials!=null?d.cumulative_trials:"—"}</b>　${statusTxt}<br>`+
+    (d.latest_run ? `<div style="margin-top:4px">直近実行(${d.latest_run.date}): ${d.latest_run.summary||""}</div>` : "")+
+    `<div class="vr-disclaimer">⚠ ${d.disclaimer||"検証済みの売買シグナルではなく研究ログの要約です。"}</div>`;
+
+  const list=$("frLeaderboard"); list.innerHTML="";
+  (d.leaderboard||[]).forEach(r=>{
+    const row=document.createElement("div"); row.className="vr-row";
+    row.innerHTML=
+      `<div class="vr-rank">${r.rank}</div>`+
+      `<div class="vr-main">`+
+        `<div class="vr-name">${r.factor}</div>`+
+        `<div class="vr-stats">${r.metric||""}</div>`+
+        `<div class="vr-stats">${r.note||""}</div>`+
+      `</div>`;
+    list.appendChild(row);
+  });
+}
+
+const FR_DEMO={updated:"サンプル",cumulative_trials:0,loop_schedule:"—",
+  disclaimer:"検証済みの売買シグナルではなく研究ログの要約です。",leaderboard:[]};
+
+async function loadFactorResearch(){
+  if(frLoaded) return;
+  try{
+    const r=await fetch("factor_research_summary.json?"+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw 0;
+    renderFactorResearch(await r.json());
+    frLoaded=true;
+  }catch(e){
+    renderFactorResearch(FR_DEMO);
+    $("frMeta").innerHTML+='<br><span class="demo-tag">サンプル表示中（factor_research_summary.jsonが同フォルダにありません）</span>';
+  }
+}
 
 // ---- 割安株ランキング ----
 let vrLoaded=false;

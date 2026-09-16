@@ -1,0 +1,31 @@
+{
+  "updated": "2026-09-16T21:00:00",
+  "cumulative_trials": 13,
+  "loop_schedule": "毎週日曜21:00 JST",
+  "latest_run": {
+    "date": "2026-09-16",
+    "status": "blocked",
+    "summary": "クラウド実行環境からyfinanceへの通信が403拒否され、実証検証は未実施。次回はJ-Quants接続とWeb文献調査を試みる。"
+  },
+  "leaderboard": [
+    {
+      "rank": 1,
+      "factor": "PEAD(決算後モメンタム)",
+      "metric": "好悪サプライズの差 +4.48pt(20営業日)",
+      "note": "今日一番教科書通りの結果"
+    },
+    {
+      "rank": 2,
+      "factor": "低β(下げ相場防御)",
+      "metric": "+11.7pt / +12.9pt(2つの下落局面)",
+      "note": "2局面で一貫、ただし下げ幅が小さいだけで上がるわけではない"
+    },
+    {
+      "rank": 3,
+      "factor": "52週高値更新",
+      "metric": "+3.76pt(60営業日)",
+      "note": "学術研究(52週高値モメンタム効果)と整合"
+    }
+  ],
+  "disclaimer": "これは検証済みの売買シグナルではなく、研究ログの要約です。DSR等の多重検定補正はまだ全ファクター分は済んでいません。本体(value_screener.py/trading_agents.py)には組み込まれていません。"
+}
