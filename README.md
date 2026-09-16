@@ -129,7 +129,7 @@ value_screener.py    … 日経225(225銘柄)をyfinanceでスキャン、PER・
 value_performance.py … 「初めてTOP50に入った時点で買っていたら」を仮想追跡し、
                         日経225平均と比較 → value_performance.json
 value_run.bat         … 上記2つを実行してGitHubにpush(タスクスケジューラ
-                        TatiBotValueScreenerWeekly、毎週月曜20:20に自動実行)
+                        TatiBotValueScreenerDaily、平日毎日20:20に自動実行)
 ```
 
 - 質フィルター: PER>0 かつ ROE>=3%(赤字・低ROEはバリュートラップの疑いで除外)
