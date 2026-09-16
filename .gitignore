@@ -17,4 +17,5 @@ position.json
 history.jsonl
 logs/
 price_list_*.csv
+jpx_sector_per_pbr_history.csv
 file_info_p_no.txt
