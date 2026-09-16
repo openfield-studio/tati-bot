@@ -20,4 +20,5 @@ price_list_*.csv
 jpx_sector_per_pbr_history.csv
 individual_value_backtest_cache*.json
 tse_prime_universe.csv
+academic_factors_checkpoint.json
 file_info_p_no.txt
