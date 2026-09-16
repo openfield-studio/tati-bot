@@ -12,13 +12,20 @@ tati-botの拡張機能。日経225構成銘柄(225社)を対象に、PER・PBR�
   検証はしていないので、「検証済みのGO戦略」と同列に扱わないこと。
 
 スコアの考え方:
-  - 低PER(実績PER)・低PBR(実績PBR)・高配当利回りを、それぞれ225銘柄内での
-    パーセンタイル順位に変換し、単純平均した「割安スコア」でランキングする。
+  - 割安スコア: 低PER(実績PER)・低PBR(実績PBR)・高配当利回りを、それぞれ質フィルター
+    通過銘柄内でのパーセンタイル順位に変換し、単純平均する。
   - 質フィルター: 赤字(PER<=0またはNone)・ROEが極端に低い(<3%)銘柄は
     「安いだけの罠(バリュートラップ)」の可能性が高いため除外する。
+  - 反発スコア(2026-09-16追加): 「割安なだけで下げ続けている銘柄」を避けるため、
+    ①直近60営業日安値からの回復率、②短期(25日)/長期(75日)移動平均のトレンド、
+    ③直近1ヶ月と前1ヶ月のリターンの差(下落の減速/反転)、の3つをパーセンタイル化して
+    平均する。RSI(research_agents.pyと同じ計算式)も参考値として併記する。
+    ★これは将来を予測するモデルではなく、単純なテクニカルルールに基づく参考シグナル。
+    バックテスト検証はしていない(割安スコア同様、value_performance.pyでの追跡対象)。
+  - 総合スコア = (割安スコア + 反発スコア) / 2 で最終ランキングする。
 
-データ取得元: yfinance の Ticker.info(日本株にもtrailingPE/priceToBook/
-  dividendYield/returnOnEquity等が入っている)。J-Quantsより単純だが、
+データ取得元: yfinance の Ticker.info(PER/PBR/配当利回り/ROE)と
+  Ticker.history(価格推移、反発スコア用)。J-Quantsより単純だが、
   値の欠損・精度はyfinance側の仕様に依存する点に注意。
 
 使い方: python value_screener.py
@@ -31,6 +38,8 @@ import time
 import datetime as dt
 
 import yfinance as yf
+
+from research_agents import _rsi
 
 # 日経225構成銘柄(2026年9月時点、日経平均プロフィル準拠)
 NIKKEI225 = [
@@ -107,6 +116,8 @@ NIKKEI225 = [
 ]
 
 MIN_ROE = 0.03  # これ未満(赤字含む)は質フィルターで除外
+RECENT_LOW_WINDOW = 60  # 直近安値からの回復率を見る営業日数
+MA_SHORT, MA_LONG = 25, 75  # 短期/長期移動平均
 
 
 def fetch_metrics(code: str, name: str) -> dict | None:
@@ -130,6 +141,38 @@ def fetch_metrics(code: str, name: str) -> dict | None:
     return {
         "code": code, "name": name, "per": per, "pbr": pbr,
         "dividend_yield": div_yield, "roe": roe, "price": price,
+    }
+
+
+def fetch_turnaround_signals(code: str) -> dict | None:
+    """直近の値動きから「下げ止まり/反発の兆し」を単純なルールで数値化する。
+    将来を予測するモデルではなく、あくまで参考のテクニカルシグナル。"""
+    try:
+        hist = yf.Ticker(f"{code}.T").history(period="1y")
+        closes = [float(x) for x in hist["Close"].dropna().tolist()]
+    except Exception:
+        return None
+    need = max(RECENT_LOW_WINDOW, MA_LONG) + 21
+    if len(closes) < need:
+        return None
+
+    current = closes[-1]
+    recent_low = min(closes[-RECENT_LOW_WINDOW:])
+    off_low_pct = (current / recent_low - 1) * 100 if recent_low > 0 else 0.0
+
+    ma_short = sum(closes[-MA_SHORT:]) / MA_SHORT
+    ma_long = sum(closes[-MA_LONG:]) / MA_LONG
+    trend_pct = (ma_short / ma_long - 1) * 100 if ma_long > 0 else 0.0
+
+    ret_recent = closes[-1] / closes[-21] - 1
+    ret_prior = closes[-21] / closes[-41] - 1
+    decel_pct = (ret_recent - ret_prior) * 100  # プラス=下落が減速/反転している
+
+    rsi14 = _rsi(closes, len(closes) - 1, 14)
+
+    return {
+        "off_low_pct": off_low_pct, "trend_pct": trend_pct,
+        "decel_pct": decel_pct, "rsi14": rsi14,
     }
 
 
@@ -164,17 +207,41 @@ def main() -> None:
     for r, ps, bs, ds in zip(rows, per_scores, pbr_scores, div_scores):
         r["value_score"] = round((ps + bs + ds) / 3, 4)
 
-    rows.sort(key=lambda r: r["value_score"], reverse=True)
-    top50 = rows[:50]
+    print(f"反発シグナル(価格推移)を取得中... ({len(rows)}銘柄)")
+    ta_rows = []
+    for i, r in enumerate(rows, 1):
+        ta = fetch_turnaround_signals(r["code"])
+        if ta:
+            r.update(ta)
+            ta_rows.append(r)
+        if i % 30 == 0:
+            print(f"  {i}/{len(rows)}件処理済み...")
+        time.sleep(0.1)
+
+    off_low_scores = percentile_rank([r["off_low_pct"] for r in ta_rows], reverse=True)
+    trend_scores = percentile_rank([r["trend_pct"] for r in ta_rows], reverse=True)
+    decel_scores = percentile_rank([r["decel_pct"] for r in ta_rows], reverse=True)
+    for r, o, t, d in zip(ta_rows, off_low_scores, trend_scores, decel_scores):
+        r["turnaround_score"] = round((o + t + d) / 3, 4)
+        r["combined_score"] = round((r["value_score"] + r["turnaround_score"]) / 2, 4)
+    print(f"反発シグナル取得できた銘柄: {len(ta_rows)}/{len(rows)}")
+
+    ta_rows.sort(key=lambda r: r["combined_score"], reverse=True)
+    top50 = ta_rows[:50]
 
     output = {
         "updated": dt.datetime.now().isoformat(timespec="seconds"),
         "universe": "nikkei225",
         "universe_size": len(NIKKEI225),
-        "screened": len(rows),
+        "screened": len(ta_rows),
         "quality_filter": f"PER>0 かつ ROE>={MIN_ROE*100:.0f}%(赤字・低ROEは除外)",
-        "method": "PER・PBR・配当利回りのパーセンタイル順位を単純平均した割安スコア(0〜1、高いほど割安)",
-        "disclaimer": "検証済みの売買シグナルではなく、現時点の割安さのスナップショット。売買は自己判断で。",
+        "method": "割安スコア(PER・PBR・配当利回りのパーセンタイル平均)と"
+                  "反発スコア(直近安値からの回復率・短期/長期移動平均トレンド・"
+                  "下落の減速のパーセンタイル平均)を1:1で組み合わせた総合スコア(0〜1)でランキング。",
+        "disclaimer": "検証済みの売買シグナルではなく、現時点の割安さ・値動きのスナップショット。"
+                      "反発シグナルは将来を予測するものではなく単純なテクニカルルールに基づく参考値。"
+                      "RSI70以上(overbought_flag)は既に大きく反発済みで過熱気味の可能性があり、"
+                      "「これから下げ止まる」段階ではなく「既に反発しきった」段階かもしれない点に注意。売買は自己判断で。",
         "ranking": [
             {
                 "rank": i + 1, "code": r["code"], "name": r["name"],
@@ -183,6 +250,12 @@ def main() -> None:
                 "dividend_yield_pct": round(r["dividend_yield"], 2),
                 "roe_pct": round(r["roe"] * 100, 1),
                 "value_score": r["value_score"],
+                "turnaround_score": r["turnaround_score"],
+                "combined_score": r["combined_score"],
+                "rsi14": round(r["rsi14"], 1) if r["rsi14"] is not None else None,
+                "off_low_pct": round(r["off_low_pct"], 1),
+                "trend_pct": round(r["trend_pct"], 2),
+                "overbought_flag": bool(r["rsi14"] is not None and r["rsi14"] >= 70),
             }
             for i, r in enumerate(top50)
         ],
@@ -199,8 +272,11 @@ def main() -> None:
 
     print(f"\n=== 割安株ランキング TOP10(全50件はvalue_ranking.json参照) ===")
     for r in top50[:10]:
+        rsi_s = f"{r['rsi14']:.0f}" if r["rsi14"] is not None else "-"
         print(f"  {r['code']} {r['name']:12s} PER{r['per']:.1f} PBR{r['pbr']:.2f} "
-              f"配当{r['dividend_yield']:.1f}% ROE{r['roe']*100:.1f}% スコア{r['value_score']:.3f}")
+              f"配当{r['dividend_yield']:.1f}% ROE{r['roe']*100:.1f}% RSI{rsi_s} "
+              f"底値比+{r['off_low_pct']:.1f}% 割安{r['value_score']:.2f} 反発{r['turnaround_score']:.2f} "
+              f"総合{r['combined_score']:.3f}")
 
     print(f"\nvalue_ranking.json に上位50件を出力、value_history.jsonlに追記しました。")
 
