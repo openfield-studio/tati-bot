@@ -117,6 +117,28 @@ fx_stoploss_labでの「OOSを見てから選び直す後出しジャンケン�
 
 ---
 
+## 割安株スクリーナー(2026-09-16〜、日経225対象)
+
+1306のRSI戦略とは独立した機能。「今、割安に見える銘柄」を人間が見るための参考情報。
+**自動売買はしない**(表示・分析のみ、実際の売買は自己判断・手動)。
+
+```
+value_screener.py    … 日経225(225銘柄)をyfinanceでスキャン、PER・PBR・配当利回りの
+                        複合スコアでTOP50をランキング → value_ranking.json
+                        （同時に value_history.jsonl に今回分を追記）
+value_performance.py … 「初めてTOP50に入った時点で買っていたら」を仮想追跡し、
+                        日経225平均と比較 → value_performance.json
+value_run.bat         … 上記2つを実行してGitHubにpush(タスクスケジューラ
+                        TatiBotValueScreenerWeekly、毎週月曜20:20に自動実行)
+```
+
+- 質フィルター: PER>0 かつ ROE>=3%(赤字・低ROEはバリュートラップの疑いで除外)
+- `value_history.jsonl`は追記オンリー。銘柄が初めてランクインした時点の価格を記録し、
+  `value_performance.py`が現在価格と比較して仮想リターンを計算する。
+- これはまだ**検証されていない**スコアリング方法。value_performance.jsonの蓄積が
+  「本当に効果があるか」を後から判断する一次データになる(上記の査読手順の対象には
+  まだしていない、自動売買ではなく表示専用のため)。
+
 ## 口座開設が終わったら（立花API接続）
 
 1. 立花 e支店の管理画面で API KEY を発行。

@@ -191,12 +191,18 @@ def main() -> None:
     with open("value_ranking.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
+    # 追跡用の履歴に今回のTOP50を追記(1行=1銘柄、run_dateで回を識別)
+    run_date = dt.date.today().isoformat()
+    with open("value_history.jsonl", "a", encoding="utf-8") as f:
+        for item in output["ranking"]:
+            f.write(json.dumps({"run_date": run_date, **item}, ensure_ascii=False) + "\n")
+
     print(f"\n=== 割安株ランキング TOP10(全50件はvalue_ranking.json参照) ===")
     for r in top50[:10]:
         print(f"  {r['code']} {r['name']:12s} PER{r['per']:.1f} PBR{r['pbr']:.2f} "
               f"配当{r['dividend_yield']:.1f}% ROE{r['roe']*100:.1f}% スコア{r['value_score']:.3f}")
 
-    print(f"\nvalue_ranking.json に上位50件を出力しました。")
+    print(f"\nvalue_ranking.json に上位50件を出力、value_history.jsonlに追記しました。")
 
 
 if __name__ == "__main__":

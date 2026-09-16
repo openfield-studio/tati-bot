@@ -188,6 +188,7 @@
   </div>
 
   <div class="page" id="pageValue">
+    <div class="vr-meta" id="vrPerf" style="display:none"></div>
     <div class="vr-meta" id="vrMeta">value_ranking.json を読み込み中...</div>
     <div class="vr-list" id="vrList"></div>
   </div>
@@ -350,6 +351,19 @@ const VR_DEMO={updated:"サンプル",universe:"nikkei225",universe_size:225,scr
   quality_filter:"—",method:"—",disclaimer:"検証済みの売買シグナルではなく、現時点の割安さのスナップショット。売買は自己判断で。",
   ranking:[{rank:1,code:"0000",name:"サンプル銘柄",price:1000,per:10,pbr:0.8,dividend_yield_pct:3.5,roe_pct:8,value_score:0.9}]};
 
+function renderValuePerformance(p){
+  const box=$("vrPerf");
+  if(!p || !p.tracked_stocks){ box.style.display="none"; return; }
+  const sign=v=>v>0?"pos":(v<0?"neg":"");
+  box.style.display="block";
+  box.innerHTML=
+    `<b>追跡成績</b>（累計${p.history_runs}回・${p.oldest_run_date}〜、追跡${p.tracked_stocks}銘柄）<br>`+
+    `「初めてTOP50に入った時点で買い、持ち続けていたら」の仮想成績:<br>`+
+    `平均 <span class="mono v ${sign(p.avg_return_pct)}" style="font-size:14px;display:inline">${p.avg_return_pct>0?'+':''}${p.avg_return_pct}%</span>`+
+    `　勝率 ${p.win_rate_pct}%`+
+    (p.avg_excess_vs_nikkei225_pct!=null?`　日経225比 ${p.avg_excess_vs_nikkei225_pct>0?'+':''}${p.avg_excess_vs_nikkei225_pct}%`:"");
+}
+
 async function loadValueRanking(){
   if(vrLoaded) return;
   try{
@@ -361,6 +375,10 @@ async function loadValueRanking(){
     renderValueRanking(VR_DEMO);
     $("vrMeta").innerHTML+='<br><span class="demo-tag">サンプル表示中（value_ranking.jsonが同フォルダにありません）</span>';
   }
+  try{
+    const rp=await fetch("value_performance.json?"+Date.now(),{cache:"no-store"});
+    if(rp.ok) renderValuePerformance(await rp.json());
+  }catch(e){ /* 追跡データがまだ無くても致命的ではない */ }
 }
 </script>
 </body>
