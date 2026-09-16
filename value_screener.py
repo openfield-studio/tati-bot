@@ -116,6 +116,11 @@ NIKKEI225 = [
 ]
 
 MIN_ROE = 0.03  # これ未満(赤字含む)は質フィルターで除外
+MAX_PAYOUT_RATIO = 1.0  # 配当性向がこれ超(利益より配当が多い)は減配リスクとして除外
+MIN_EARNINGS_GROWTH = -0.20  # 前年比利益成長率がこれ未満(20%超の減益)は除外
+MAX_DEBT_TO_EQUITY = 200  # 非金融業でこれ超は過大な借入として除外(金融業は対象外)
+FINANCIAL_SECTOR = "Financial Services"  # yfinanceのsector表記。銀行・証券・保険は
+                                          # 業態上D/Eが高いのが通常なので負債フィルター対象外
 RECENT_LOW_WINDOW = 60  # 直近安値からの回復率を見る営業日数
 MA_SHORT, MA_LONG = 25, 75  # 短期/長期移動平均
 OVERBOUGHT_RSI = 70  # これ以上は「既に反発しきった」として除外
@@ -133,15 +138,27 @@ def fetch_metrics(code: str, name: str) -> dict | None:
     div_yield = info.get("dividendYield") or 0.0
     roe = info.get("returnOnEquity")
     price = info.get("currentPrice") or info.get("regularMarketPrice")
+    payout_ratio = info.get("payoutRatio")
+    earnings_growth = info.get("earningsGrowth")
+    debt_to_equity = info.get("debtToEquity")
+    sector = info.get("sector")
 
     if per is None or per <= 0 or pbr is None or pbr <= 0 or roe is None:
         return None  # 赤字・データ欠損は除外
     if roe < MIN_ROE:
-        return None  # バリュートラップ回避の質フィルター
+        return None  # バリュートラップ回避の質フィルター(収益性)
+    if payout_ratio is not None and payout_ratio > MAX_PAYOUT_RATIO:
+        return None  # 減配リスク回避(配当が利益を上回っている)
+    if earnings_growth is not None and earnings_growth < MIN_EARNINGS_GROWTH:
+        return None  # 「安いだけ」の罠回避(利益が急減している)
+    if sector != FINANCIAL_SECTOR and debt_to_equity is not None and debt_to_equity > MAX_DEBT_TO_EQUITY:
+        return None  # 過大な借入回避(金融業は業態上対象外)
 
     return {
         "code": code, "name": name, "per": per, "pbr": pbr,
         "dividend_yield": div_yield, "roe": roe, "price": price,
+        "payout_ratio": payout_ratio, "earnings_growth": earnings_growth,
+        "debt_to_equity": debt_to_equity, "sector": sector,
     }
 
 
@@ -243,6 +260,9 @@ def main() -> None:
         "universe_size": len(NIKKEI225),
         "screened": len(eligible),
         "quality_filter": f"PER>0 かつ ROE>={MIN_ROE*100:.0f}%(赤字・低ROEは除外)、"
+                          f"配当性向<={MAX_PAYOUT_RATIO*100:.0f}%(減配リスク回避)、"
+                          f"利益成長率>={MIN_EARNINGS_GROWTH*100:.0f}%(急減益は除外)、"
+                          f"非金融業は負債比率<={MAX_DEBT_TO_EQUITY}%(過大な借入を除外)、"
                           f"RSI{OVERBOUGHT_RSI}以上は既に反発しきった可能性として除外"
                           f"(今回{len(overbought)}銘柄除外)",
         "method": "割安スコア(PER・PBR・配当利回りのパーセンタイル平均)と"
@@ -264,6 +284,10 @@ def main() -> None:
                 "rsi14": round(r["rsi14"], 1) if r["rsi14"] is not None else None,
                 "off_low_pct": round(r["off_low_pct"], 1),
                 "trend_pct": round(r["trend_pct"], 2),
+                "payout_ratio_pct": round(r["payout_ratio"] * 100, 1) if r["payout_ratio"] is not None else None,
+                "earnings_growth_pct": round(r["earnings_growth"] * 100, 1) if r["earnings_growth"] is not None else None,
+                "debt_to_equity": round(r["debt_to_equity"], 1) if r["debt_to_equity"] is not None else None,
+                "sector": r["sector"],
             }
             for i, r in enumerate(top50)
         ],
