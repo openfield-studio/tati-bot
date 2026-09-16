@@ -767,6 +767,13 @@ Equity」「Ordinary Shares Number」の**過去5期分(年次、FY2022-03〜FY2
 コマンドラインからは失敗。ユーザーに手動設定(sysdm.cpl経由)を依頼済み、
 まだ実施されたか未確認。
 
+**追記2: individual_value_backtest.pyにチェックポイント方式を追加(再挑戦の準備)**
+ユーザーが仮想メモリ設定後に東証プライム全銘柄(--prime)を再挑戦する意向のため、
+academic_factors_lab.pyと同じ「25銘柄ごとに進捗をJSON保存し、クラッシュしても
+再開できる」方式を`individual_value_backtest.py`にも追加した
+(`individual_value_backtest_progress_{prime,nikkei225}.json`に保存、完成後は自動削除)。
+前回のクラッシュ(進捗ゼロで全損)の再発防止。まだ実行はしていない(仮想メモリ設定完了待ち)。
+
 ---
 
 ## 残りの作業（次回やること）

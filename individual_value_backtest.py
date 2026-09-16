@@ -120,24 +120,44 @@ def collect_observations(code: str) -> list[dict]:
     return out
 
 
+CHECKPOINT_EVERY = 25  # 前回の東証プライム全銘柄検証がメモリ不足で全損した反省から、
+                        # 一定件数ごとに逐次保存する(academic_factors_lab.pyと同じ方式)
+
+
 def main() -> None:
     universe = load_universe()
     universe_tag = "prime" if "--prime" in sys.argv else "nikkei225"
     cache_path = f"individual_value_backtest_cache_{universe_tag}.json"
+    progress_path = f"individual_value_backtest_progress_{universe_tag}.json"
 
     if os.path.exists(cache_path):
-        print(f"キャッシュ({cache_path})から読み込み中...")
+        print(f"完成済みキャッシュ({cache_path})から読み込み中...")
         all_obs = json.load(open(cache_path, encoding="utf-8"))
     else:
-        print(f"{universe_tag}、{len(universe)}銘柄の決算データ+株価を取得中"
-              f"(数が多いので時間がかかります)...")
+        done_codes = set()
         all_obs = []
-        for i, (code, name) in enumerate(universe, 1):
+        if os.path.exists(progress_path):
+            saved = json.load(open(progress_path, encoding="utf-8"))
+            all_obs = saved["observations"]
+            done_codes = set(saved["done_codes"])
+            print(f"途中経過({progress_path})から再開: {len(done_codes)}銘柄処理済み、"
+                  f"観測数 累計{len(all_obs)}")
+
+        todo = [(code, name) for code, name in universe if code not in done_codes]
+        print(f"{universe_tag}、残り{len(todo)}/{len(universe)}銘柄の決算データ+株価を取得中"
+              f"(数が多いので時間がかかります)...")
+        for i, (code, name) in enumerate(todo, 1):
             obs = collect_observations(code)
             all_obs += obs
-            if i % 50 == 0:
-                print(f"  {i}/{len(universe)}件処理済み(観測数 累計{len(all_obs)})...")
+            done_codes.add(code)
+            if i % CHECKPOINT_EVERY == 0:
+                json.dump({"observations": all_obs, "done_codes": list(done_codes)},
+                          open(progress_path, "w", encoding="utf-8"), ensure_ascii=False)
+                print(f"  {i}/{len(todo)}件処理済み(観測数 累計{len(all_obs)}、"
+                      f"チェックポイント保存)...")
         json.dump(all_obs, open(cache_path, "w", encoding="utf-8"), ensure_ascii=False)
+        if os.path.exists(progress_path):
+            os.remove(progress_path)  # 完成したので途中経過ファイルは不要
 
     print(f"\n合計観測数(銘柄×決算年度): {len(all_obs)}")
     years = sorted(set(o["fiscal_year"] for o in all_obs))
