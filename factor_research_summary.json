@@ -1,27 +1,33 @@
 {
   "updated": "2026-09-16T21:00:00",
-  "cumulative_trials": 13,
+  "cumulative_trials": 14,
   "loop_schedule": "毎週日曜21:00 JST",
   "latest_run": {
     "date": "2026-09-16",
     "status": "blocked",
-    "summary": "クラウド実行環境からyfinanceへの通信が403拒否され、実証検証は未実施。次回はJ-Quants接続とWeb文献調査を試みる。"
+    "summary": "J-Quants(api.jquants.com)への接続も403拒否を確認(yfinanceと同様、環境のネットワークポリシーによる遮断)。検証は実施せず、文献調査でGross Profitability(粗利益収益性)アノマリーを新候補として調査待ちキューに追加。"
   },
   "leaderboard": [
     {
       "rank": 1,
-      "factor": "PEAD(決算後モメンタム)",
-      "metric": "好悪サプライズの差 +4.48pt(20営業日)",
-      "note": "今日一番教科書通りの結果"
+      "factor": "個別銘柄の割安さ(PER、全プライム)",
+      "metric": "12ヶ月後+22.7pt(n=1,478/1,384、中央値でも+21.6pt)",
+      "note": "東証プライム全銘柄(約1,556銘柄)に拡張後も外れ値除外・中央値ベースで残存"
     },
     {
       "rank": 2,
+      "factor": "PEAD(決算後モメンタム)",
+      "metric": "好悪サプライズの差 +4.48pt(20営業日)",
+      "note": "決算サプライズの方向に単調にドリフトする教科書通りの結果"
+    },
+    {
+      "rank": 3,
       "factor": "低β(下げ相場防御)",
       "metric": "+11.7pt / +12.9pt(2つの下落局面)",
       "note": "2局面で一貫、ただし下げ幅が小さいだけで上がるわけではない"
     },
     {
-      "rank": 3,
+      "rank": 4,
       "factor": "52週高値更新",
       "metric": "+3.76pt(60営業日)",
       "note": "学術研究(52週高値モメンタム効果)と整合"
