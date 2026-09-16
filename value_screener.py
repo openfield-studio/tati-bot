@@ -118,6 +118,7 @@ NIKKEI225 = [
 MIN_ROE = 0.03  # これ未満(赤字含む)は質フィルターで除外
 RECENT_LOW_WINDOW = 60  # 直近安値からの回復率を見る営業日数
 MA_SHORT, MA_LONG = 25, 75  # 短期/長期移動平均
+OVERBOUGHT_RSI = 70  # これ以上は「既に反発しきった」として除外
 
 
 def fetch_metrics(code: str, name: str) -> dict | None:
@@ -218,30 +219,38 @@ def main() -> None:
             print(f"  {i}/{len(rows)}件処理済み...")
         time.sleep(0.1)
 
-    off_low_scores = percentile_rank([r["off_low_pct"] for r in ta_rows], reverse=True)
-    trend_scores = percentile_rank([r["trend_pct"] for r in ta_rows], reverse=True)
-    decel_scores = percentile_rank([r["decel_pct"] for r in ta_rows], reverse=True)
-    for r, o, t, d in zip(ta_rows, off_low_scores, trend_scores, decel_scores):
+    # 既に反発しきった(過熱)銘柄は、ここで完全に対象から除外する
+    # (パーセンタイル計算のプールにも入れない。含めると分母が歪むため)
+    is_overbought = lambda r: r["rsi14"] is not None and r["rsi14"] >= OVERBOUGHT_RSI
+    overbought = [r for r in ta_rows if is_overbought(r)]
+    eligible = [r for r in ta_rows if not is_overbought(r)]
+    print(f"除外(RSI{OVERBOUGHT_RSI}以上、既に反発しきった可能性): {len(overbought)}銘柄")
+
+    off_low_scores = percentile_rank([r["off_low_pct"] for r in eligible], reverse=True)
+    trend_scores = percentile_rank([r["trend_pct"] for r in eligible], reverse=True)
+    decel_scores = percentile_rank([r["decel_pct"] for r in eligible], reverse=True)
+    for r, o, t, d in zip(eligible, off_low_scores, trend_scores, decel_scores):
         r["turnaround_score"] = round((o + t + d) / 3, 4)
         r["combined_score"] = round((r["value_score"] + r["turnaround_score"]) / 2, 4)
-    print(f"反発シグナル取得できた銘柄: {len(ta_rows)}/{len(rows)}")
+    print(f"反発シグナル取得できた銘柄: {len(ta_rows)}/{len(rows)}(うちランキング対象{len(eligible)})")
 
-    ta_rows.sort(key=lambda r: r["combined_score"], reverse=True)
-    top50 = ta_rows[:50]
+    eligible.sort(key=lambda r: r["combined_score"], reverse=True)
+    top50 = eligible[:50]
 
     output = {
         "updated": dt.datetime.now().isoformat(timespec="seconds"),
         "universe": "nikkei225",
         "universe_size": len(NIKKEI225),
-        "screened": len(ta_rows),
-        "quality_filter": f"PER>0 かつ ROE>={MIN_ROE*100:.0f}%(赤字・低ROEは除外)",
+        "screened": len(eligible),
+        "quality_filter": f"PER>0 かつ ROE>={MIN_ROE*100:.0f}%(赤字・低ROEは除外)、"
+                          f"RSI{OVERBOUGHT_RSI}以上は既に反発しきった可能性として除外"
+                          f"(今回{len(overbought)}銘柄除外)",
         "method": "割安スコア(PER・PBR・配当利回りのパーセンタイル平均)と"
                   "反発スコア(直近安値からの回復率・短期/長期移動平均トレンド・"
                   "下落の減速のパーセンタイル平均)を1:1で組み合わせた総合スコア(0〜1)でランキング。",
         "disclaimer": "検証済みの売買シグナルではなく、現時点の割安さ・値動きのスナップショット。"
                       "反発シグナルは将来を予測するものではなく単純なテクニカルルールに基づく参考値。"
-                      "RSI70以上(overbought_flag)は既に大きく反発済みで過熱気味の可能性があり、"
-                      "「これから下げ止まる」段階ではなく「既に反発しきった」段階かもしれない点に注意。売買は自己判断で。",
+                      "売買は自己判断で。",
         "ranking": [
             {
                 "rank": i + 1, "code": r["code"], "name": r["name"],
@@ -255,7 +264,6 @@ def main() -> None:
                 "rsi14": round(r["rsi14"], 1) if r["rsi14"] is not None else None,
                 "off_low_pct": round(r["off_low_pct"], 1),
                 "trend_pct": round(r["trend_pct"], 2),
-                "overbought_flag": bool(r["rsi14"] is not None and r["rsi14"] >= 70),
             }
             for i, r in enumerate(top50)
         ],

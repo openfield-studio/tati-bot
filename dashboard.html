@@ -336,7 +336,6 @@ function renderValueRanking(d){
     const combined=r.combined_score!=null?r.combined_score:r.value_score;
     const pct=Math.round((combined||0)*100);
     const rsiTxt=r.rsi14!=null?`RSI${r.rsi14}`:"";
-    const overheatTxt=r.overbought_flag?` <span style="color:var(--sell)">⚠過熱</span>`:"";
     const offLowTxt=r.off_low_pct!=null?`底値比+${r.off_low_pct}%`:"";
     const taTxt=(r.turnaround_score!=null)?` / 割安${Math.round(r.value_score*100)} 反発${Math.round(r.turnaround_score*100)}`:"";
     row.innerHTML=
@@ -345,7 +344,7 @@ function renderValueRanking(d){
         `<div class="vr-name">${r.name}<span class="vr-code">${r.code}</span></div>`+
         `<div class="vr-stats">${r.price!=null?r.price.toFixed(0)+"円 ":""}`+
         `PER${r.per} PBR${r.pbr} 配当${r.dividend_yield_pct}% ROE${r.roe_pct}%</div>`+
-        `<div class="vr-stats">${rsiTxt}${overheatTxt} ${offLowTxt}${taTxt}</div>`+
+        `<div class="vr-stats">${rsiTxt} ${offLowTxt}${taTxt}</div>`+
       `</div>`+
       `<div class="vr-bar-wrap"><div class="vr-bar" style="width:${pct}%"></div></div>`+
       `<div class="vr-score">${pct}</div>`;
