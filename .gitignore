@@ -25,3 +25,6 @@ academic_factors_checkpoint.json
 file_info_p_no.txt
 new_factors_cache*.json
 new_factors_checkpoint*.json
+new_factors_crash_cache*.json
+new_factors_crash_checkpoint*.json
+*_run.log
