@@ -31,4 +31,6 @@ max_effect_cache*.json
 max_effect_checkpoint*.json
 trader_methods_cache*.json
 trader_methods_checkpoint*.json
+seasonal_cache*.json
+seasonal_checkpoint*.json
 *_run.log
