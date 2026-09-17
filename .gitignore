@@ -34,3 +34,7 @@ trader_methods_checkpoint*.json
 seasonal_cache*.json
 seasonal_checkpoint*.json
 *_run.log
+rights_selection_cache*.json
+rights_selection_checkpoint*.json
+rights_selector_cache*.json
+rights_selector_checkpoint*.json
