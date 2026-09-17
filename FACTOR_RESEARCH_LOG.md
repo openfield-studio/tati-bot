@@ -157,11 +157,13 @@ PushNotificationで明示的にユーザーに知らせること。**それで�
 
 | # | 発見日 | ファクター | 出典 | 概要 | 実証状況 |
 |---|---|---|---|---|---|
-| (まだなし) | | | | | |
+| 1 | 2026-09-17 | 純株式発行(Net Share Issuance)アノマリー | McLean, Pontiff & Watanabe (2009) "Share Issuance and Cross-Sectional Returns: International Evidence", Journal of Financial Economics(41ヶ国の国際比較、日本含む)。追加で日本限定の査読済み追試: (Pacific-Basin Finance Journal, 2025) "Do buyback anomalies explain the stock return in Japan? A pre-registered report" | 発行済株式数を増やした(新株発行等)銘柄群はその後のリターンが低く、自社株買いで減らした銘柄群は相対的に高い、というアノマリー。国際比較では米国よりも「発行側の低リターン」が効いており、発行活動が活発・株式市場が発達・投資家保護が強い国ほど効果が強いと報告。資産成長アノマリー(#17、総資産の変化)とは異なる指標(発行済株式数の変化)で、yfinanceの決算データ(Ordinary Shares Number、既存の擬似PBR計算で取得済みの系列)で計算可能。 | 未実証(文献調査のみ) |
 
 ※2026-09-17: 粗利益収益性・アクルーアル・アノマリー・資産成長アノマリー(→#15〜#17)、
   MAX効果(→#19)はいずれもユーザーの明示依頼によりローカルセッションで実証検証済み、
   キューから削除。
+※2026-09-17(日次自動実行): 純株式発行(Net Share Issuance)アノマリーを新規追加(上記#1)。
+  クラウド実行環境はyfinance/J-Quantsとも接続不可(既知の制約、下記参照)のため文献調査のみ。
 
 ## 週次自動探索ループのルール(2026-09-16設定、追記あり)
 

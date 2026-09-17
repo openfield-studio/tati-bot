@@ -1317,6 +1317,29 @@ research_agents.pyと同じ取引コストの前提(手数料5bps+スリッペ�
   トリガーするか、②立花証券APIでの実発注フロー、③IS/OOS込みの最終検証、
   の3点が残作業。
 
+### 48. 日次自動探索ループ(クラウド)実行(2026-09-17・文献調査のみ)
+
+日次スケジュールに沿って自動実行(クラウド実行環境、yfinance/J-Quantsとも接続不可の
+既知の制約により、最初から文献調査モードで実施)。
+
+- 調査待ちキューは空(前回までの3候補は項目36でローカルセッションにより実証済み・
+  削除済み)だったため、新規候補をWeb検索で1つ探した。
+- **見つけた候補**: 純株式発行(Net Share Issuance)アノマリー(McLean, Pontiff &
+  Watanabe 2009, Journal of Financial Economics「Share Issuance and Cross-Sectional
+  Returns: International Evidence」、41ヶ国の国際比較)。発行済株式数を増やした
+  (新株発行等)銘柄群はその後低リターン、自社株買いで減らした銘柄群は相対的に
+  高リターンというアノマリー。追加で日本限定の査読済み追試(Pacific-Basin Finance
+  Journal, 2025「Do buyback anomalies explain the stock return in Japan? A
+  pre-registered report」)も確認した。既存の資産成長アノマリー(#17、総資産の変化)
+  とは異なる指標(発行済株式数の変化、yfinanceの既存取得系列Ordinary Shares Numberで
+  計算可能)であり新規性を確認済み。`FACTOR_RESEARCH_LOG.md`の調査待ちキューに
+  出典付きで追加(#1)。
+- **昇格基準チェック**: 累積試行数は24のまま変化なし(文献調査のみはカウント対象外、
+  次の統合DSR再計算は次の6の倍数=30到達時)。本体組み込み候補に該当するファクターも
+  なし(ユーザーへのPushNotificationは新規候補発見の通知のみ)。
+- 本体(value_screener.py/research_agents.py/trading_agents.py)のロジックは
+  今回も一切変更していない。
+
 ---
 
 ## 残りの作業（次回やること）
