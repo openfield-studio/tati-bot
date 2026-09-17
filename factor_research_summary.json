@@ -1,11 +1,11 @@
 {
-  "updated": "2026-09-17T21:00:00",
-  "cumulative_trials": 24,
-  "loop_schedule": "毎日21:00 JST(2026-09-17に週次から変更)",
+  "updated": "2026-09-17T22:00:00",
+  "cumulative_trials": 25,
+  "loop_schedule": "クラウド探索: 毎日21:00 JST / ローカル検証待ち候補チェック(通知のみ): 毎日20:00 JST",
   "latest_run": {
     "date": "2026-09-17",
-    "status": "literature_only",
-    "summary": "日次自動実行(クラウド)。yfinance/J-Quantsとも接続不可の既知制約により文献調査のみ実施。新規候補として純株式発行(Net Share Issuance)アノマリー(McLean, Pontiff & Watanabe 2009、日本限定の2025年追試あり)を発見し調査待ちキューに追加。累積試行数(実証のみカウント)は24のまま変化なし。"
+    "status": "tested_local",
+    "summary": "クラウドルーティンが発見した純株式発行(Net Share Issuance)アノマリーをユーザー依頼によりローカルPCで東証プライム全銘柄実証検証。3分位・5分位・割安さ組合せ・急落局面限定の全角度で符号一貫の弱プラス(+1.0〜+2.6pt)。累積試行数24→25。"
   },
   "leaderboard": [
     {
@@ -49,6 +49,12 @@
       "factor": "ボリンジャーバンド下限逆張り",
       "metric": "+1.74pt(20営業日)/+0.97pt(60営業日)",
       "note": "全ファクター中では小粒ながらプラス"
+    },
+    {
+      "rank": 8,
+      "factor": "純株式発行(Net Share Issuance)アノマリー",
+      "metric": "12ヶ月後+2.6pt(外れ値除外後)",
+      "note": "5分位・割安さ組合せ・急落局面限定の全角度で符号一貫(+1.0〜+2.6pt)だが効果は小さい"
     }
   ],
   "disclaimer": "これは検証済みの売買シグナルではなく、研究ログの要約です。DSR等の多重検定補正は一部ファクターのみ(Bonferroni補正代替)。本体(value_screener.py/trading_agents.py)には組み込まれていません。"

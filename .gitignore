@@ -41,3 +41,5 @@ rights_selector_checkpoint*.json
 nsi_cache*.json
 nsi_checkpoint*.json
 logs_local_routine/
+nsi_crash_cache*.json
+nsi_crash_checkpoint*.json
