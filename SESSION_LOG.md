@@ -883,6 +883,25 @@ academic_factors_lab.pyと同じ「25銘柄ごとに進捗をJSON保存し、ク
 - 本体(value_screener.py/research_agents.py/trading_agents.py)のロジックは
   今回も一切変更していない。
 
+### 35. 週次自動探索ループ第4回実行(2026-09-17・文献調査のみ)
+
+週次スケジュールに沿って自動実行。yfinance/J-Quantsとも3週連続でネットワークポリシー
+403拒否が確認済みのため、今回は**毎回の接続再試行を省略し、最初から文献調査モードで実施**した。
+
+- **見つけた候補**: 資産成長アノマリー(Asset Growth Anomaly、Cooper, Gulen & Schill
+  2008 "Asset Growth and the Cross-Section of Stock Returns", Journal of Finance)。
+  総資産成長率が低い(積極的に拡大していない)銘柄群が、高い銘柄群を上回るという
+  アノマリーで、国際的頑健性(Chen, Yao, Yu & Zhang 2022、アジア太平洋9市場・
+  日本含む)も報告されている。既存の調査待ちキュー(粗利益収益性・アクルーアル・
+  アノマリー)とは異なる新規候補であることを確認した上で、`FACTOR_RESEARCH_LOG.md`
+  の調査待ちキューに出典付きで追加(#3、キュー累計3件)。
+- **昇格基準チェック**: 統合DSRは今回も未実施(累積試行数は14のまま変化なし、
+  文献調査のみは新規試行にカウントしない)。累積試行数が6の倍数(次は18)に
+  達した時点で統合DSR再計算を行う予定。よって「本体組み込み候補」に該当する
+  ファクターは今回もなし(ユーザーへのPushNotificationは送らず)。
+- 本体(value_screener.py/research_agents.py/trading_agents.py)のロジックは
+  今回も一切変更していない。
+
 ---
 
 ## 残りの作業（次回やること）

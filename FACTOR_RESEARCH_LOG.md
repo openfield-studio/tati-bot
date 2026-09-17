@@ -106,6 +106,7 @@ PushNotificationで明示的にユーザーに知らせること。**それで�
 |---|---|---|---|---|---|
 | 1 | 2026-09-16 | 粗利益収益性(Gross Profitability)アノマリー | Novy-Marx (2013) "The Other Side of Value: The Gross Profitability Premium", Journal of Financial Economics(および同著者の国際19カ国検証、日本市場含む) | 売上総利益(売上高−売上原価)÷総資産が高い(収益性が高い)銘柄群が、低い銘柄群を上回るリターンを示すアノマリー。バリュー(PER/PBR安さ)と組み合わせると効果が高まるとされる。日本を含む先進国19カ国のクロスセクション検証(1990〜2009年)で頑健性が報告されている。 | 未検証(データ接続待ち) |
 | 2 | 2026-09-17 | アクルーアル・アノマリー(Accruals Anomaly) | Sloan (1996) "Do Stock Prices Fully Reflect Information in Accruals and Cash Flows about Future Earnings?", The Accounting Review(米国、ロング・ショートで年率約12%)。日本市場での検証: Full et al. (2024) Cogent Economics & Finance「Accruals anomalies could be explained by the adverse selection risk...: the case of the Japanese securities market」 | 会計発生高(アクルーアル=利益−営業キャッシュフロー)が低い(=利益の質が現金に近い)銘柄群が、高い銘柄群を上回るリターンを示すアノマリー。米国発だが日本市場でも独自の実証研究があり(情報の非対称性・逆選択リスクの観点から説明を試みるもの)、国際的に一定の頑健性が報告されている。個別銘柄の割安さ(PER、リーダーボード1位)と組み合わせる「質の高いバリュー株」の絞り込みに使える可能性がある。 | 未検証(データ接続待ち) |
+| 3 | 2026-09-17 | 資産成長アノマリー(Asset Growth Anomaly) | Cooper, Gulen & Schill (2008) "Asset Growth and the Cross-Section of Stock Returns", Journal of Finance(米国1968-2003、総資産成長率が高い銘柄群が低い銘柄群を年率20%超下回る)。国際的頑健性: Chen, Yao, Yu & Zhang (2022)がアジア太平洋9市場(日本含む)で総資産成長率と将来リターンの一貫した負の関係を報告。 | 前年度末からの総資産成長率が低い(資産を拡大していない)銘柄群が、高い(積極投資・外部資金調達で拡大した)銘柄群を上回るリターンを示すアノマリー。「過去の成長を過大に将来へ外挿してしまう投資家心理」が背景とされる。個別銘柄の割安さ(PER)・粗利益収益性(#1)と組み合わせた質フィルターとしての活用も考えられる。 | 未検証(データ接続待ち) |
 
 ## 週次自動探索ループのルール(2026-09-16設定、追記あり)
 
