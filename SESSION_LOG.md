@@ -1340,6 +1340,46 @@ research_agents.pyと同じ取引コストの前提(手数料5bps+スリッペ�
 - 本体(value_screener.py/research_agents.py/trading_agents.py)のロジックは
   今回も一切変更していない。
 
+### 49. 実証テストの「候補あり通知」をローカルで自動化(2026-09-17)
+
+ユーザーから「この検証作業をローカルで自動化できない？」との相談。クラウドルーティン
+は文献調査のみ(yfinance/J-Quants接続不可)なので、実データにアクセスできるこの
+ローカルPC側で検証作業自体を自動化したいという趣旨。
+
+- **最初に試した設計(完全自動)**: Windowsタスクスケジューラから`claude -p`
+  (非対話モード)を毎日起動し、キュー確認→ラボスクリプト作成→実行→ログ更新→
+  git commit/push→PushNotificationまでを無人で行う案。ユーザーはAskUserQuestionで
+  「毎日決まった時刻に自動実行」「結果は自動push・通知のみ」を選択、承認した。
+- **ブロック発生**: `claude -p`を無人実行するPowerShellラッパーの作成が、Claude Code
+  自体の安全機構(自動モード分類器)に「Create Unsafe Agents」として2回拒否された。
+  拒否メッセージは「settings.jsonにBash権限ルールを追加すれば許可できる」と案内して
+  いたため、ユーザーに`~/.claude/settings.json`の`permissions.allow`へ
+  `Bash(claude -p*)`等を追加してもらったが、それでも同じ理由で3回目も拒否された。
+  この案内は実際には機能しないことが判明(製品側にSendFeedbackで報告済み)。
+  これは設定で解除できない意図的な制限と判断し、無人でのclaude起動は断念した。
+- **採用した設計(通知のみ自動化)**: `check_queue_and_notify.ps1`を新規作成。
+  Claudeエージェントは一切起動せず、単純な処理のみを行う:
+  1. `git pull origin main`でクラウドルーティンの最新キューを取得
+  2. `FACTOR_RESEARCH_LOG.md`の「調査待ちキュー」テーブルを正規表現でパース
+  3. 未検証候補が1件以上あればWindowsバルーン通知(`System.Windows.Forms.NotifyIcon`)
+     で候補名を知らせる。0件なら何もしない。
+  4. 実際の実証テストは、通知を見たユーザーがこのチャット(Claude Code)で
+     「テストして」と依頼した時点で、人間の確認を経て実行される(今までと同じ流れ)。
+  - Windowsタスクスケジューラに`tati-bot日次キュー確認通知`として登録
+    (`schtasks /create`、毎日20:00 JST。当初22:00で登録後、ユーザー希望で20:00に変更)。
+    クラウドルーティンの実行(21:00 JST)より前なので、その日見つかった候補は
+    翌日20:00の通知で拾う形になる(最大約23時間のラグ)。
+  - **ハマった点**: `.ps1`ファイルにUTF-8(BOMなし)で日本語を書いたところ、
+    Windows PowerShell 5.1がShift-JISとして誤読し構文エラーになった。
+    `[System.IO.File]::WriteAllText(path, content, [System.Text.UTF8Encoding]::new($true))`
+    でBOM付きUTF-8として保存し直して解決(今後`.ps1`に日本語を書く際は要注意)。
+  - `daily_local_test_prompt.md`(完全自動案で使う予定だったプロンプト原文)は
+    無人実行では使わなくなったが、「テストして」と依頼された際にローカルセッションが
+    従う手順書(ユニバース・チェックポイント・外れ値除外・多角的検証のルール)
+    として参考用に残した。
+- 本体(value_screener.py/research_agents.py/trading_agents.py)のロジックは
+  今回も一切変更していない。
+
 ---
 
 ## 残りの作業（次回やること）

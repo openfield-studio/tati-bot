@@ -38,3 +38,6 @@ rights_selection_cache*.json
 rights_selection_checkpoint*.json
 rights_selector_cache*.json
 rights_selector_checkpoint*.json
+nsi_cache*.json
+nsi_checkpoint*.json
+logs_local_routine/
