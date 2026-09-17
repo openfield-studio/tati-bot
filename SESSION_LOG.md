@@ -857,6 +857,32 @@ academic_factors_lab.pyと同じ「25銘柄ごとに進捗をJSON保存し、ク
 - 本体(value_screener.py/research_agents.py/trading_agents.py)のロジックは今回も
   一切変更していない。
 
+### 34. 週次自動探索ループ第3回実行(2026-09-17・文献調査のみ)
+
+週次スケジュールに沿って自動実行。手順どおりJ-Quants接続を試したが、今回もデータ
+接続は使えなかったため、検証は行わず文献調査のみで完了させた。
+
+- **J-Quants接続を試行**: `JQUANTS_API_KEY`環境変数は本実行環境に未設定。念のため
+  `curl`で`api.jquants.com`へ直接疎通確認したところ、前回・前々回と同様に**403
+  (プロキシのCONNECTトンネル拒否)**となり、明示的なネットワークポリシー拒否である
+  ことを再確認した(3週連続で同じ制約)。
+- データ検証ができないため、ルールどおり**新規候補をWeb検索で1つ探し、調査待ちキュー
+  に記録するのみ**とした(実証結果は捏造しない)。
+- **見つけた候補**: アクルーアル・アノマリー(Accruals Anomaly、Sloan 1996
+  "Do Stock Prices Fully Reflect Information in Accruals and Cash Flows about
+  Future Earnings?", The Accounting Review)。会計発生高(利益−営業キャッシュ
+  フロー)が低い(利益の質が高い)銘柄群が高い銘柄群を上回るという米国発の
+  アノマリーで、日本市場を対象にした2024年の学術研究(Cogent Economics &
+  Finance誌)も存在する。リーダーボード1位の個別銘柄割安さ(PER)と組み合わせて
+  「質の高いバリュー株」に絞り込む拡張候補として有望と判断し、
+  `FACTOR_RESEARCH_LOG.md`の調査待ちキューに出典付きで追加(#2、キュー累計2件)。
+- **昇格基準チェック**: 統合DSRは今回も未実施(累積試行数は14のまま変化なし、
+  文献調査のみは新規試行にカウントしない)。累積試行数が6の倍数(次は18)に
+  達した時点で統合DSR再計算を行う予定。よって「本体組み込み候補」に該当する
+  ファクターは今回もなし(ユーザーへのPushNotificationは送らず)。
+- 本体(value_screener.py/research_agents.py/trading_agents.py)のロジックは
+  今回も一切変更していない。
+
 ---
 
 ## 残りの作業（次回やること）

@@ -1,11 +1,11 @@
 {
-  "updated": "2026-09-16T21:00:00",
+  "updated": "2026-09-17T00:00:00",
   "cumulative_trials": 14,
   "loop_schedule": "毎週日曜21:00 JST",
   "latest_run": {
-    "date": "2026-09-16",
+    "date": "2026-09-17",
     "status": "blocked",
-    "summary": "J-Quants(api.jquants.com)への接続も403拒否を確認(yfinanceと同様、環境のネットワークポリシーによる遮断)。検証は実施せず、文献調査でGross Profitability(粗利益収益性)アノマリーを新候補として調査待ちキューに追加。"
+    "summary": "J-Quants(api.jquants.com)への接続も403拒否を確認(3週連続で同じネットワークポリシー遮断)。検証は実施せず、文献調査でAccruals Anomaly(アクルーアル・アノマリー、Sloan 1996、日本市場での検証論文あり)を新候補として調査待ちキューに追加(累計2件)。"
   },
   "leaderboard": [
     {
