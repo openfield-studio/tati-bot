@@ -45,3 +45,7 @@ nsi_crash_cache*.json
 nsi_crash_checkpoint*.json
 stock_split_cache*.json
 stock_split_checkpoint*.json
+fund2_cache*.json
+fund2_checkpoint*.json
+price2_cache*.json
+price2_checkpoint*.json
