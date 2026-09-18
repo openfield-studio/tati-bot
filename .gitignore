@@ -49,3 +49,9 @@ fund2_cache*.json
 fund2_checkpoint*.json
 price2_cache*.json
 price2_checkpoint*.json
+fund3_cache*.json
+fund3_checkpoint*.json
+price3_cache*.json
+price3_checkpoint*.json
+reversal_cache*.json
+reversal_checkpoint*.json
