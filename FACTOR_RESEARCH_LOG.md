@@ -321,6 +321,16 @@ PushNotificationで明示的にユーザーに知らせること。**それで�
 | # | 発見日 | ファクター | 出典 | 概要 | 実証状況 |
 |---|---|---|---|---|---|
 | 1 | 2026-09-18 | イディオシンクラティック・ボラティリティ・アノマリー(IVOLパズル) | Ang, Hodrick, Xing, Zhang (2006) "The Cross-Section of Volatility and Expected Returns", Journal of Finance / 同著者 (2009) "High idiosyncratic volatility and low returns: International and further U.S. evidence", Journal of Financial Economics(日本を含む国際サンプルで確認)/ 日本市場限定の実証: 日本証券アナリスト協会関連PDF「日本の株式市場におけるIdiosyncratic Volatilityアノマリー」(jsri.or.jp) | 個別銘柄の株価変動を市場モデル(単純にはCAPM、拡張はFama-French)に回帰し、**残差(市場要因で説明できない固有変動)の標準偏差**が大きい銘柄ほど将来リターンが低いという国際的に頑健なアノマリー。既存検証済みの「低ボラティリティ・アノマリー」(SESSION_LOG項目30、単純な総リターンの標準偏差)や「Betting Against Beta」(FACTOR_RESEARCH_LOG #41、市場βそのもの)とは異なり、**市場感応度(β)を除いた後に残る固有リスクのみ**を対象とする点が方法論的に別物。総ボラ・βの逆転(本検証期間が記録的な上げ相場)とは異なる結果になる可能性がある(IVOLは裁定制約・レバレッジ制約が理論的説明とされ、単純な「上げ相場でβが高い方が勝つ」構造とは別のメカニズム)。 | 未実証(実証検証はユーザーがローカルセッションで明示的に依頼した場合のみ) |
+| 2 | 2026-09-19 | SUE(標準化予想外利益、Standardized Unexpected Earnings) | Bernard & Thomas (1989) "Post-Earnings-Announcement Drift", Journal of Accounting Research | 決算サプライズをアナリスト予想との乖離の標準偏差で標準化した指標。既存のPEAD(単純な好決算/悪決算の2値、SESSION_LOG項目30)より精緻。 | データ調達困難(日本個別株のアナリスト予想コンセンサスの過去データが無料で取得できない) |
+| 3 | 2026-09-19 | アナリスト予想のばらつき(Dispersion Anomaly) | Diether, Malloy & Scherbina (2002) "Differences of Opinion and the Cross Section of Stock Returns", Journal of Finance | アナリスト予想のばらつきが大きい銘柄ほど将来リターンが低い。 | データ調達困難(#2と同じ理由) |
+| 4 | 2026-09-19 | 信用格付けダウングレード後のドリフト | Dichev & Piotroski (2001) "The Long-Run Stock Returns Following Bond Ratings Changes", Journal of Finance | 格下げ後、特に高信用リスク企業で持続的な株価下落。 | データ調達困難(日本の個別銘柄信用格付けデータが無料で無い) |
+| 5 | 2026-09-19 | 機関投資家保有の広がり(Breadth of Ownership) | Chen, Hong & Stein (2002) "Breadth of Ownership and Stock Returns", Journal of Financial Economics | 空売り制約理論に基づき、機関投資家の保有銘柄数(広がり)の減少が将来リターン低下を予測。 | データ調達困難(銘柄別の機関投資家保有の時系列データが無い) |
+| 6 | 2026-09-19 | 雇用者数増加率(Hiring/Labor Investment Anomaly) | Belo, Lin & Bazdresch (2014) "Labor Hiring, Investment, and Stock Return Predictability in the Cross Section", Journal of Political Economy | 雇用者数の増加率が高い企業ほど将来リターンが低い。 | データ調達困難(yfinanceは現在時点の従業員数のみ保持、過去の時系列データが無い) |
+| 7 | 2026-09-19 | 公募増資(SEO)アナウンス効果 | Loughran & Ritter (1995) "The New Issues Puzzle", Journal of Finance | 公募増資発表後、長期的にアンダーパフォームする傾向。 | データ調達困難(日本の個別銘柄の公募増資アナウンス日データソースが無い) |
+| 8 | 2026-09-19 | スピンオフ後の長期アウトパフォーマンス | Cusatis, Miles & Woolridge (1993) "Restructuring Through Spinoffs", Journal of Financial Economics | スピンオフされた子会社・親会社とも中期的にアウトパフォームする傾向。 | データ調達困難(日本でのスピンオフ事例が少なすぎてサンプル不足の見込み) |
+| 9 | 2026-09-19 | 持ち合い解消・政策保有株削減インパクト(日本固有) | ガバナンス改革関連の国内研究複数(RIETI等) | 政策保有株(持ち合い株)の削減を進める企業の株価反応。 | データ調達困難(銘柄別の政策保有株比率・削減額を定量化する直接データが無い) |
+| 10 | 2026-09-19 | 親子上場ディスカウント(日本固有) | 小幡績(2003)ほか国内複数研究(RIETI等) | 親会社が上場している子会社(親子上場)は、独立系企業と比べ株価が構造的に割安放置されやすい。 | データ調達困難(yfinanceには「大株主が別の上場企業か」を判定する構造化データが無く、`major_holders`は保有比率のみで株主の識別情報を含まない。実際に確認した上で保留と判断、2026-09-19) |
+| 11 | 2026-09-19 | 外国人保有比率効果(日本固有、水準・変化とも) | 国内複数の実証研究(外国人保有比率と異常リターンの関係) | 外国人保有比率が低い(高い)銘柄ほど将来リターンが高い(低い)、または比率の変化自体が需給インパクトを持つ。 | データ調達困難(yfinanceの`major_holders`は「機関投資家」「インサイダー」の大分類のみで、国内/海外の内訳が無い。実際に確認した上で保留と判断、2026-09-19) |
 
 ※2026-09-17: 粗利益収益性・アクルーアル・アノマリー・資産成長アノマリー(→#15〜#17)、
   MAX効果(→#19)はいずれもユーザーの明示依頼によりローカルセッションで実証検証済み、

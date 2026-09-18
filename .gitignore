@@ -59,3 +59,5 @@ fund4_cache*.json
 fund4_checkpoint*.json
 rights_day_isoos_cache*.json
 rights_day_isoos_checkpoint*.json
+fund5_cache*.json
+fund5_checkpoint*.json
