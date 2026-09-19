@@ -61,3 +61,7 @@ rights_day_isoos_cache*.json
 rights_day_isoos_checkpoint*.json
 fund5_cache*.json
 fund5_checkpoint*.json
+v2_metrics_cache.json
+v2_metrics_checkpoint.json
+v2_turnaround_cache.json
+v2_turnaround_checkpoint.json
