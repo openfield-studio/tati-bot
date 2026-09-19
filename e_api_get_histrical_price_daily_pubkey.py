@@ -10,7 +10,7 @@
 #
 # 動作確認
 # Python 3.13.5 / debian13
-# API v4r9
+# API v4r10
 #
 # ------------------------------------------------------------------
 #
@@ -66,7 +66,7 @@
 # 
 # ~/e_api/file_url_info.txtの内容例：
 # {
-#     "sUrl": "https://demo-kabuka.e-shiten.jp/e_api_v4r9/",
+#     "sUrl": "https://demo-kabuka.e-shiten.jp/e_api_v4r10/",
 #     "sJsonOfmt": "5"
 # }
 #

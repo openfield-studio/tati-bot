@@ -11,7 +11,7 @@
 #
 # 動作確認
 # Python 3.13.5 / debian13
-# API v4r9
+# API v4r10
 #
 # 利用方法: 
 # 事前に「e_api_login_pubkey.py」を実行して、仮想URL等を取得しておいてください。
