@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-割安株スクリーナー(日経225ユニバース)
+割安株スクリーナー(東証プライム全銘柄ユニバース、v2)
 =====================================================================
-tati-botの拡張機能。日経225構成銘柄(225社)を対象に、PER・PBR・配当利回りが
-魅力的で、かつ利益が出ている(質フィルター)銘柄を上位50件ランキングする。
+tati-botの拡張機能。東証プライム全銘柄(約1,556社)を対象に、PER・PBR・配当利回りが
+魅力的で、かつ質(ROE)も高い銘柄を上位50件ランキングする。
 
 ※これはtrading_agents.py/research_agents.pyのRSI逆張り戦略とは別物で、
   「今の割安さのスナップショット」を見せるだけの参考情報。自動売買はしない
   (実際の売買は本人が手動で判断・執行する)。バックテストによる将来予測の
   検証はしていないので、「検証済みのGO戦略」と同列に扱わないこと。
 
-スコアの考え方:
-  - 割安スコア: 低PER(実績PER)・低PBR(実績PBR)・高配当利回りを、それぞれ質フィルター
+スコアの考え方(2026-09-19、横断的考察を反映してv2に更新):
+  - 割安さ: 低PER(実績PER)・低PBR(実績PBR)・高配当利回りを、質フィルター
     通過銘柄内でのパーセンタイル順位に変換し、単純平均する。
-  - 質フィルター: 赤字(PER<=0またはNone)・ROEが極端に低い(<3%)銘柄は
-    「安いだけの罠(バリュートラップ)」の可能性が高いため除外する。
-  - 反発スコア(2026-09-16追加): 「割安なだけで下げ続けている銘柄」を避けるため、
-    ①直近60営業日安値からの回復率、②短期(25日)/長期(75日)移動平均のトレンド、
-    ③直近1ヶ月と前1ヶ月のリターンの差(下落の減速/反転)、の3つをパーセンタイル化して
-    平均する。RSI(research_agents.pyと同じ計算式)も参考値として併記する。
+  - 質: ROEをパーセンタイル順位化した連続変量。従来の「ROE<3%で除外」という
+    二値フィルターは、赤字(ROE<0)のみを除外する形に緩め、質はランキングの一部として
+    連続的に評価する(横断的考察: B/Mで統制するとROIC・QMJ・健全性は4/4年度で
+    プラス。「割安かつ高収益」が最も筋が良いという結論を反映)。
+  - value_score = (割安さ3指標 + 質)を4等分の単純平均。
+  - 反発スコア: 「割安なだけで下げ続けている銘柄」を避けるため、①直近60営業日
+    安値からの回復率、②短期(25日)/長期(75日)移動平均のトレンド、③直近1ヶ月と
+    前1ヶ月のリターンの差(下落の減速/反転)、の3つをパーセンタイル化して平均する。
+    RSI(research_agents.pyと同じ計算式)も参考値として併記する。
     ★これは将来を予測するモデルではなく、単純なテクニカルルールに基づく参考シグナル。
-    バックテスト検証はしていない(割安スコア同様、value_performance.pyでの追跡対象)。
-  - 総合スコア = (割安スコア + 反発スコア) / 2 で最終ランキングする。
+    横断的考察で52週高値への近さ・ターンアラウンド・モメンタムはいずれも12ヶ月では
+    効果なしと判明したため、比重を下げた(下記VALUE_WEIGHT参照)。
+  - 総合スコア = value_score×75% + 反発スコア×25%(旧version: 50%/50%)。
 
 データ取得元: yfinance の Ticker.info(PER/PBR/配当利回り/ROE)と
   Ticker.history(価格推移、反発スコア用)。J-Quantsより単純だが、
@@ -31,9 +35,17 @@ tati-botの拡張機能。日経225構成銘柄(225社)を対象に、PER・PBR�
 使い方: python value_screener.py
 出力: value_ranking.json (dashboard.htmlが読む想定、.gitignore対象にはしない
       ―― state.json同様、金額情報を含まない銘柄横断の一般的な市況データのため)
+
+変更履歴:
+  2026-09-19: 日経225→東証プライム全銘柄に拡張、質フィルターを連続スコア化、
+    反発スコアの比重を50%→25%に低減(FACTOR_RESEARCH_LOG.md横断的考察6節、
+    value_screener_v2_proposal.pyでの検証結果を反映、ユーザー承認済み)。
+    重い処理になったため25銘柄ごとのチェックポイントを追加。
 """
 from __future__ import annotations
+import csv
 import json
+import os
 import time
 import datetime as dt
 
@@ -41,96 +53,28 @@ import yfinance as yf
 
 from research_agents import _rsi
 
-# 日経225構成銘柄(2026年9月時点、日経平均プロフィル準拠)
-NIKKEI225 = [
-    ("1332", "ニッスイ"), ("1605", "ＩＮＰＥＸ"), ("1721", "コムシスＨＤ"),
-    ("1801", "大成建"), ("1802", "大林組"), ("1803", "清水建"), ("1808", "長谷工"),
-    ("1812", "鹿島"), ("1925", "大和ハウス"), ("1928", "積水ハウス"),
-    ("1963", "日揮ＨＤ"), ("2002", "日清粉Ｇ"), ("2269", "明治ＨＤ"),
-    ("2282", "日本ハム"), ("2413", "エムスリー"), ("2432", "ＤｅＮＡ"),
-    ("2501", "サッポロビー"), ("2502", "アサヒ"), ("2503", "キリンＨＤ"),
-    ("2768", "双日"), ("2801", "キッコーマン"), ("2802", "味の素"),
-    ("285A", "キオクシアＨＤ"), ("2871", "ニチレイ"), ("2914", "ＪＴ"),
-    ("3086", "Ｊフロント"), ("3092", "ＺＯＺＯ"), ("3099", "ミツコシイセタン"),
-    ("3289", "東急不ＨＤ"), ("3382", "７＆Ｉ－ＨＤ"), ("3401", "帝人"),
-    ("3402", "東レ"), ("3405", "クラレ"), ("3407", "旭化成"), ("3436", "ＳＵＭＣＯ"),
-    ("3659", "ネクソン"), ("3697", "ＳＨＩＦＴ"), ("3861", "王子ＨＤ"),
-    ("4004", "レゾナックＨＤ"), ("4005", "住友化"), ("4021", "日産化"),
-    ("4042", "東ソー"), ("4043", "トクヤマ"), ("4061", "デンカ"), ("4062", "イビデン"),
-    ("4063", "信越化"), ("4151", "協和キリン"), ("4183", "三井化学"),
-    ("4188", "三菱ケミＧ"), ("4208", "ＵＢＥ"), ("4307", "ＮＲＩ"),
-    ("4324", "電通Ｇ"), ("4385", "メルカリ"), ("4452", "花王"), ("4502", "武田"),
-    ("4503", "アステラス薬"), ("4506", "住友ファーマ"), ("4507", "塩野義"),
-    ("4519", "中外薬"), ("4523", "エーザイ"), ("4543", "テルモ"),
-    ("4568", "第一三共"), ("4578", "大塚ＨＤ"), ("4661", "ＯＬＣ"),
-    ("4689", "ＬＩＮＥヤフー"), ("4704", "トレンド"), ("4751", "サイバエージ"),
-    ("4755", "楽天Ｇ"), ("4901", "富士フイルム"), ("4902", "コニカミノルタ"),
-    ("4911", "資生堂"), ("5019", "出光興産"), ("5020", "ＥＮＥＯＳ"),
-    ("5101", "浜ゴム"), ("5108", "ブリヂストン"), ("5201", "ＡＧＣ"),
-    ("5214", "日電硝"), ("5233", "太平洋セメ"), ("5301", "東海カーボ"),
-    ("5332", "ＴＯＴＯ"), ("5333", "ＮＧＫ"), ("5401", "日本製鉄"),
-    ("5406", "神戸鋼"), ("5411", "ＪＦＥ"), ("543A", "ＡＲＣＨＩＯＮ"),
-    ("5631", "日製鋼"), ("5706", "三井金属"), ("5711", "三菱マ"),
-    ("5713", "住友鉱"), ("5714", "ＤＯＷＡ"), ("5801", "古河電"),
-    ("5802", "住友電"), ("5803", "フジクラ"), ("5831", "しずおか"),
-    ("6098", "リクルートＨＤ"), ("6103", "オークマ"), ("6113", "アマダ"),
-    ("6146", "ディスコ"), ("6178", "日本郵政"), ("6273", "ＳＭＣ"),
-    ("6301", "コマツ"), ("6302", "住友重"), ("6305", "日立建"), ("6326", "クボタ"),
-    ("6361", "荏原"), ("6367", "ダイキン"), ("6471", "日精工"), ("6472", "ＮＴＮ"),
-    ("6473", "ジェイテクト"), ("6479", "ミネベアミツミ"), ("6501", "日立"),
-    ("6503", "三菱電"), ("6504", "富士電機"), ("6506", "安川電"),
-    ("6526", "ソシオネクスト"), ("6532", "ベイカレント"), ("6645", "オムロン"),
-    ("6701", "ＮＥＣ"), ("6702", "富士通"), ("6723", "ルネサス"),
-    ("6724", "エプソン"), ("6752", "パナソニックＨ"), ("6753", "シャープ"),
-    ("6758", "ソニーＧ"), ("6762", "ＴＤＫ"), ("6770", "アルプスアル"),
-    ("6841", "横河電"), ("6857", "アドバンテ"), ("6861", "キーエンス"),
-    ("6902", "デンソー"), ("6920", "レーザーテク"), ("6954", "ファナック"),
-    ("6963", "ローム"), ("6971", "京セラ"), ("6976", "太陽誘電"),
-    ("6981", "村田製"), ("6988", "日東電"), ("7004", "カナデビア"),
-    ("7011", "三菱重"), ("7012", "川重"), ("7013", "ＩＨＩ"), ("7186", "横浜ＦＧ"),
-    ("7201", "日産自"), ("7202", "いすゞ"), ("7203", "トヨタ"),
-    ("7211", "三菱自"), ("7261", "マツダ"), ("7267", "ホンダ"), ("7269", "スズキ"),
-    ("7270", "ＳＵＢＡＲＵ"), ("7272", "ヤマハ発"), ("7453", "良品計画"),
-    ("7532", "パンパシＨＤ"), ("7731", "ニコン"), ("7733", "オリンパス"),
-    ("7735", "スクリン"), ("7741", "ＨＯＹＡ"), ("7751", "キヤノン"),
-    ("7752", "リコー"), ("7832", "バンダイナム"), ("7911", "ＴＯＰＰＡＮＨＤ"),
-    ("7912", "大日印"), ("7951", "ヤマハ"), ("7974", "任天堂"), ("8001", "伊藤忠"),
-    ("8002", "丸紅"), ("8015", "豊通商"), ("8031", "三井物"), ("8035", "東エレク"),
-    ("8053", "住友商"), ("8058", "三菱商"), ("8233", "高島屋"), ("8252", "丸井Ｇ"),
-    ("8253", "クレセゾン"), ("8267", "イオン"), ("8304", "あおぞら"),
-    ("8306", "三菱ＵＦＪ"), ("8308", "りそなＨＤ"), ("8309", "三住トラスト"),
-    ("8316", "三井住友"), ("8331", "千葉銀"), ("8354", "ふくおか"),
-    ("8411", "みずほ"), ("8591", "オリックス"), ("8601", "大和証Ｇ"),
-    ("8604", "野村ＨＤ"), ("8630", "ＳＯＭＰＯＨＤ"), ("8697", "ＪＰＸ"),
-    ("8725", "ＭＳ＆ＡＤ"), ("8750", "第一ライフＧ"), ("8766", "東京海上"),
-    ("8795", "Ｔ＆ＤＨＤ"), ("8801", "三井不"), ("8802", "菱地所"),
-    ("8804", "東建物"), ("8830", "住友不"), ("9001", "東武"), ("9005", "東急"),
-    ("9007", "小田急"), ("9008", "京王"), ("9009", "京成"), ("9020", "ＪＲ東日本"),
-    ("9021", "ＪＲ西日本"), ("9022", "ＪＲ東海"), ("9064", "ヤマトＨＤ"),
-    ("9101", "郵船"), ("9104", "商船三井"), ("9107", "川崎船"), ("9147", "ＮＸＨＤ"),
-    ("9201", "ＪＡＬ"), ("9202", "ＡＮＡ"), ("9432", "ＮＴＴ"), ("9433", "ＫＤＤＩ"),
-    ("9434", "ソフトバンク"), ("9501", "東電力ＨＤ"), ("9502", "中部電"),
-    ("9503", "関西電"), ("9531", "東ガス"), ("9532", "大ガス"), ("9602", "東宝"),
-    ("9735", "セコム"), ("9766", "コナミＧ"), ("9843", "ニトリＨＤ"),
-    ("9983", "ファーストリテイ"), ("9984", "ソフトバンクＧ"),
-]
-
-MIN_ROE = 0.03  # これ未満(赤字含む)は質フィルターで除外
+CHECKPOINT_EVERY = 25
 MAX_PAYOUT_RATIO = 1.0  # 配当性向がこれ超(利益より配当が多い)は減配リスクとして除外
 MIN_EARNINGS_GROWTH = -0.20  # 前年比利益成長率がこれ未満(20%超の減益)は除外
 MAX_DEBT_TO_EQUITY = 200  # 非金融業でこれ超は過大な借入として除外(金融業は対象外)
 FINANCIAL_SECTOR = "Financial Services"  # yfinanceのsector表記。銀行・証券・保険は
                                           # 業態上D/Eが高いのが通常なので負債フィルター対象外
+MIN_ROE_FLOOR = 0.0  # 赤字(ROE<0)のみ除外。質はここでは足切りせず連続スコア化する
 RECENT_LOW_WINDOW = 60  # 直近安値からの回復率を見る営業日数
 MA_SHORT, MA_LONG = 25, 75  # 短期/長期移動平均
 OVERBOUGHT_RSI = 70  # これ以上は「既に反発しきった」として除外
+TOP_N = 50
+VALUE_WEIGHT = 0.75    # 割安さ+質の合成スコアの重み(旧version: 0.5)
+TURNAROUND_WEIGHT = 0.25  # 反発スコアの重み(旧version: 0.5)
+
+
+def load_universe() -> list[tuple[str, str]]:
+    with open("tse_prime_universe.csv", encoding="utf-8-sig") as f:
+        return [(row["code"], row["name"]) for row in csv.DictReader(f)]
 
 
 def _num(v):
-    """yfinanceのinfoは稀に数値項目が文字列や非数値で返ることがあるため、安全にfloat化する。
-    (2026-09-19追加: value_screener_v2_proposal.pyの開発中に全プライム銘柄でこの型不正が
-    実際に発生しスクリプト全体がクラッシュすることを確認したための防御的修正。
-    スコアリングロジック自体は変更していない)"""
+    """yfinanceのinfoは稀に数値項目が文字列や非数値で返ることがあるため、安全にfloat化する。"""
     if v is None:
         return None
     try:
@@ -159,8 +103,8 @@ def fetch_metrics(code: str, name: str) -> dict | None:
 
     if per is None or per <= 0 or pbr is None or pbr <= 0 or roe is None:
         return None  # 赤字・データ欠損は除外
-    if roe < MIN_ROE:
-        return None  # バリュートラップ回避の質フィルター(収益性)
+    if roe < MIN_ROE_FLOOR:
+        return None  # 赤字のみ除外(質は後段でパーセンタイル化して連続的に評価)
     if payout_ratio is not None and payout_ratio > MAX_PAYOUT_RATIO:
         return None  # 減配リスク回避(配当が利益を上回っている)
     if earnings_growth is not None and earnings_growth < MIN_EARNINGS_GROWTH:
@@ -203,7 +147,7 @@ def fetch_turnaround_signals(code: str) -> dict | None:
     rsi14 = _rsi(closes, len(closes) - 1, 14)
 
     return {
-        "off_low_pct": off_low_pct, "trend_pct": trend_pct,
+        "code": code, "off_low_pct": off_low_pct, "trend_pct": trend_pct,
         "decel_pct": decel_pct, "rsi14": rsi14,
     }
 
@@ -219,36 +163,63 @@ def percentile_rank(values: list[float], reverse: bool = False) -> list[float]:
     return ranks
 
 
-def main() -> None:
-    print(f"日経225、{len(NIKKEI225)}銘柄のデータを取得中(yfinance)...")
-    rows = []
-    for i, (code, name) in enumerate(NIKKEI225, 1):
-        m = fetch_metrics(code, name)
-        if m:
-            rows.append(m)
-        if i % 20 == 0:
-            print(f"  {i}/{len(NIKKEI225)}件処理済み...")
+def run_checkpointed(items, fetch_fn, checkpoint_path, label):
+    """1回の実行内でのみ有効なチェックポイント(クラッシュ時の途中結果保全用)。
+    成功時は必ず削除するため、翌日の実行に古いキャッシュを持ち越さない。"""
+    if os.path.exists(checkpoint_path):
+        state = json.load(open(checkpoint_path, encoding="utf-8"))
+        print(f"  チェックポイントから再開: {len(state['done_codes'])}銘柄処理済み")
+    else:
+        state = {"rows": [], "done_codes": []}
+
+    done = set(state["done_codes"])
+    todo = [x for x in items if x[0] not in done]
+    print(f"{label}: 残り{len(todo)}/{len(items)}銘柄を取得中...")
+    for i, (code, name) in enumerate(todo, 1):
+        r = fetch_fn(code, name)
+        if r:
+            state["rows"].append(r)
+        state["done_codes"].append(code)
+        if i % CHECKPOINT_EVERY == 0:
+            json.dump(state, open(checkpoint_path, "w", encoding="utf-8"), ensure_ascii=False)
+            print(f"  {i}/{len(todo)}件処理済み(有効{len(state['rows'])})...")
         time.sleep(0.1)  # yfinance側への配慮
 
-    print(f"\n質フィルター後: {len(rows)}/{len(NIKKEI225)}銘柄が対象")
+    if os.path.exists(checkpoint_path):
+        os.remove(checkpoint_path)
+    return state["rows"]
+
+
+def main() -> None:
+    universe = load_universe()
+    print(f"東証プライム、{len(universe)}銘柄のデータを取得中(yfinance)...")
+    rows = run_checkpointed(universe, fetch_metrics, "value_metrics_checkpoint.json", "指標取得")
+
+    print(f"\n質フィルター後(赤字のみ除外): {len(rows)}/{len(universe)}銘柄が対象")
 
     per_scores = percentile_rank([r["per"] for r in rows])       # 低PERほど高得点
     pbr_scores = percentile_rank([r["pbr"] for r in rows])       # 低PBRほど高得点
     div_scores = percentile_rank([r["dividend_yield"] for r in rows], reverse=True)  # 高配当ほど高得点
+    roe_scores = percentile_rank([r["roe"] for r in rows], reverse=True)             # 高ROEほど高得点
 
-    for r, ps, bs, ds in zip(rows, per_scores, pbr_scores, div_scores):
-        r["value_score"] = round((ps + bs + ds) / 3, 4)
+    for r, ps, bs, ds, qs in zip(rows, per_scores, pbr_scores, div_scores, roe_scores):
+        r["cheapness_score"] = round((ps + bs + ds) / 3, 4)
+        r["quality_score"] = round(qs, 4)
+        r["value_score"] = round((ps + bs + ds + qs) / 4, 4)
 
     print(f"反発シグナル(価格推移)を取得中... ({len(rows)}銘柄)")
+    ta_rows_raw = run_checkpointed(
+        [(r["code"], r["code"]) for r in rows], lambda c, _n: fetch_turnaround_signals(c),
+        "value_turnaround_checkpoint.json", "反発シグナル取得",
+    )
+    ta_by_code = {ta["code"]: ta for ta in ta_rows_raw}
+
     ta_rows = []
-    for i, r in enumerate(rows, 1):
-        ta = fetch_turnaround_signals(r["code"])
+    for r in rows:
+        ta = ta_by_code.get(r["code"])
         if ta:
             r.update(ta)
             ta_rows.append(r)
-        if i % 30 == 0:
-            print(f"  {i}/{len(rows)}件処理済み...")
-        time.sleep(0.1)
 
     # 既に反発しきった(過熱)銘柄は、ここで完全に対象から除外する
     # (パーセンタイル計算のプールにも入れない。含めると分母が歪むため)
@@ -262,26 +233,28 @@ def main() -> None:
     decel_scores = percentile_rank([r["decel_pct"] for r in eligible], reverse=True)
     for r, o, t, d in zip(eligible, off_low_scores, trend_scores, decel_scores):
         r["turnaround_score"] = round((o + t + d) / 3, 4)
-        r["combined_score"] = round((r["value_score"] + r["turnaround_score"]) / 2, 4)
+        r["combined_score"] = round(VALUE_WEIGHT * r["value_score"] + TURNAROUND_WEIGHT * r["turnaround_score"], 4)
     print(f"反発シグナル取得できた銘柄: {len(ta_rows)}/{len(rows)}(うちランキング対象{len(eligible)})")
 
     eligible.sort(key=lambda r: r["combined_score"], reverse=True)
-    top50 = eligible[:50]
+    top50 = eligible[:TOP_N]
 
     output = {
         "updated": dt.datetime.now().isoformat(timespec="seconds"),
-        "universe": "nikkei225",
-        "universe_size": len(NIKKEI225),
+        "universe": "tse_prime",
+        "universe_size": len(universe),
         "screened": len(eligible),
-        "quality_filter": f"PER>0 かつ ROE>={MIN_ROE*100:.0f}%(赤字・低ROEは除外)、"
+        "quality_filter": "PER>0 かつ ROE>=0%(赤字のみ除外、質は連続スコアとしてランキングに反映)、"
                           f"配当性向<={MAX_PAYOUT_RATIO*100:.0f}%(減配リスク回避)、"
                           f"利益成長率>={MIN_EARNINGS_GROWTH*100:.0f}%(急減益は除外)、"
                           f"非金融業は負債比率<={MAX_DEBT_TO_EQUITY}%(過大な借入を除外)、"
                           f"RSI{OVERBOUGHT_RSI}以上は既に反発しきった可能性として除外"
                           f"(今回{len(overbought)}銘柄除外)",
-        "method": "割安スコア(PER・PBR・配当利回りのパーセンタイル平均)と"
-                  "反発スコア(直近安値からの回復率・短期/長期移動平均トレンド・"
-                  "下落の減速のパーセンタイル平均)を1:1で組み合わせた総合スコア(0〜1)でランキング。",
+        "method": "割安さ(PER・PBR・配当利回り)と質(ROE)のパーセンタイル平均をvalue_score"
+                  f"({VALUE_WEIGHT:.0%})、反発スコア(直近安値からの回復率・短期/長期移動平均"
+                  f"トレンド・下落の減速のパーセンタイル平均)を{TURNAROUND_WEIGHT:.0%}で組み合わせた"
+                  "総合スコア(0〜1)でランキング。2026-09-19: 日経225→東証プライム全銘柄に拡張、"
+                  "質を二値フィルターから連続スコアに変更、反発スコアの比重を50%→25%に低減。",
         "disclaimer": "検証済みの売買シグナルではなく、現時点の割安さ・値動きのスナップショット。"
                       "反発シグナルは将来を予測するものではなく単純なテクニカルルールに基づく参考値。"
                       "売買は自己判断で。",
@@ -292,6 +265,8 @@ def main() -> None:
                 "pbr": round(r["pbr"], 2),
                 "dividend_yield_pct": round(r["dividend_yield"], 2),
                 "roe_pct": round(r["roe"] * 100, 1),
+                "cheapness_score": r["cheapness_score"],
+                "quality_score": r["quality_score"],
                 "value_score": r["value_score"],
                 "turnaround_score": r["turnaround_score"],
                 "combined_score": r["combined_score"],
@@ -321,8 +296,8 @@ def main() -> None:
         rsi_s = f"{r['rsi14']:.0f}" if r["rsi14"] is not None else "-"
         print(f"  {r['code']} {r['name']:12s} PER{r['per']:.1f} PBR{r['pbr']:.2f} "
               f"配当{r['dividend_yield']:.1f}% ROE{r['roe']*100:.1f}% RSI{rsi_s} "
-              f"底値比+{r['off_low_pct']:.1f}% 割安{r['value_score']:.2f} 反発{r['turnaround_score']:.2f} "
-              f"総合{r['combined_score']:.3f}")
+              f"底値比+{r['off_low_pct']:.1f}% 割安{r['cheapness_score']:.2f} 質{r['quality_score']:.2f} "
+              f"反発{r['turnaround_score']:.2f} 総合{r['combined_score']:.3f}")
 
     print(f"\nvalue_ranking.json に上位50件を出力、value_history.jsonlに追記しました。")
 

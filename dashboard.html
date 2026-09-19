@@ -376,7 +376,7 @@ function renderValueRanking(d){
   const meta=$("vrMeta");
   meta.innerHTML=
     `更新: <b>${(d.updated||"—").replace("T"," ")}</b>　`+
-    `対象: <b>${d.universe==="nikkei225"?"日経225":d.universe}</b>（${d.screened}/${d.universe_size}銘柄が質フィルター通過）<br>`+
+    `対象: <b>${d.universe==="nikkei225"?"日経225":d.universe==="tse_prime"?"東証プライム全銘柄":d.universe}</b>（${d.screened}/${d.universe_size}銘柄が質フィルター通過）<br>`+
     `算出方法: ${d.method||""}<br>`+
     `質フィルター: ${d.quality_filter||""}`+
     `<div class="vr-disclaimer">⚠ ${d.disclaimer||"検証済みの売買シグナルではない参考情報です。"}</div>`;
@@ -388,7 +388,10 @@ function renderValueRanking(d){
     const pct=Math.round((combined||0)*100);
     const rsiTxt=r.rsi14!=null?`RSI${r.rsi14}`:"";
     const offLowTxt=r.off_low_pct!=null?`底値比+${r.off_low_pct}%`:"";
-    const taTxt=(r.turnaround_score!=null)?` / 割安${Math.round(r.value_score*100)} 反発${Math.round(r.turnaround_score*100)}`:"";
+    const cheapVal=r.cheapness_score!=null?r.cheapness_score:r.value_score;
+    const taTxt=(r.turnaround_score!=null)?` / 割安${Math.round(cheapVal*100)}`+
+      (r.quality_score!=null?` 質${Math.round(r.quality_score*100)}`:"")+
+      ` 反発${Math.round(r.turnaround_score*100)}`:"";
     const payoutTxt=r.payout_ratio_pct!=null?`配当性向${r.payout_ratio_pct}%`:"";
     const growthTxt=r.earnings_growth_pct!=null?`増益率${r.earnings_growth_pct>0?'+':''}${r.earnings_growth_pct}%`:"";
     row.innerHTML=
