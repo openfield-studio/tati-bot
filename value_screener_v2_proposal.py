@@ -50,20 +50,31 @@ def load_universe() -> list[tuple[str, str]]:
         return [(row["code"], row["name"]) for row in csv.DictReader(f)]
 
 
+def _num(v):
+    """yfinanceのinfoは稀に数値項目が文字列や非数値で返ることがあるため、安全にfloat化する。"""
+    if v is None:
+        return None
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return f if f == f else None  # NaN除外
+
+
 def fetch_metrics(code: str, name: str) -> dict | None:
     try:
         info = yf.Ticker(f"{code}.T").info
     except Exception:
         return None
 
-    per = info.get("trailingPE")
-    pbr = info.get("priceToBook")
-    div_yield = info.get("dividendYield") or 0.0
-    roe = info.get("returnOnEquity")
-    price = info.get("currentPrice") or info.get("regularMarketPrice")
-    payout_ratio = info.get("payoutRatio")
-    earnings_growth = info.get("earningsGrowth")
-    debt_to_equity = info.get("debtToEquity")
+    per = _num(info.get("trailingPE"))
+    pbr = _num(info.get("priceToBook"))
+    div_yield = _num(info.get("dividendYield")) or 0.0
+    roe = _num(info.get("returnOnEquity"))
+    price = _num(info.get("currentPrice")) or _num(info.get("regularMarketPrice"))
+    payout_ratio = _num(info.get("payoutRatio"))
+    earnings_growth = _num(info.get("earningsGrowth"))
+    debt_to_equity = _num(info.get("debtToEquity"))
     sector = info.get("sector")
 
     if per is None or per <= 0 or pbr is None or pbr <= 0 or roe is None:
