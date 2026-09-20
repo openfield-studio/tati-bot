@@ -2020,6 +2020,34 @@ FACTOR_RESEARCH_LOG.mdの調査待ちキューに#12として一括記録。
 訂正済み。**教訓**: クラウドルーティンがネットワーク制約下で「入手できる見込み」と
 文献調査だけで判断した内容は、実際にAPI仕様を確認するまで鵜呑みにしないこと。
 
+### 67. 日経・ダイヤモンド等の一般投資誌とKaggle/SIGNATEコンペを調査(2026-09-20)
+
+ユーザーの「日経とかダイヤモンドとかの記事でなんか有力なのないかな」を受けて調査した結果、
+一般向け投資誌(ダイヤモンドZAi等)は銘柄選びが主観的でサンプル数・再現性の開示がなく、
+tati-botの研究には不向きと判断(日経CNBCの「アノマリーが示す2026相場は凶サイン」も
+有料会員限定で中身を確認できず)。代わりに、JPX公式のチュートリアルサイト
+(https://japanexchangegroup.github.io/J-Quants-Tutorial/)と、J-Quantsデータを使った
+データ分析コンペ2件(SIGNATE「ファンダメンタルズ分析チャレンジ」「ニュース分析チャレンジ」)
+を発見。
+
+- **SIGNATE 1位解法**(https://speakerdeck.com/m_mochizuki/the-1st-place-solution-of-jpx-fundamentals-analysis-challenge-on-signate)
+  を確認。使用特徴量(PER・PBR・ROE・配当等)はほぼ既存検証と重複したが、
+  ①経常利益(前年同期比、日本会計特有で未検証)、②予測対象が決算発表後20営業日という
+  短期窓(PEAD以外あまり試していない時間軸)、の2点は新しい切り口。手法面では
+  ③回帰でなくランク学習(LightGBM LambdaRank)、④単発バックテストでなくCV重視、
+  という2つの方法論的知見も得た。
+- **Kaggle「JPX Tokyo Stock Exchange Prediction」**(2022年開催、SIGNATEより大規模)の
+  上位解法まとめ(https://speakerdeck.com/gamella/jpx-tokyo-stock-exchange-prediction-award-ceremony-jie-fa-zong-ping)
+  も確認。ただし対象が数日単位の超短期リターン予測でtati-botの時間軸(1306は数週間スイング、
+  value_screenerは12ヶ月保有)とずれており、直近リターン・出来高等の特徴量はそのまま
+  転用できないと判断。唯一「業種別に独立したモデルを組んだチームが上位だった」という
+  知見のみ、value_screenerの改善(業種ニュートラルランキング)につながる可能性ありと判断し、
+  `sector_neutral_lab.py`(新規)で実際に効くか検証開始(全プライム銘柄の業種取得中、
+  結果は次回報告)。
+- ユーザーの「契約後に検証する候補に入れといてね」を受け、上記のランク学習・CV重視・
+  業種ニュートラル化を含む「J-Quants Premium契約後にやることチェックリスト」を
+  FACTOR_RESEARCH_LOG.mdに新設(散在していた言及を集約)。
+
 ---
 
 ## 残りの作業（次回やること）
