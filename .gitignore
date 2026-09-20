@@ -65,5 +65,7 @@ v2_metrics_cache.json
 v2_metrics_checkpoint.json
 v2_turnaround_cache.json
 v2_turnaround_checkpoint.json
+sector_map_cache.json
+sector_map_checkpoint.json
 value_metrics_checkpoint.json
 value_turnaround_checkpoint.json
