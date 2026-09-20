@@ -9,11 +9,11 @@
 #   powershell -NoProfile -ExecutionPolicy Bypass -File check_queue_and_notify.ps1
 
 $ErrorActionPreference = "Stop"
-Set-Location "C:\BP\tati"
+Set-Location "D:\tati"
 
 git pull origin main --quiet 2>$null
 
-$logFile = "C:\BP\tati\logs_local_routine\queue_check.log"
+$logFile = "D:\tati\logs_local_routine\queue_check.log"
 $logDir = Split-Path $logFile
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir | Out-Null }
 
