@@ -363,6 +363,11 @@ p値≈0(小数点以下ほぼゼロ)、累積試行数N=24でBonferroni補正�
 5. **業種ニュートラルランキングの検証結果を反映**: Kaggle「JPX Tokyo Stock Exchange
    Prediction」上位解法調査(業種別モデルが有効との報告)を受け`sector_neutral_lab.py`で
    検証中(2026-09-20)。結果が出たらここに追記し、value_screener.pyへの反映要否を判断する。
+6. **適時開示情報(TDnet)を使った特別損失銘柄の除外フィルター**: JPX公式チュートリアル
+   (https://japanexchangegroup.github.io/J-Quants-Tutorial/、4.6節)で紹介されていた手法。
+   財務比率ベースの質フィルター(現行value_screener.py)とは時間軸が異なる「直近の悪材料
+   開示」を検出して除外する発想。**データ入手性は未確認**(ルール9に従い、実際にJ-Quants
+   APIの適時開示情報エンドポイント仕様を確認してから着手すること。断定しない)。
 
 ## リーダーボード(成績上位・改良の優先対象)
 
