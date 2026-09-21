@@ -69,3 +69,4 @@ sector_map_cache.json
 sector_map_checkpoint.json
 value_metrics_checkpoint.json
 value_turnaround_checkpoint.json
+btc_bitstamp_*.csv
