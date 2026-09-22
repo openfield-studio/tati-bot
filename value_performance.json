@@ -1,14 +1,14 @@
 {
-  "updated": "2026-09-18T20:24:02",
-  "tracked_stocks": 75,
-  "history_runs": 3,
+  "updated": "2026-09-22T20:30:14",
+  "tracked_stocks": 123,
+  "history_runs": 5,
   "oldest_run_date": "2026-09-16",
-  "avg_return_pct": -0.33,
-  "median_return_pct": -0.28,
-  "win_rate_pct": 41.3,
+  "avg_return_pct": -0.2,
+  "median_return_pct": 0.0,
+  "win_rate_pct": 25.2,
   "avg_excess_vs_nikkei225_pct": -2.03,
   "confidence_pct": null,
-  "confidence_note": "計測中(追跡3営業日 / 目安20営業日必要)",
+  "confidence_note": "計測中(追跡5営業日 / 目安20営業日必要)",
   "note": "「初めてTOP50に入った時点で買い、今まで持ち続けていたら」という仮想追跡。実際の売買記録ではなく、割安スコアの有効性を後から検証するための一次データ。",
   "entries": [
     {
@@ -21,7 +21,7 @@
       "return_pct": 6.94,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 5.23,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5711",
@@ -33,7 +33,7 @@
       "return_pct": 4.36,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 2.65,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "543A",
@@ -45,7 +45,7 @@
       "return_pct": 3.65,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 1.94,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5214",
@@ -57,7 +57,7 @@
       "return_pct": 3.02,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 1.31,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "6302",
@@ -69,7 +69,7 @@
       "return_pct": 2.42,
       "benchmark_return_pct": 1.38,
       "excess_return_pct": 1.04,
-      "days_held": 1
+      "days_held": 5
     },
     {
       "code": "5714",
@@ -81,7 +81,7 @@
       "return_pct": 2.13,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 0.42,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5713",
@@ -93,7 +93,7 @@
       "return_pct": 1.69,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.02,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "6472",
@@ -105,7 +105,7 @@
       "return_pct": 1.61,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.1,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7272",
@@ -117,7 +117,7 @@
       "return_pct": 1.42,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.29,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9101",
@@ -129,7 +129,7 @@
       "return_pct": 1.41,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.31,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5411",
@@ -141,7 +141,7 @@
       "return_pct": 1.4,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.31,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9201",
@@ -153,7 +153,7 @@
       "return_pct": 1.39,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.33,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "4151",
@@ -165,7 +165,7 @@
       "return_pct": 1.19,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.53,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5401",
@@ -177,7 +177,7 @@
       "return_pct": 1.09,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.62,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5406",
@@ -189,7 +189,7 @@
       "return_pct": 1.03,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.69,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5101",
@@ -201,7 +201,7 @@
       "return_pct": 0.93,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.78,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9104",
@@ -213,7 +213,7 @@
       "return_pct": 0.88,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.84,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7751",
@@ -225,7 +225,7 @@
       "return_pct": 0.83,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.89,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7004",
@@ -237,7 +237,7 @@
       "return_pct": 0.77,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.94,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9107",
@@ -249,7 +249,7 @@
       "return_pct": 0.58,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.14,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "4005",
@@ -261,7 +261,7 @@
       "return_pct": 0.57,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.14,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "2768",
@@ -273,7 +273,7 @@
       "return_pct": 0.55,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.17,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8725",
@@ -285,7 +285,7 @@
       "return_pct": 0.54,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.17,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8601",
@@ -297,7 +297,7 @@
       "return_pct": 0.54,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.17,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7752",
@@ -309,7 +309,7 @@
       "return_pct": 0.39,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.32,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5201",
@@ -321,7 +321,7 @@
       "return_pct": 0.36,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.36,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "4902",
@@ -333,7 +333,7 @@
       "return_pct": 0.25,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.46,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "3407",
@@ -345,7 +345,7 @@
       "return_pct": 0.25,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.46,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8750",
@@ -357,7 +357,7 @@
       "return_pct": 0.21,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.51,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5233",
@@ -369,7 +369,7 @@
       "return_pct": 0.17,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.55,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9009",
@@ -381,7 +381,583 @@
       "return_pct": 0.04,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.68,
-      "days_held": 2
+      "days_held": 6
+    },
+    {
+      "code": "5351",
+      "name": "品川リフラ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 1,
+      "entry_price": 2060.0,
+      "current_price": 2060.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "6418",
+      "name": "日本金銭機械",
+      "first_run_date": "2026-09-19",
+      "first_rank": 2,
+      "entry_price": 1260.0,
+      "current_price": 1260.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "5021",
+      "name": "コスモエネルギーホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 3,
+      "entry_price": 4456.0,
+      "current_price": 4456.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8150",
+      "name": "三信電気",
+      "first_run_date": "2026-09-19",
+      "first_rank": 4,
+      "entry_price": 3300.0,
+      "current_price": 3300.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "6390",
+      "name": "加藤製作所",
+      "first_run_date": "2026-09-19",
+      "first_rank": 5,
+      "entry_price": 1330.0,
+      "current_price": 1330.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "7241",
+      "name": "フタバ産業",
+      "first_run_date": "2026-09-19",
+      "first_rank": 6,
+      "entry_price": 1108.0,
+      "current_price": 1108.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "5989",
+      "name": "エイチワン",
+      "first_run_date": "2026-09-19",
+      "first_rank": 7,
+      "entry_price": 1503.0,
+      "current_price": 1503.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "5076",
+      "name": "インフロニア・ホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 8,
+      "entry_price": 2908.5,
+      "current_price": 2908.5,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8935",
+      "name": "ＦＪネクストホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 9,
+      "entry_price": 1992.0,
+      "current_price": 1992.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "9619",
+      "name": "イチネンホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 10,
+      "entry_price": 2742.0,
+      "current_price": 2742.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "2429",
+      "name": "ワールドホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 11,
+      "entry_price": 2873.0,
+      "current_price": 2873.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "256A",
+      "name": "飛島ホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 12,
+      "entry_price": 2277.0,
+      "current_price": 2277.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8473",
+      "name": "ＳＢＩホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 13,
+      "entry_price": 3272.0,
+      "current_price": 3272.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "1814",
+      "name": "大末建設",
+      "first_run_date": "2026-09-19",
+      "first_rank": 14,
+      "entry_price": 3635.0,
+      "current_price": 3635.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "7239",
+      "name": "タチエス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 16,
+      "entry_price": 2376.0,
+      "current_price": 2376.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8707",
+      "name": "岩井コスモホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 18,
+      "entry_price": 4740.0,
+      "current_price": 4740.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "2120",
+      "name": "ＬＩＦＵＬＬ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 19,
+      "entry_price": 232.0,
+      "current_price": 232.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8425",
+      "name": "みずほリース",
+      "first_run_date": "2026-09-19",
+      "first_rank": 20,
+      "entry_price": 1366.0,
+      "current_price": 1366.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8070",
+      "name": "東京産業",
+      "first_run_date": "2026-09-19",
+      "first_rank": 21,
+      "entry_price": 1022.0,
+      "current_price": 1022.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "7148",
+      "name": "ＦＰＧ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 22,
+      "entry_price": 1727.0,
+      "current_price": 1727.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "7095",
+      "name": "Ｍａｃｂｅｅ　Ｐｌａｎｅｔ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 23,
+      "entry_price": 1156.0,
+      "current_price": 1156.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "4246",
+      "name": "ダイキョーニシカワ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 24,
+      "entry_price": 1093.0,
+      "current_price": 1093.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8616",
+      "name": "東海東京フィナンシャル・ホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 25,
+      "entry_price": 898.0,
+      "current_price": 898.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "5480",
+      "name": "日本冶金工業",
+      "first_run_date": "2026-09-19",
+      "first_rank": 26,
+      "entry_price": 5520.0,
+      "current_price": 5520.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "4725",
+      "name": "ＣＡＣ　Ｈｏｌｄｉｎｇｓ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 27,
+      "entry_price": 1914.0,
+      "current_price": 1914.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "1820",
+      "name": "西松建設",
+      "first_run_date": "2026-09-19",
+      "first_rank": 28,
+      "entry_price": 5685.0,
+      "current_price": 5685.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "2060",
+      "name": "フィード・ワン",
+      "first_run_date": "2026-09-19",
+      "first_rank": 29,
+      "entry_price": 1473.0,
+      "current_price": 1473.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8057",
+      "name": "内田洋行",
+      "first_run_date": "2026-09-19",
+      "first_rank": 30,
+      "entry_price": 2273.0,
+      "current_price": 2273.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "7246",
+      "name": "プレス工業",
+      "first_run_date": "2026-09-19",
+      "first_rank": 31,
+      "entry_price": 1008.0,
+      "current_price": 1008.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "5975",
+      "name": "東プレ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 32,
+      "entry_price": 3410.0,
+      "current_price": 3410.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "2053",
+      "name": "中部飼料",
+      "first_run_date": "2026-09-19",
+      "first_rank": 33,
+      "entry_price": 2058.0,
+      "current_price": 2058.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "2153",
+      "name": "Ｅ・Ｊホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 34,
+      "entry_price": 1891.0,
+      "current_price": 1891.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8609",
+      "name": "岡三証券グループ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 35,
+      "entry_price": 1261.0,
+      "current_price": 1261.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "4251",
+      "name": "恵和",
+      "first_run_date": "2026-09-19",
+      "first_rank": 36,
+      "entry_price": 1198.0,
+      "current_price": 1198.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8014",
+      "name": "蝶理",
+      "first_run_date": "2026-09-19",
+      "first_rank": 37,
+      "entry_price": 4250.0,
+      "current_price": 4250.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "4763",
+      "name": "クリーク・アンド・リバー社",
+      "first_run_date": "2026-09-19",
+      "first_rank": 38,
+      "entry_price": 1494.0,
+      "current_price": 1494.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8624",
+      "name": "いちよし証券",
+      "first_run_date": "2026-09-19",
+      "first_rank": 39,
+      "entry_price": 1686.0,
+      "current_price": 1686.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "3932",
+      "name": "アカツキ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 40,
+      "entry_price": 3825.0,
+      "current_price": 3825.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "1870",
+      "name": "矢作建設工業",
+      "first_run_date": "2026-09-19",
+      "first_rank": 41,
+      "entry_price": 2193.0,
+      "current_price": 2193.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "1964",
+      "name": "中外炉工業",
+      "first_run_date": "2026-09-19",
+      "first_rank": 43,
+      "entry_price": 3930.0,
+      "current_price": 3930.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "6209",
+      "name": "リケンＮＰＲ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 44,
+      "entry_price": 3970.0,
+      "current_price": 3970.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "547A",
+      "name": "ムニノバホールディングス",
+      "first_run_date": "2026-09-19",
+      "first_rank": 45,
+      "entry_price": 439.0,
+      "current_price": 439.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8614",
+      "name": "東洋証券",
+      "first_run_date": "2026-09-19",
+      "first_rank": 46,
+      "entry_price": 708.0,
+      "current_price": 708.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "5195",
+      "name": "バンドー化学",
+      "first_run_date": "2026-09-19",
+      "first_rank": 47,
+      "entry_price": 2454.0,
+      "current_price": 2454.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "7296",
+      "name": "エフ・シー・シー",
+      "first_run_date": "2026-09-19",
+      "first_rank": 48,
+      "entry_price": 4200.0,
+      "current_price": 4200.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "8078",
+      "name": "阪和興業",
+      "first_run_date": "2026-09-19",
+      "first_rank": 49,
+      "entry_price": 1912.0,
+      "current_price": 1912.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "9997",
+      "name": "ベルーナ",
+      "first_run_date": "2026-09-19",
+      "first_rank": 50,
+      "entry_price": 1080.0,
+      "current_price": 1080.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 3
+    },
+    {
+      "code": "7102",
+      "name": "日本車輌製造",
+      "first_run_date": "2026-09-22",
+      "first_rank": 50,
+      "entry_price": 3630.0,
+      "current_price": 3630.0,
+      "return_pct": 0.0,
+      "benchmark_return_pct": null,
+      "excess_return_pct": null,
+      "days_held": 0
     },
     {
       "code": "8354",
@@ -393,7 +969,7 @@
       "return_pct": -0.01,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.73,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "6178",
@@ -405,7 +981,7 @@
       "return_pct": -0.04,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.75,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "3861",
@@ -417,7 +993,7 @@
       "return_pct": -0.05,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.76,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7202",
@@ -429,7 +1005,7 @@
       "return_pct": -0.05,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.76,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "4208",
@@ -441,7 +1017,7 @@
       "return_pct": -0.09,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.8,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9202",
@@ -453,7 +1029,7 @@
       "return_pct": -0.13,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.85,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8253",
@@ -465,7 +1041,7 @@
       "return_pct": -0.28,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.99,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "1928",
@@ -477,7 +1053,7 @@
       "return_pct": -0.3,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.01,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9432",
@@ -489,7 +1065,7 @@
       "return_pct": -0.34,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.05,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5831",
@@ -501,7 +1077,7 @@
       "return_pct": -0.4,
       "benchmark_return_pct": 1.38,
       "excess_return_pct": -1.78,
-      "days_held": 1
+      "days_held": 5
     },
     {
       "code": "6305",
@@ -513,7 +1089,7 @@
       "return_pct": -0.42,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.14,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "6770",
@@ -525,7 +1101,7 @@
       "return_pct": -0.54,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.25,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "1808",
@@ -537,7 +1113,7 @@
       "return_pct": -0.65,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.37,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "6902",
@@ -549,7 +1125,7 @@
       "return_pct": -0.73,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.44,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7261",
@@ -561,7 +1137,7 @@
       "return_pct": -0.9,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.61,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7270",
@@ -573,7 +1149,7 @@
       "return_pct": -0.9,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.62,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7269",
@@ -585,7 +1161,7 @@
       "return_pct": -0.93,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.64,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "7203",
@@ -597,7 +1173,7 @@
       "return_pct": -1.01,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.73,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9001",
@@ -609,7 +1185,7 @@
       "return_pct": -1.22,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.93,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9021",
@@ -621,7 +1197,7 @@
       "return_pct": -1.24,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.95,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9022",
@@ -633,7 +1209,7 @@
       "return_pct": -1.27,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.98,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "1803",
@@ -645,7 +1221,7 @@
       "return_pct": -1.28,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.99,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8031",
@@ -657,7 +1233,7 @@
       "return_pct": -1.28,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.0,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "2502",
@@ -669,7 +1245,7 @@
       "return_pct": -1.29,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.0,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "1925",
@@ -681,7 +1257,7 @@
       "return_pct": -1.36,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.08,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8304",
@@ -693,7 +1269,7 @@
       "return_pct": -1.53,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.24,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9502",
@@ -705,7 +1281,7 @@
       "return_pct": -1.54,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.25,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "3289",
@@ -717,7 +1293,7 @@
       "return_pct": -1.58,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.29,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8306",
@@ -729,7 +1305,7 @@
       "return_pct": -1.98,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.69,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8309",
@@ -741,7 +1317,7 @@
       "return_pct": -2.02,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.74,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8001",
@@ -753,7 +1329,7 @@
       "return_pct": -2.16,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.88,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9503",
@@ -765,7 +1341,7 @@
       "return_pct": -2.27,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.98,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "5019",
@@ -777,7 +1353,7 @@
       "return_pct": -2.31,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.02,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9007",
@@ -789,7 +1365,7 @@
       "return_pct": -2.39,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.1,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9532",
@@ -801,7 +1377,7 @@
       "return_pct": -2.5,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.22,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8804",
@@ -813,7 +1389,7 @@
       "return_pct": -2.59,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.3,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8053",
@@ -825,7 +1401,7 @@
       "return_pct": -2.63,
       "benchmark_return_pct": 1.38,
       "excess_return_pct": -4.01,
-      "days_held": 1
+      "days_held": 5
     },
     {
       "code": "5020",
@@ -837,7 +1413,7 @@
       "return_pct": -2.95,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.66,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "1332",
@@ -849,7 +1425,7 @@
       "return_pct": -3.0,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.72,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "9008",
@@ -861,7 +1437,7 @@
       "return_pct": -3.25,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.96,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "6326",
@@ -873,7 +1449,7 @@
       "return_pct": -3.36,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -5.07,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "1605",
@@ -885,7 +1461,7 @@
       "return_pct": -3.83,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -5.55,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "8604",
@@ -897,7 +1473,7 @@
       "return_pct": -4.5,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -6.21,
-      "days_held": 2
+      "days_held": 6
     },
     {
       "code": "4689",
@@ -909,7 +1485,7 @@
       "return_pct": -4.6,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -6.32,
-      "days_held": 2
+      "days_held": 6
     }
   ]
 }
