@@ -70,6 +70,60 @@ def first_trading_day_after(closes: dict[dt.date, float], d0: dt.date, skip: int
     return keys[skip] if len(keys) > skip else None
 
 
+def stoploss_exit(closes: dict[dt.date, float], entry_date: dt.date, stop_pct: float | None,
+                   max_days: int = 20) -> tuple[dt.date, float, bool] | None:
+    """entry_dateの終値をエントリー価格とし、翌営業日以降を日次で監視する。
+    価格がentry_priceからstop_pct以上上昇(＝空売りの損失がstop_pct以上)したら
+    その日の終値で即カバー(損切り)。stop_pct=Noneなら損切りなし(固定期間保有)。
+    どちらでも上限max_days営業日で強制手仕舞い。戻り値: (手仕舞い日, 生リターン, 損切りで終わったか)。"""
+    keys = sorted(d for d in closes if d >= entry_date)
+    if len(keys) < 2:
+        return None
+    entry_price = closes[keys[0]]
+    last_idx = min(max_days, len(keys) - 1)
+    if last_idx < 1:
+        return None
+    for i in range(1, last_idx + 1):
+        d = keys[i]
+        r = closes[d] / entry_price - 1
+        if stop_pct is not None and r >= stop_pct:
+            return d, r, True
+    d = keys[last_idx]
+    r = closes[d] / entry_price - 1
+    return d, r, False
+
+
+def path_profile(closes: dict[dt.date, float], entry_date: dt.date, max_days: int = 20):
+    """entry_dateから最大max_days営業日、日次で空売りの累積損益(コスト前)を追跡し、
+    各日の(日数, 損益)のリストを返す。"""
+    keys = sorted(d for d in closes if d >= entry_date)
+    last_idx = min(max_days, len(keys) - 1)
+    if last_idx < 1:
+        return []
+    entry_price = closes[keys[0]]
+    return [(i, -(closes[keys[i]] / entry_price - 1)) for i in range(1, last_idx + 1)]
+
+
+def takeprofit_stoploss_exit(closes: dict[dt.date, float], entry_date: dt.date,
+                              take_profit_pct: float | None, stop_pct: float | None,
+                              max_days: int = 20):
+    """空売りの益がtake_profit_pct以上出たら即利確、損がstop_pct以上出たら即損切り。
+    どちらもNoneなら判定せず、最大max_days営業日で強制手仕舞い。"""
+    keys = sorted(d for d in closes if d >= entry_date)
+    last_idx = min(max_days, len(keys) - 1)
+    if last_idx < 1:
+        return None
+    entry_price = closes[keys[0]]
+    for i in range(1, last_idx + 1):
+        r = closes[keys[i]] / entry_price - 1  # >0は空売りの損、<0は空売りの益
+        if take_profit_pct is not None and -r >= take_profit_pct:
+            return keys[i], r, "利確"
+        if stop_pct is not None and r >= stop_pct:
+            return keys[i], r, "損切り"
+    d = keys[last_idx]
+    return d, closes[d] / entry_price - 1, "期限"
+
+
 def main():
     events = json.load(open(EVENTS_FILE, encoding="utf-8"))
     closes = fetch_split_safe(TICKER)
@@ -142,6 +196,95 @@ def main():
     print("市場全体を揺るがす単発ショック(1日で急落するVaRショック・地震等)は、その日のうちに")
     print("下落の大半が起きてしまうため、翌営業日以降の空売りエントリーでは既に手遅れになりやすい")
     print("(これは弱点ではなく『後追いでは稼げない』という設計上の想定通りの結果)。")
+
+    # ---- 損切り(ストップロス)アルゴリズムの検証 ----
+    print("\n" + "=" * 100)
+    print("追加検証: 固定20日保有 vs 損切りルール(早耳REACT+1エントリー、最大20営業日)")
+    print("=" * 100)
+    print("損切りルール: エントリー価格からstop_pct以上『上昇』(＝空売りが損失)したら即カバーし、")
+    print("それ以上損を広げない。stop_pctに達しなければ最大20営業日で強制手仕舞い(固定保有と同じ終点)。")
+    print("★重要な限界★ 損切り判定は日次終値ベース。オーバーナイトのギャップで一晩にstop_pctを")
+    print("超えて飛んだ場合、『その日の終値』時点でカバーするしかなく、ギャップそのものは避けられない")
+    print("(項目85で確認した『急落も反発も夜間ギャップが主因』という制約は損切りでも解消しない)。\n")
+
+    for stop_pct in [None, 0.08, 0.05, 0.03, 0.02]:
+        label = "損切りなし(固定20日)" if stop_pct is None else f"損切り{stop_pct*100:.0f}%"
+        pnls, stopped_count, hold_days = [], 0, []
+        for ev in down_events:
+            d0 = dt.date.fromisoformat(ev["date"])
+            if price_on_or_before(closes, d0) is None:
+                continue  # d0がデータ範囲(2009-01-05〜)より前 → スキップ(先の集計と同じ扱い)
+            entry_date = first_trading_day_after(closes, d0, skip=0)
+            if entry_date is None:
+                continue
+            result = stoploss_exit(closes, entry_date, stop_pct, max_days=20)
+            if result is None:
+                continue
+            exit_date, r, was_stopped = result
+            net = -r - COST_ROUNDTRIP
+            pnls.append(net)
+            if was_stopped:
+                stopped_count += 1
+            hold_days.append((exit_date - entry_date).days)
+        if not pnls:
+            continue
+        wins = sum(1 for p in pnls if p > 0)
+        print(f"  {label}: n={len(pnls)} / 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+              f"/ 平均{pystats.mean(pnls)*100:+.2f}% / 中央値{pystats.median(pnls)*100:+.2f}% "
+              f"/ 最悪{min(pnls)*100:+.2f}% / 合計{sum(pnls)*100:+.1f}% / 損切り発動{stopped_count}件")
+
+    # ---- 「損切りが遅い」のか「利確が遅い」のか: 20日間の途中最大益 vs 最終結果 ----
+    print("\n" + "=" * 100)
+    print("追加検証2: 20営業日の『途中の最大益(コスト前)』 vs 『20日目の最終結果』(早耳REACT+1)")
+    print("=" * 100)
+    give_backs = []
+    for ev in down_events:
+        d0 = dt.date.fromisoformat(ev["date"])
+        if price_on_or_before(closes, d0) is None:
+            continue
+        entry_date = first_trading_day_after(closes, d0, skip=0)
+        if entry_date is None:
+            continue
+        path = path_profile(closes, entry_date, max_days=20)
+        if len(path) < 20:
+            continue
+        best_day, best_profit = max(path, key=lambda x: x[1])
+        final_profit = path[-1][1]
+        give_back = best_profit - final_profit  # 途中の最良点からどれだけ吐き出したか
+        give_backs.append(give_back)
+        print(f"  {ev['date']} {ev['name']}: 途中最大{best_profit*100:+.2f}%(day{best_day}) "
+              f"→ 20日目{final_profit*100:+.2f}%  差(吐き出し){give_back*100:+.2f}%")
+    if give_backs:
+        print(f"\n→ 平均の吐き出し幅: {pystats.mean(give_backs)*100:+.2f}pt "
+              f"(プラスなら『途中で利確していれば20日目より良かった』を意味する)")
+
+    print("\n追加検証3: 利確ルール(早耳REACT+1、損切りは併用せず利確のみ、最大20営業日)")
+    print("★注意★ 閾値を細かく振って一番良い数字を探す行為自体が多重検定(過学習)リスクを孕む。")
+    print("n=15の小標本でパラメータ探索した参考値であり、これ単体でGO判定はしない。")
+    for tp_pct in [None, 0.08, 0.05, 0.03, 0.02, 0.01, 0.005]:
+        label = "利確なし(固定20日)" if tp_pct is None else f"利確{tp_pct*100:.0f}%"
+        pnls, tp_count = [], 0
+        for ev in down_events:
+            d0 = dt.date.fromisoformat(ev["date"])
+            if price_on_or_before(closes, d0) is None:
+                continue
+            entry_date = first_trading_day_after(closes, d0, skip=0)
+            if entry_date is None:
+                continue
+            result = takeprofit_stoploss_exit(closes, entry_date, tp_pct, None, max_days=20)
+            if result is None:
+                continue
+            _, r, reason = result
+            net = -r - COST_ROUNDTRIP
+            pnls.append(net)
+            if reason == "利確":
+                tp_count += 1
+        if not pnls:
+            continue
+        wins = sum(1 for p in pnls if p > 0)
+        print(f"  {label}: n={len(pnls)} / 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+              f"/ 平均{pystats.mean(pnls)*100:+.2f}% / 中央値{pystats.median(pnls)*100:+.2f}% "
+              f"/ 合計{sum(pnls)*100:+.1f}% / 利確発動{tp_count}件")
 
 
 if __name__ == "__main__":
