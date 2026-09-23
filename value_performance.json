@@ -1,14 +1,14 @@
 {
-  "updated": "2026-09-22T20:30:14",
+  "updated": "2026-09-23T20:37:28",
   "tracked_stocks": 123,
-  "history_runs": 5,
+  "history_runs": 6,
   "oldest_run_date": "2026-09-16",
   "avg_return_pct": -0.2,
   "median_return_pct": 0.0,
   "win_rate_pct": 25.2,
   "avg_excess_vs_nikkei225_pct": -2.03,
   "confidence_pct": null,
-  "confidence_note": "計測中(追跡5営業日 / 目安20営業日必要)",
+  "confidence_note": "計測中(追跡6営業日 / 目安20営業日必要)",
   "note": "「初めてTOP50に入った時点で買い、今まで持ち続けていたら」という仮想追跡。実際の売買記録ではなく、割安スコアの有効性を後から検証するための一次データ。",
   "entries": [
     {
@@ -21,7 +21,7 @@
       "return_pct": 6.94,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 5.23,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5711",
@@ -33,7 +33,7 @@
       "return_pct": 4.36,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 2.65,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "543A",
@@ -45,7 +45,7 @@
       "return_pct": 3.65,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 1.94,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5214",
@@ -57,7 +57,7 @@
       "return_pct": 3.02,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 1.31,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "6302",
@@ -69,7 +69,7 @@
       "return_pct": 2.42,
       "benchmark_return_pct": 1.38,
       "excess_return_pct": 1.04,
-      "days_held": 5
+      "days_held": 6
     },
     {
       "code": "5714",
@@ -81,7 +81,7 @@
       "return_pct": 2.13,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": 0.42,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5713",
@@ -93,7 +93,7 @@
       "return_pct": 1.69,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.02,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "6472",
@@ -105,7 +105,7 @@
       "return_pct": 1.61,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.1,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7272",
@@ -117,7 +117,7 @@
       "return_pct": 1.42,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.29,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9101",
@@ -129,7 +129,7 @@
       "return_pct": 1.41,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.31,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5411",
@@ -141,7 +141,7 @@
       "return_pct": 1.4,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.31,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9201",
@@ -153,7 +153,7 @@
       "return_pct": 1.39,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.33,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "4151",
@@ -165,7 +165,7 @@
       "return_pct": 1.19,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.53,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5401",
@@ -177,7 +177,7 @@
       "return_pct": 1.09,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.62,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5406",
@@ -189,7 +189,7 @@
       "return_pct": 1.03,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.69,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5101",
@@ -201,7 +201,7 @@
       "return_pct": 0.93,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.78,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9104",
@@ -213,7 +213,7 @@
       "return_pct": 0.88,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.84,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7751",
@@ -225,7 +225,7 @@
       "return_pct": 0.83,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.89,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7004",
@@ -237,7 +237,7 @@
       "return_pct": 0.77,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -0.94,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9107",
@@ -249,7 +249,7 @@
       "return_pct": 0.58,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.14,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "4005",
@@ -261,7 +261,7 @@
       "return_pct": 0.57,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.14,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "2768",
@@ -273,7 +273,7 @@
       "return_pct": 0.55,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.17,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8725",
@@ -285,7 +285,7 @@
       "return_pct": 0.54,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.17,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8601",
@@ -297,7 +297,7 @@
       "return_pct": 0.54,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.17,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7752",
@@ -309,7 +309,7 @@
       "return_pct": 0.39,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.32,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5201",
@@ -321,7 +321,7 @@
       "return_pct": 0.36,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.36,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "4902",
@@ -333,7 +333,7 @@
       "return_pct": 0.25,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.46,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "3407",
@@ -345,7 +345,7 @@
       "return_pct": 0.25,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.46,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8750",
@@ -357,7 +357,7 @@
       "return_pct": 0.21,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.51,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5233",
@@ -369,7 +369,7 @@
       "return_pct": 0.17,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.55,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9009",
@@ -381,7 +381,7 @@
       "return_pct": 0.04,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.68,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5351",
@@ -393,7 +393,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "6418",
@@ -405,7 +405,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "5021",
@@ -417,7 +417,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8150",
@@ -429,7 +429,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "6390",
@@ -441,7 +441,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "7241",
@@ -453,7 +453,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "5989",
@@ -465,7 +465,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "5076",
@@ -477,7 +477,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8935",
@@ -489,7 +489,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "9619",
@@ -501,7 +501,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "2429",
@@ -513,7 +513,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "256A",
@@ -525,7 +525,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8473",
@@ -537,7 +537,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "1814",
@@ -549,7 +549,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "7239",
@@ -561,7 +561,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8707",
@@ -573,7 +573,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "2120",
@@ -585,7 +585,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8425",
@@ -597,7 +597,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8070",
@@ -609,7 +609,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "7148",
@@ -621,7 +621,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "7095",
@@ -633,7 +633,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "4246",
@@ -645,7 +645,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8616",
@@ -657,7 +657,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "5480",
@@ -669,7 +669,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "4725",
@@ -681,7 +681,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "1820",
@@ -693,7 +693,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "2060",
@@ -705,7 +705,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8057",
@@ -717,7 +717,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "7246",
@@ -729,7 +729,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "5975",
@@ -741,7 +741,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "2053",
@@ -753,7 +753,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "2153",
@@ -765,7 +765,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8609",
@@ -777,7 +777,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "4251",
@@ -789,7 +789,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8014",
@@ -801,7 +801,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "4763",
@@ -813,7 +813,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8624",
@@ -825,7 +825,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "3932",
@@ -837,7 +837,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "1870",
@@ -849,7 +849,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "1964",
@@ -861,7 +861,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "6209",
@@ -873,7 +873,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "547A",
@@ -885,7 +885,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8614",
@@ -897,7 +897,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "5195",
@@ -909,7 +909,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "7296",
@@ -921,7 +921,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "8078",
@@ -933,7 +933,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "9997",
@@ -945,7 +945,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 3
+      "days_held": 4
     },
     {
       "code": "7102",
@@ -957,7 +957,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": null,
       "excess_return_pct": null,
-      "days_held": 0
+      "days_held": 1
     },
     {
       "code": "8354",
@@ -969,7 +969,7 @@
       "return_pct": -0.01,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.73,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "6178",
@@ -981,7 +981,7 @@
       "return_pct": -0.04,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.75,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "3861",
@@ -993,7 +993,7 @@
       "return_pct": -0.05,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.76,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7202",
@@ -1005,7 +1005,7 @@
       "return_pct": -0.05,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.76,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "4208",
@@ -1017,7 +1017,7 @@
       "return_pct": -0.09,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.8,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9202",
@@ -1029,7 +1029,7 @@
       "return_pct": -0.13,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.85,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8253",
@@ -1041,7 +1041,7 @@
       "return_pct": -0.28,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -1.99,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "1928",
@@ -1053,7 +1053,7 @@
       "return_pct": -0.3,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.01,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9432",
@@ -1065,7 +1065,7 @@
       "return_pct": -0.34,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.05,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5831",
@@ -1077,7 +1077,7 @@
       "return_pct": -0.4,
       "benchmark_return_pct": 1.38,
       "excess_return_pct": -1.78,
-      "days_held": 5
+      "days_held": 6
     },
     {
       "code": "6305",
@@ -1089,7 +1089,7 @@
       "return_pct": -0.42,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.14,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "6770",
@@ -1101,7 +1101,7 @@
       "return_pct": -0.54,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.25,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "1808",
@@ -1113,7 +1113,7 @@
       "return_pct": -0.65,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.37,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "6902",
@@ -1125,7 +1125,7 @@
       "return_pct": -0.73,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.44,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7261",
@@ -1137,7 +1137,7 @@
       "return_pct": -0.9,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.61,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7270",
@@ -1149,7 +1149,7 @@
       "return_pct": -0.9,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.62,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7269",
@@ -1161,7 +1161,7 @@
       "return_pct": -0.93,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.64,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "7203",
@@ -1173,7 +1173,7 @@
       "return_pct": -1.01,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.73,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9001",
@@ -1185,7 +1185,7 @@
       "return_pct": -1.22,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.93,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9021",
@@ -1197,7 +1197,7 @@
       "return_pct": -1.24,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.95,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9022",
@@ -1209,7 +1209,7 @@
       "return_pct": -1.27,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.98,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "1803",
@@ -1221,7 +1221,7 @@
       "return_pct": -1.28,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -2.99,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8031",
@@ -1233,7 +1233,7 @@
       "return_pct": -1.28,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.0,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "2502",
@@ -1245,7 +1245,7 @@
       "return_pct": -1.29,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.0,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "1925",
@@ -1257,7 +1257,7 @@
       "return_pct": -1.36,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.08,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8304",
@@ -1269,7 +1269,7 @@
       "return_pct": -1.53,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.24,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9502",
@@ -1281,7 +1281,7 @@
       "return_pct": -1.54,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.25,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "3289",
@@ -1293,7 +1293,7 @@
       "return_pct": -1.58,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.29,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8306",
@@ -1305,7 +1305,7 @@
       "return_pct": -1.98,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.69,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8309",
@@ -1317,7 +1317,7 @@
       "return_pct": -2.02,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.74,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8001",
@@ -1329,7 +1329,7 @@
       "return_pct": -2.16,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.88,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9503",
@@ -1341,7 +1341,7 @@
       "return_pct": -2.27,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -3.98,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "5019",
@@ -1353,7 +1353,7 @@
       "return_pct": -2.31,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.02,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9007",
@@ -1365,7 +1365,7 @@
       "return_pct": -2.39,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.1,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9532",
@@ -1377,7 +1377,7 @@
       "return_pct": -2.5,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.22,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8804",
@@ -1389,7 +1389,7 @@
       "return_pct": -2.59,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.3,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8053",
@@ -1401,7 +1401,7 @@
       "return_pct": -2.63,
       "benchmark_return_pct": 1.38,
       "excess_return_pct": -4.01,
-      "days_held": 5
+      "days_held": 6
     },
     {
       "code": "5020",
@@ -1413,7 +1413,7 @@
       "return_pct": -2.95,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.66,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "1332",
@@ -1425,7 +1425,7 @@
       "return_pct": -3.0,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.72,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "9008",
@@ -1437,7 +1437,7 @@
       "return_pct": -3.25,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -4.96,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "6326",
@@ -1449,7 +1449,7 @@
       "return_pct": -3.36,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -5.07,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "1605",
@@ -1461,7 +1461,7 @@
       "return_pct": -3.83,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -5.55,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "8604",
@@ -1473,7 +1473,7 @@
       "return_pct": -4.5,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -6.21,
-      "days_held": 6
+      "days_held": 7
     },
     {
       "code": "4689",
@@ -1485,7 +1485,7 @@
       "return_pct": -4.6,
       "benchmark_return_pct": 1.71,
       "excess_return_pct": -6.32,
-      "days_held": 6
+      "days_held": 7
     }
   ]
 }
