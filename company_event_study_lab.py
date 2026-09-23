@@ -34,6 +34,10 @@ EVENTS_FILE = "company_events.json"
 BENCH_TICKER = "1306.T"
 COST_ROUNDTRIP = 0.005  # 空売り往復コストの仮置き(貸株料+スプレッド、要検証)
 
+# market_event_bear_lab.py(1306全体、n=15)でチューニングした利確閾値をそのまま固定して使う。
+# ここ(個別株・別サンプル)で再チューニングしない = OOS的な確認。
+TAKE_PROFIT_PCT_FIXED = 0.03
+
 # ticker未記載(複数銘柄にまたがる)イベント用のバスケット定義
 BASKETS = {
     "タイ大洪水によるサプライチェーン寸断": ["7267.T", "6758.T", "7203.T"],  # ホンダ/ソニー/トヨタ
@@ -112,6 +116,71 @@ def basket_window_return(tickers: list[str], bench: dict[dt.date, float],
     if not rets:
         return None
     return pystats.mean(rets), r_bench
+
+
+def basket_takeprofit_exit(tickers: list[str], bench: dict[dt.date, float], entry_date: dt.date,
+                            take_profit_pct: float | None, max_days: int = 20):
+    """バスケット平均リターンを日次で追跡し、空売りの益がtake_profit_pct以上出たら
+    即利確(その日で手仕舞い)。出なければmax_days営業日で強制手仕舞い。
+    戻り値: (手仕舞いまでの営業日数, その時点のバスケット平均リターン, 利確/期限)。"""
+    entry_prices = {}
+    for t in tickers:
+        p0 = price_on_or_before(fetch_split_safe(t), entry_date)
+        if p0:
+            entry_prices[t] = p0[1]
+    if not entry_prices:
+        return None
+    last_i, last_r = None, None
+    for i in range(1, max_days + 1):
+        offs = trading_day_offset(bench, entry_date, i)
+        if offs is None:
+            break
+        d_target = offs[0]
+        rets = []
+        for t, p0 in entry_prices.items():
+            p1 = price_on_or_before(fetch_split_safe(t), d_target)
+            if p1 and p1[0] >= entry_date and p0 > 0:
+                rets.append(p1[1] / p0 - 1)
+        if not rets:
+            continue
+        r = pystats.mean(rets)
+        if take_profit_pct is not None and -r >= take_profit_pct:
+            return i, r, "利確"
+        last_i, last_r = i, r
+    if last_i is None:
+        return None
+    return last_i, last_r, "期限"
+
+
+def basket_reversal_exit(tickers: list[str], bench: dict[dt.date, float], entry_date: dt.date,
+                          confirm_up_days: int, max_days: int = 20):
+    """market_event_bear_lab.pyのreversal_exitと同じ考え方をバスケット平均に適用。
+    バスケット平均リターンが前日比でconfirm_up_days日連続改善(空売りが不利な方向)したら利確。"""
+    entry_prices = {t: p[1] for t in tickers if (p := price_on_or_before(fetch_split_safe(t), entry_date))}
+    if not entry_prices:
+        return None
+    prev_r, up_streak = 0.0, 0
+    last_i, last_r = None, None
+    for i in range(1, max_days + 1):
+        offs = trading_day_offset(bench, entry_date, i)
+        if offs is None:
+            break
+        d_target = offs[0]
+        rets = []
+        for t, p0 in entry_prices.items():
+            p1 = price_on_or_before(fetch_split_safe(t), d_target)
+            if p1 and p1[0] >= entry_date and p0 > 0:
+                rets.append(p1[1] / p0 - 1)
+        if not rets:
+            continue
+        r = pystats.mean(rets)
+        up_streak = up_streak + 1 if r > prev_r else 0
+        if up_streak >= confirm_up_days:
+            return i, r, "反転検知"
+        prev_r, last_i, last_r = r, i, r
+    if last_i is None:
+        return None
+    return last_i, last_r, "期限"
 
 
 def main():
@@ -227,6 +296,77 @@ def main():
     print("\n注意: n=十数件・多重検定なし・個別イベントの記述的確認(統計的検定ではない)。")
     print("バスケット銘柄は代表選定であり、その銘柄が実際にそのニュースをどれだけ強く受けたかは別途要検討。")
     print("空売りコストは往復50bpsの仮置き、個別銘柄の貸株可否(品貸料・規制)は未確認(ルール9に準拠、断定しない)。")
+
+    # ---- OOS確認: market_event_bear_lab.py(1306全体)で決めた利確3%固定閾値を、
+    #      再チューニングせずこの個別株サンプルにそのまま適用する ----
+    print("\n" + "=" * 100)
+    print(f"OOS確認: 1306全体側で固定した利確閾値{TAKE_PROFIT_PCT_FIXED*100:.0f}%を、"
+          f"個別株サンプル(n={len(short_trades)})にそのまま適用(再チューニングなし)")
+    print("=" * 100)
+    for label, tp_pct in [("固定20日(利確なし、比較用)", None), (f"利確{TAKE_PROFIT_PCT_FIXED*100:.0f}%固定", TAKE_PROFIT_PCT_FIXED)]:
+        pnls, tp_count = [], 0
+        for ev in events:
+            if ev["direction"] != "down":
+                continue
+            d0 = dt.date.fromisoformat(ev["date"])
+            tickers = [ev["ticker"]] if ev.get("ticker") else BASKETS.get(ev["name"])
+            if not tickers:
+                continue
+            anchor = price_on_or_before(bench, d0)
+            if anchor is None:
+                continue
+            entry_date = first_trading_day_after(bench, d0, skip=0)  # 早耳(REACT+1)で統一
+            if entry_date is None:
+                continue
+            result = basket_takeprofit_exit(tickers, bench, entry_date, tp_pct, max_days=20)
+            if result is None:
+                continue
+            _, r, reason = result
+            net = -r - COST_ROUNDTRIP
+            pnls.append(net)
+            if reason == "利確":
+                tp_count += 1
+        if not pnls:
+            continue
+        wins = sum(1 for p in pnls if p > 0)
+        print(f"  {label}: n={len(pnls)} / 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+              f"/ 平均{pystats.mean(pnls)*100:+.2f}% / 中央値{pystats.median(pnls)*100:+.2f}% "
+              f"/ 合計{sum(pnls)*100:+.1f}% / 利確発動{tp_count}件")
+
+    print("\n★これはOOS確認★ 閾値3%はmarket_event_bear_lab.py(1306全体、別サンプル)で選んだ値を")
+    print("そのまま使っており、この個別株サンプルに合わせて再チューニングはしていない。")
+
+    # ---- 反転検知ルール(固定%の代わりに『前日比プラスがN日続いたら利確』)もOOSで確認 ----
+    print("\n" + "=" * 100)
+    print("追加OOS確認: 反転検知ルール(市場全体側と同じロジックを個別株サンプルにそのまま適用)")
+    print("=" * 100)
+    for confirm in [1, 2, 3]:
+        pnls, exit_days = [], []
+        for ev in events:
+            if ev["direction"] != "down":
+                continue
+            d0 = dt.date.fromisoformat(ev["date"])
+            tickers = [ev["ticker"]] if ev.get("ticker") else BASKETS.get(ev["name"])
+            if not tickers:
+                continue
+            if price_on_or_before(bench, d0) is None:
+                continue
+            entry_date = first_trading_day_after(bench, d0, skip=0)
+            if entry_date is None:
+                continue
+            result = basket_reversal_exit(tickers, bench, entry_date, confirm, max_days=20)
+            if result is None:
+                continue
+            i, r, reason = result
+            net = -r - COST_ROUNDTRIP
+            pnls.append(net)
+            exit_days.append(i)
+        if not pnls:
+            continue
+        wins = sum(1 for p in pnls if p > 0)
+        print(f"  上昇{confirm}日連続で利確: n={len(pnls)} / 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+              f"/ 平均{pystats.mean(pnls)*100:+.2f}% / 中央値{pystats.median(pnls)*100:+.2f}% "
+              f"/ 合計{sum(pnls)*100:+.1f}% / 平均保有{pystats.mean(exit_days):.1f}営業日")
 
 
 if __name__ == "__main__":

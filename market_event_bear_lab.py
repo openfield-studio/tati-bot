@@ -93,6 +93,29 @@ def stoploss_exit(closes: dict[dt.date, float], entry_date: dt.date, stop_pct: f
     return d, r, False
 
 
+def reversal_exit(closes: dict[dt.date, float], entry_date: dt.date,
+                   confirm_up_days: int, max_days: int = 20):
+    """固定%ではなく『値動きの反転』で利確する適応的ルール。前日比で上昇した日が
+    confirm_up_days日連続したら、下落の勢い(加速度)が止まった=反発開始と判断してその日に決済。
+    連続しなければmax_days営業日で強制手仕舞い。戻り値: (手仕舞い日, 生リターン, 反転検知/期限, 手仕舞いまでの営業日数)。"""
+    keys = sorted(d for d in closes if d >= entry_date)
+    last_idx = min(max_days, len(keys) - 1)
+    if last_idx < 1:
+        return None
+    entry_price = closes[keys[0]]
+    prev_price = entry_price
+    up_streak = 0
+    for i in range(1, last_idx + 1):
+        d = keys[i]
+        price = closes[d]
+        up_streak = up_streak + 1 if price > prev_price else 0
+        if up_streak >= confirm_up_days:
+            return d, price / entry_price - 1, "反転検知", i
+        prev_price = price
+    d = keys[last_idx]
+    return d, closes[d] / entry_price - 1, "期限", last_idx
+
+
 def path_profile(closes: dict[dt.date, float], entry_date: dt.date, max_days: int = 20):
     """entry_dateから最大max_days営業日、日次で空売りの累積損益(コスト前)を追跡し、
     各日の(日数, 損益)のリストを返す。"""
@@ -257,6 +280,32 @@ def main():
     if give_backs:
         print(f"\n→ 平均の吐き出し幅: {pystats.mean(give_backs)*100:+.2f}pt "
               f"(プラスなら『途中で利確していれば20日目より良かった』を意味する)")
+
+    print("\n追加検証3.5: 反転検知ルール(固定%ではなく『前日比プラスの日がN日続いたら利確』)")
+    print("早耳REACT+1エントリー、最大20営業日。値動きの勢いが止まった(加速度がプラスに転じた)")
+    print("タイミングを固定閾値の代わりに使う、というアイデアの検証。")
+    for confirm in [1, 2, 3]:
+        pnls, exit_days = [], []
+        for ev in down_events:
+            d0 = dt.date.fromisoformat(ev["date"])
+            if price_on_or_before(closes, d0) is None:
+                continue
+            entry_date = first_trading_day_after(closes, d0, skip=0)
+            if entry_date is None:
+                continue
+            result = reversal_exit(closes, entry_date, confirm, max_days=20)
+            if result is None:
+                continue
+            _, r, reason, days = result
+            net = -r - COST_ROUNDTRIP
+            pnls.append(net)
+            exit_days.append(days)
+        if not pnls:
+            continue
+        wins = sum(1 for p in pnls if p > 0)
+        print(f"  上昇{confirm}日連続で利確: n={len(pnls)} / 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+              f"/ 平均{pystats.mean(pnls)*100:+.2f}% / 中央値{pystats.median(pnls)*100:+.2f}% "
+              f"/ 合計{sum(pnls)*100:+.1f}% / 平均保有{pystats.mean(exit_days):.1f}営業日")
 
     print("\n追加検証3: 利確ルール(早耳REACT+1、損切りは併用せず利確のみ、最大20営業日)")
     print("★注意★ 閾値を細かく振って一番良い数字を探す行為自体が多重検定(過学習)リスクを孕む。")
