@@ -90,8 +90,12 @@ def main():
         print(f"{ev['date']}  {ev['name']}  信頼度:{ev['confidence']}")
         short_trades[ev["date"]] = {}
         printed_any = False
-        for react_label, skip in [("早耳(REACT+1)", 0), ("安全(REACT+2)", 1)]:
-            entry_date = first_trading_day_after(closes, d0, skip=skip)
+        react_options = [
+            ("同日(SAME-DAY、当日終値で反応できた場合)", anchor[0]),
+            ("早耳(REACT+1)", first_trading_day_after(closes, d0, skip=0)),
+            ("安全(REACT+2)", first_trading_day_after(closes, d0, skip=1)),
+        ]
+        for react_label, entry_date in react_options:
             if entry_date is None:
                 continue
             entry_price = closes[entry_date]
@@ -115,7 +119,7 @@ def main():
     print("=" * 100)
     print(f"集計: ベア(空売り)シミュレーションの損益(コスト後、往復{COST_ROUNDTRIP*10000:.0f}bps仮定)")
     print("=" * 100)
-    for react_label in ["早耳(REACT+1)", "安全(REACT+2)"]:
+    for react_label in ["同日(SAME-DAY、当日終値で反応できた場合)", "早耳(REACT+1)", "安全(REACT+2)"]:
         for hold_label in ["+5営業日", "+20営業日"]:
             key = f"{react_label}/{hold_label}"
             pnls = [t[key] for t in short_trades.values() if key in t]
