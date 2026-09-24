@@ -152,6 +152,55 @@ def basket_takeprofit_exit(tickers: list[str], bench: dict[dt.date, float], entr
     return last_i, last_r, "期限"
 
 
+def basket_recent_volatility(tickers: list[str], before_date: dt.date, window: int = 20) -> float | None:
+    """market_event_bear_lab.pyのrecent_volatilityと同じ考え方をバスケット平均に適用。
+    ★先読み注意★ before_date(エントリー日)より前のデータのみ使う。"""
+    sigmas = []
+    for t in tickers:
+        closes = fetch_split_safe(t)
+        keys = sorted(d for d in closes if d < before_date)
+        if len(keys) < window + 1:
+            continue
+        recent = keys[-(window + 1):]
+        rets = [closes[recent[i + 1]] / closes[recent[i]] - 1 for i in range(len(recent) - 1)]
+        if len(rets) >= 2:
+            sigmas.append(pystats.stdev(rets))
+    return pystats.mean(sigmas) if sigmas else None
+
+
+def basket_vol_trailing_stop_exit(tickers: list[str], bench: dict[dt.date, float], entry_date: dt.date,
+                                   k: float, max_days: int = 20):
+    """market_event_bear_lab.pyのvol_trailing_stop_exitと同じ考え方をバスケット平均に適用。"""
+    sigma = basket_recent_volatility(tickers, entry_date, window=20)
+    if sigma is None or sigma <= 0:
+        return None
+    entry_prices = {t: p[1] for t in tickers if (p := price_on_or_before(fetch_split_safe(t), entry_date))}
+    if not entry_prices:
+        return None
+    trough_r = 0.0  # バスケット平均リターンでの最安値(空売りに最も有利な点)
+    last_i, last_r = None, None
+    for i in range(1, max_days + 1):
+        offs = trading_day_offset(bench, entry_date, i)
+        if offs is None:
+            break
+        d_target = offs[0]
+        rets = []
+        for t, p0 in entry_prices.items():
+            p1 = price_on_or_before(fetch_split_safe(t), d_target)
+            if p1 and p1[0] >= entry_date and p0 > 0:
+                rets.append(p1[1] / p0 - 1)
+        if not rets:
+            continue
+        r = pystats.mean(rets)
+        trough_r = min(trough_r, r)
+        if r >= trough_r + k * sigma:  # 最安値からk*sigma分戻ったら利確(近似: 相対リターンの差で判定)
+            return i, r, "トレーリング利確"
+        last_i, last_r = i, r
+    if last_i is None:
+        return None
+    return last_i, last_r, "期限"
+
+
 def basket_reversal_exit(tickers: list[str], bench: dict[dt.date, float], entry_date: dt.date,
                           confirm_up_days: int, max_days: int = 20):
     """market_event_bear_lab.pyのreversal_exitと同じ考え方をバスケット平均に適用。
@@ -335,6 +384,38 @@ def main():
 
     print("\n★これはOOS確認★ 閾値3%はmarket_event_bear_lab.py(1306全体、別サンプル)で選んだ値を")
     print("そのまま使っており、この個別株サンプルに合わせて再チューニングはしていない。")
+
+    # ---- ボラ基準のトレーリングストップもOOSで確認 ----
+    print("\n" + "=" * 100)
+    print("追加OOS確認: ボラティリティ基準トレーリングストップ(市場全体側と同ロジックをそのまま適用)")
+    print("=" * 100)
+    for k in [1.0, 1.5, 2.0, 3.0]:
+        pnls, exit_days = [], []
+        for ev in events:
+            if ev["direction"] != "down":
+                continue
+            d0 = dt.date.fromisoformat(ev["date"])
+            tickers = [ev["ticker"]] if ev.get("ticker") else BASKETS.get(ev["name"])
+            if not tickers:
+                continue
+            if price_on_or_before(bench, d0) is None:
+                continue
+            entry_date = first_trading_day_after(bench, d0, skip=0)
+            if entry_date is None:
+                continue
+            result = basket_vol_trailing_stop_exit(tickers, bench, entry_date, k, max_days=20)
+            if result is None:
+                continue
+            i, r, reason = result
+            net = -r - COST_ROUNDTRIP
+            pnls.append(net)
+            exit_days.append(i)
+        if not pnls:
+            continue
+        wins = sum(1 for p in pnls if p > 0)
+        print(f"  k={k}: n={len(pnls)} / 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+              f"/ 平均{pystats.mean(pnls)*100:+.2f}% / 中央値{pystats.median(pnls)*100:+.2f}% "
+              f"/ 合計{sum(pnls)*100:+.1f}% / 平均保有{pystats.mean(exit_days):.1f}営業日")
 
     # ---- 反転検知ルール(固定%の代わりに『前日比プラスがN日続いたら利確』)もOOSで確認 ----
     print("\n" + "=" * 100)

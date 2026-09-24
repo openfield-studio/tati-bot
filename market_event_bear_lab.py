@@ -93,6 +93,40 @@ def stoploss_exit(closes: dict[dt.date, float], entry_date: dt.date, stop_pct: f
     return d, r, False
 
 
+def recent_volatility(closes: dict[dt.date, float], before_date: dt.date, window: int = 20) -> float | None:
+    """before_date(エントリー日)より前のwindow営業日の日次リターンの標準偏差。
+    ★先読み注意★ エントリー日より前のデータのみ使う(未来のボラは使わない)。"""
+    keys = sorted(d for d in closes if d < before_date)
+    if len(keys) < window + 1:
+        return None
+    recent = keys[-(window + 1):]
+    rets = [closes[recent[i + 1]] / closes[recent[i]] - 1 for i in range(len(recent) - 1)]
+    return pystats.stdev(rets) if len(rets) >= 2 else None
+
+
+def vol_trailing_stop_exit(closes: dict[dt.date, float], entry_date: dt.date, k: float, max_days: int = 20):
+    """固定%ではなく、エントリー時点の直近ボラ(sigma)のk倍を戻したら利確するトレーリングストップ。
+    エントリー後の最安値(空売りにとって最も有利な点)を追跡し、そこからk*sigma分反発したら決済。
+    戻り値: (手仕舞い日, 生リターン, 利確/期限, 手仕舞いまでの営業日数)。"""
+    sigma = recent_volatility(closes, entry_date, window=20)
+    if sigma is None or sigma <= 0:
+        return None
+    keys = sorted(d for d in closes if d >= entry_date)
+    last_idx = min(max_days, len(keys) - 1)
+    if last_idx < 1:
+        return None
+    entry_price = closes[keys[0]]
+    trough_price = entry_price
+    for i in range(1, last_idx + 1):
+        d = keys[i]
+        price = closes[d]
+        trough_price = min(trough_price, price)
+        if price >= trough_price * (1 + k * sigma):
+            return d, price / entry_price - 1, "トレーリング利確", i
+    d = keys[last_idx]
+    return d, closes[d] / entry_price - 1, "期限", last_idx
+
+
 def reversal_exit(closes: dict[dt.date, float], entry_date: dt.date,
                    confirm_up_days: int, max_days: int = 20):
     """固定%ではなく『値動きの反転』で利確する適応的ルール。前日比で上昇した日が
@@ -280,6 +314,31 @@ def main():
     if give_backs:
         print(f"\n→ 平均の吐き出し幅: {pystats.mean(give_backs)*100:+.2f}pt "
               f"(プラスなら『途中で利確していれば20日目より良かった』を意味する)")
+
+    print("\n追加検証3.6: ボラティリティ基準のトレーリングストップ利確")
+    print("(固定%ではなく、エントリー時点の直近20日ボラのk倍を最安値から戻したら利確)")
+    for k in [1.0, 1.5, 2.0, 3.0]:
+        pnls, exit_days, sigmas = [], [], []
+        for ev in down_events:
+            d0 = dt.date.fromisoformat(ev["date"])
+            if price_on_or_before(closes, d0) is None:
+                continue
+            entry_date = first_trading_day_after(closes, d0, skip=0)
+            if entry_date is None:
+                continue
+            result = vol_trailing_stop_exit(closes, entry_date, k, max_days=20)
+            if result is None:
+                continue
+            _, r, reason, days = result
+            net = -r - COST_ROUNDTRIP
+            pnls.append(net)
+            exit_days.append(days)
+        if not pnls:
+            continue
+        wins = sum(1 for p in pnls if p > 0)
+        print(f"  k={k}: n={len(pnls)} / 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+              f"/ 平均{pystats.mean(pnls)*100:+.2f}% / 中央値{pystats.median(pnls)*100:+.2f}% "
+              f"/ 合計{sum(pnls)*100:+.1f}% / 平均保有{pystats.mean(exit_days):.1f}営業日")
 
     print("\n追加検証3.5: 反転検知ルール(固定%ではなく『前日比プラスの日がN日続いたら利確』)")
     print("早耳REACT+1エントリー、最大20営業日。値動きの勢いが止まった(加速度がプラスに転じた)")
