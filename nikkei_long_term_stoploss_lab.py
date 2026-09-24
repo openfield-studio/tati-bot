@@ -38,6 +38,37 @@ def fetch_closes(ticker: str) -> dict[dt.date, float]:
     return {idx.date(): float(c) for idx, c in zip(df.index, df["Close"])}
 
 
+def regime_backtest(closes, shocks, sl_pct, n_consecutive, bear_action, max_days=20):
+    """shocksを時系列順に処理。通常は毎回ロング(損切りsl_pct%)。直近n_consecutive回
+    連続でロングが損切りに引っかかったら『下落局面』と判定してbear_actionに切り替える
+    (bear_action: 'skip'=見送り(現金)、'short'=ベアに反転、損切りも対称に適用)。
+    ロングなら損切りに引っかからないトレードが出たら即、通常モードに復帰する。
+    ★レジーム判定は常に『もしロングしていたら』の結果で行う(実際の行動とは独立)。"""
+    consecutive_losses = 0
+    regime = "normal"
+    results = []
+    for d0 in shocks:
+        long_r = s.stoploss_exit_side(closes, d0, sl_pct, "long", max_days=max_days)
+        if long_r is None:
+            continue
+        would_stop = long_r <= -sl_pct + 1e-9
+
+        if regime == "normal":
+            actual_r, action = long_r, "long"
+        elif bear_action == "skip":
+            actual_r, action = 0.0, "skip"
+        else:
+            short_r = s.stoploss_exit_side(closes, d0, sl_pct, "short", max_days=max_days)
+            actual_r, action = (short_r if short_r is not None else 0.0), "short"
+
+        results.append({"date": d0, "regime_at_entry": regime, "action": action,
+                         "net": actual_r - COST_ROUNDTRIP})
+
+        consecutive_losses = consecutive_losses + 1 if would_stop else 0
+        regime = "bear" if consecutive_losses >= n_consecutive else "normal"
+    return results
+
+
 def main():
     closes = fetch_closes(TICKER)
     shocks = s.find_shock_days(closes, THRESHOLD, COOLDOWN)
@@ -112,6 +143,22 @@ def main():
         lbl = "なし" if sl is None else f"{sl*100:.0f}%"
         print(f"  損切り{lbl}: n={len(pnls)} / 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
               f"/ 平均{pystats.mean(pnls)*100:+.2f}% / 合計{sum(pnls)*100:+.1f}%")
+
+    print("\n" + "=" * 100)
+    print("追加検証: 連続損切りをレジーム判定の信号として使う(『下落局面』検知→買わない/ベアに反転)")
+    print("=" * 100)
+    print(f"ベースライン(常にロング、損切りなし): 合計{sum(r-COST_ROUNDTRIP for d0 in shocks if (r:=s.stoploss_exit_side(closes,d0,None,'long')) is not None)*100:+.1f}%\n")
+    for sl_pct in [0.10, 0.15]:
+        for n_consec in [2, 3]:
+            for bear_action, action_label in [("skip", "見送り(現金)"), ("short", "ベアに反転")]:
+                results = regime_backtest(closes, shocks, sl_pct, n_consec, bear_action)
+                pnls = [r["net"] for r in results]
+                bear_periods = sum(1 for r in results if r["regime_at_entry"] == "bear")
+                wins = sum(1 for p in pnls if p > 0)
+                print(f"  損切り{sl_pct*100:.0f}%・{n_consec}連続で判定・下落局面時は{action_label}: "
+                      f"n={len(pnls)} 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+                      f"平均{pystats.mean(pnls)*100:+.2f}% 合計{sum(pnls)*100:+.1f}% "
+                      f"(下落局面と判定された回数{bear_periods}件)")
 
     print("\n注意: ^N225はTOPIX(1306)とは別指数。日本株市場全体の長期傾向を見る代替として使用。")
     print("コストは往復20bps仮定。1965〜2026年の61年間、実際の市場サイクル数は限られる点に注意。")
