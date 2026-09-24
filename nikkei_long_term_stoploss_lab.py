@@ -69,6 +69,42 @@ def regime_backtest(closes, shocks, sl_pct, n_consecutive, bear_action, max_days
     return results
 
 
+def moving_average(closes: dict[dt.date, float], window: int) -> dict[dt.date, float]:
+    """各日について、その日を含む直近window営業日の単純移動平均(先読みなし、過去と当日のみ使用)。"""
+    keys = sorted(closes)
+    prices = [closes[k] for k in keys]
+    ma = {}
+    running_sum = sum(prices[:window])
+    if window <= len(prices):
+        ma[keys[window - 1]] = running_sum / window
+    for i in range(window, len(prices)):
+        running_sum += prices[i] - prices[i - window]
+        ma[keys[i]] = running_sum / window
+    return ma
+
+
+def ma_regime_backtest(closes, shocks, ma, bear_action, max_days=20):
+    """d0時点の終値がMAより上なら『上昇トレンド』でロング、MAより下なら『下降トレンド』と判定し
+    bear_action(skip=見送り/short=ベア反転)に切り替える。"""
+    results = []
+    for d0 in shocks:
+        if d0 not in ma:
+            continue
+        regime = "bull" if closes[d0] > ma[d0] else "bear"
+        if regime == "bull":
+            r = s.fixed_hold_exit(closes, d0, max_days, "long")
+            action = "long"
+        elif bear_action == "skip":
+            r, action = 0.0, "skip"
+        else:
+            r = s.fixed_hold_exit(closes, d0, max_days, "short")
+            action = "short"
+        if r is None:
+            continue
+        results.append({"date": d0, "regime": regime, "action": action, "net": r - COST_ROUNDTRIP})
+    return results
+
+
 def main():
     closes = fetch_closes(TICKER)
     shocks = s.find_shock_days(closes, THRESHOLD, COOLDOWN)
@@ -159,6 +195,37 @@ def main():
                       f"n={len(pnls)} 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
                       f"平均{pystats.mean(pnls)*100:+.2f}% 合計{sum(pnls)*100:+.1f}% "
                       f"(下落局面と判定された回数{bear_periods}件)")
+
+    print("\n" + "=" * 100)
+    print("追加検証: 移動平均線レジームフィルター(価格>MAなら押し目買い、価格<MAなら見送り/ベア)")
+    print("=" * 100)
+    for window in [100, 150, 200, 250, 300]:
+        ma = moving_average(closes, window)
+        for bear_action, lbl in [("skip", "見送り"), ("short", "ベア反転")]:
+            results = ma_regime_backtest(closes, shocks, ma, bear_action)
+            pnls = [r["net"] for r in results]
+            bull_n = sum(1 for r in results if r["regime"] == "bull")
+            wins = sum(1 for p in pnls if p > 0)
+            print(f"  MA{window}日 {lbl}: n={len(pnls)}(上昇トレンド判定{bull_n}件) "
+                  f"勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+                  f"平均{pystats.mean(pnls)*100:+.2f}% 合計{sum(pnls)*100:+.1f}%")
+        print()
+
+    print("参考: MA200日のフィルターで、上昇トレンド判定分だけ/下降トレンド判定分だけの内訳")
+    ma200 = moving_average(closes, 200)
+    bull_pnls, bear_pnls = [], []
+    for d0 in shocks:
+        if d0 not in ma200:
+            continue
+        r = s.fixed_hold_exit(closes, d0, 20, "long")
+        if r is None:
+            continue
+        (bull_pnls if closes[d0] > ma200[d0] else bear_pnls).append(r - COST_ROUNDTRIP)
+    for lbl, pnls in [("上昇トレンド時に買った場合", bull_pnls), ("下降トレンド時に買った場合", bear_pnls)]:
+        if pnls:
+            wins = sum(1 for p in pnls if p > 0)
+            print(f"  {lbl}: n={len(pnls)} 勝率{wins}/{len(pnls)}({wins/len(pnls)*100:.0f}%) "
+                  f"平均{pystats.mean(pnls)*100:+.2f}% 合計{sum(pnls)*100:+.1f}%")
 
     print("\n注意: ^N225はTOPIX(1306)とは別指数。日本株市場全体の長期傾向を見る代替として使用。")
     print("コストは往復20bps仮定。1965〜2026年の61年間、実際の市場サイクル数は限られる点に注意。")
