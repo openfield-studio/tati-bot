@@ -93,6 +93,95 @@ def vol_trailing_stop_exit(closes, d0, k, side, max_days=20):
     return r if side == "long" else -r
 
 
+def path_profile_side(closes, d0, side, max_days=20):
+    entry_price = closes[d0]
+    keys = sorted(x for x in closes if x >= d0)
+    last_idx = min(max_days, len(keys) - 1)
+    path = []
+    for i in range(1, last_idx + 1):
+        r = closes[keys[i]] / entry_price - 1
+        path.append((i, r if side == "long" else -r))
+    return path
+
+
+def stoploss_exit_side(closes, d0, stop_pct, side, max_days=20):
+    """sideに不利な方向にstop_pct以上動いたら即手仕舞い(損切り)。stop_pct=Noneなら判定なし。"""
+    entry_price = closes[d0]
+    keys = sorted(x for x in closes if x >= d0)
+    last_idx = min(max_days, len(keys) - 1)
+    if last_idx < 1:
+        return None
+    for i in range(1, last_idx + 1):
+        r = closes[keys[i]] / entry_price - 1
+        signed = r if side == "long" else -r
+        if stop_pct is not None and signed <= -stop_pct:
+            return signed
+    r = closes[keys[last_idx]] / entry_price - 1
+    return r if side == "long" else -r
+
+
+def reversal_exit_side(closes, d0, confirm_days, side, max_days=20):
+    """sideに不利な方向(long: 下落、short: 上昇)がconfirm_days日連続したら手仕舞い。"""
+    entry_price = closes[d0]
+    keys = sorted(x for x in closes if x >= d0)
+    last_idx = min(max_days, len(keys) - 1)
+    if last_idx < 1:
+        return None
+    prev_price = entry_price
+    streak = 0
+    for i in range(1, last_idx + 1):
+        price = closes[keys[i]]
+        adverse = (price < prev_price) if side == "long" else (price > prev_price)
+        streak = streak + 1 if adverse else 0
+        if streak >= confirm_days:
+            r = price / entry_price - 1
+            return r if side == "long" else -r
+        prev_price = price
+    r = closes[keys[last_idx]] / entry_price - 1
+    return r if side == "long" else -r
+
+
+def detailed_side_analysis(closes, shocks, side, label):
+    print("\n" + "=" * 100)
+    print(f"詳細検証: {label}(n={len(shocks)}、選択バイアスなしサンプル)")
+    print("=" * 100)
+
+    print("\n[A] 利確閾値の掃引(損切りなし、最大20営業日)")
+    for tp in [None, 0.01, 0.02, 0.03, 0.05, 0.08, 0.12]:
+        lbl = "利確なし(固定20日)" if tp is None else f"利確{tp*100:.0f}%"
+        pnls = [p - COST_ROUNDTRIP for d0 in shocks
+                if (p := fixed_takeprofit_exit(closes, d0, tp, side)) is not None] if tp is not None else \
+               [p - COST_ROUNDTRIP for d0 in shocks if (p := fixed_hold_exit(closes, d0, 20, side)) is not None]
+        summarize(f"  {lbl}", pnls)
+
+    print("\n[B] 損切り閾値の掃引(利確なし、最大20営業日)")
+    for sl in [None, 0.02, 0.03, 0.05, 0.08]:
+        lbl = "損切りなし(固定20日)" if sl is None else f"損切り{sl*100:.0f}%"
+        pnls = [p - COST_ROUNDTRIP for d0 in shocks
+                if (p := stoploss_exit_side(closes, d0, sl, side)) is not None]
+        summarize(f"  {lbl}", pnls)
+
+    print("\n[C] 途中の最良地点 vs 20日目の最終結果(ギブバック分析)")
+    give_backs = []
+    for d0 in shocks:
+        path = path_profile_side(closes, d0, side, max_days=20)
+        if len(path) < 20:
+            continue
+        best_day, best = max(path, key=lambda x: x[1])
+        final = path[-1][1]
+        give_backs.append(best - final)
+    if give_backs:
+        print(f"  平均の吐き出し幅: {pystats.mean(give_backs)*100:+.2f}pt "
+              f"(n={len(give_backs)}、プラスなら途中で利確した方が20日目より良かったことを意味する)")
+        print(f"  吐き出し幅の中央値: {pystats.median(give_backs)*100:+.2f}pt")
+
+    print("\n[D] 反転検知ルール(sideに不利な動きがN日連続したら手仕舞い)")
+    for confirm in [1, 2, 3]:
+        pnls = [p - COST_ROUNDTRIP for d0 in shocks
+                if (p := reversal_exit_side(closes, d0, confirm, side)) is not None]
+        summarize(f"  不利な日が{confirm}日連続で手仕舞い", pnls)
+
+
 def summarize(label, pnls):
     if not pnls:
         print(f"  {label}: データなし")
@@ -150,6 +239,8 @@ def main():
     print("\n注意: cooldownで擬似的に独立化しているが、同じ市場サイクル・同じ金融緩和相場という")
     print("意味では完全に独立ではない。それでも『有名な事件だけ』の選択バイアスは排除できている。")
     print("コストは往復20bps仮定(1306想定)。ロング側は既存の本体戦略(RSI押し目買い)に近い発想。")
+
+    detailed_side_analysis(closes, shocks, "long", "ロング(押し目買い)")
 
 
 if __name__ == "__main__":
