@@ -15,6 +15,8 @@ fred_cache_*.csv
 *.exe
 position.json
 history.jsonl
+position_regime_shift.json
+history_regime_shift.jsonl
 logs/
 price_list_*.csv
 jpx_sector_per_pbr_history.csv

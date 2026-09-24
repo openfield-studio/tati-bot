@@ -1,0 +1,11 @@
+{
+  "updated": "2026-09-24T21:59:18",
+  "date": "2026-09-24",
+  "regime": "bull",
+  "drawdown_pct": 9.6,
+  "action": "NONE",
+  "target": null,
+  "reason": "ショックなし(本日+0.70%、DD=9.6%、レジーム=bull)",
+  "holding": null,
+  "mode": "DRY-RUN"
+}
