@@ -1,11 +1,11 @@
 {
-  "updated": "2026-09-25T07:59:04",
-  "date": "2026-09-24",
+  "updated": "2026-09-25T22:34:52",
+  "date": "2026-09-25",
   "regime": "bull",
   "ma_gap_pct": -19.1,
   "action": "NONE",
   "target": null,
-  "reason": "ショックなし(本日+0.70%、MA差=-19.1%、レジーム=bull)",
+  "reason": "ショックなし(本日+1.28%、MA差=-19.1%、レジーム=bull)",
   "holding": null,
   "mode": "DRY-RUN"
 }
