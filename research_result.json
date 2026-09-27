@@ -1,0 +1,72 @@
+{
+  "symbol": "1306",
+  "trade_unit": 10,
+  "verdict": "GO",
+  "warnings": [],
+  "strategy": {
+    "name": "optimized",
+    "kind": "rsi_only",
+    "sma_fast": 0,
+    "sma_slow": 0,
+    "rsi_period": 14,
+    "rsi_overbought": 75,
+    "rsi_oversold": 40,
+    "rsi_exit": 50,
+    "stop_loss_pct": 0.08,
+    "take_profit_pct": 0.0
+  },
+  "in_sample": {
+    "return_pct": 61.790345792000444,
+    "max_dd_pct": 21.457930919627636,
+    "sharpe": 0.7925265881271039,
+    "trades": 41,
+    "win_rate": 0.8048780487804879,
+    "profit_factor": 2.2389982302631055,
+    "calmar": 2.8796040971257217
+  },
+  "out_of_sample": {
+    "return_pct": 50.69472907200012,
+    "max_dd_pct": 13.926677458547013,
+    "sharpe": 1.0047056807456758,
+    "trades": 23,
+    "win_rate": 0.8260869565217391,
+    "profit_factor": 2.889680946067365,
+    "calmar": 3.6401165477475748
+  },
+  "walk_forward": {
+    "folds": [
+      {
+        "fold": 1,
+        "oos_return_pct": 10.2,
+        "max_dd_pct": 7.2,
+        "trades": 8,
+        "params": "<40/>50"
+      },
+      {
+        "fold": 2,
+        "oos_return_pct": 11.9,
+        "max_dd_pct": 6.6,
+        "trades": 7,
+        "params": "<40/>50"
+      },
+      {
+        "fold": 3,
+        "oos_return_pct": 24.9,
+        "max_dd_pct": 10.3,
+        "trades": 10,
+        "params": "<40/>50"
+      },
+      {
+        "fold": 4,
+        "oos_return_pct": 13.4,
+        "max_dd_pct": 7.7,
+        "trades": 4,
+        "params": "<40/>50"
+      }
+    ],
+    "positive": 4,
+    "total": 4,
+    "passed": true
+  },
+  "note": "バックテストは過去の検証であり将来を保証しない。判定がGOでも少額・DRY-RUNから始めること。"
+}

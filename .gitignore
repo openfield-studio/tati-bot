@@ -8,6 +8,10 @@ e_api_public_key.pem
 .env
 __pycache__/
 research_result*.json
+# ただしresearch_result.json(1306本番戦略、金額等の非公開情報は含まない)だけは例外。
+# GitHub Actions実行環境がtrading_agents.pyの戦略パラメータを読めるようにするため
+# 2026-09-28から追跡対象にした(SESSION_LOG項目121参照)。
+!research_result.json
 prices_*.csv
 gdelt_cache_*.json
 fred_cache_*.csv

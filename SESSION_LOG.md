@@ -3452,6 +3452,59 @@ regime_shift(トレンド/レジーム判定、大きな下落トレンド入り
 無し)はそのまま変更しない**。FACTOR_RESEARCH_LOG.mdの試行済みファクター一覧に#79
 として追加、累積試行数78→79。factor_research_summary.jsonも更新。
 
+### 121. GitHub Actionsで日次ルーティンをPCの電源に依存させない化(2026-09-28)
+
+ユーザーの「売買の実行ってPC消しててもGitHubからできないの?」「うんお願い」を受けて、
+daily_run.bat(ローカルのタスクスケジューラ`TatiBotDailyUpdate`、毎日20:00 JST)と同じ
+処理を`.github/workflows/daily.yml`(新規)としてGitHub Actions側にも実装した。
+まずは両方を並行稼働させ、安定を確認してからローカルのタスクスケジューラを止める方針
+(ユーザー了承済み)。
+
+**役割分担の整理(混同注意)**: 「クラウド日次ファクター探索ルーティン」(項目116・118・119
+等、メタラベリング等を発見しているもの)はClaude自身のクラウド実行環境で動いており、
+そこはネットワーク制限でyfinance/J-Quantsに接続できないことが3週間以上前から判明
+済み(既知の制約)。今回のGitHub Actionsはこれとは全くの別物(GitHub自身の定期実行
+機能で、外部ネットワークに普通に接続できる)で、この制約の影響を受けない。
+
+**実装**:
+- `.github/workflows/daily.yml`: cron `15 11 * * 1-5`(20:15 JST、平日のみ。ローカル版と
+  15分ずらして同時pushの衝突を避けた)+ `workflow_dispatch`(手動実行ボタン)。
+  STOPファイル(既存のキルスイッチ)を検出したら何もしない。
+  fetch_yf.py→trading_agents.py→regime_shift_agent.pyの順に実行し、
+  state.json/state_regime_shift.jsonが変化していればcommit・push(push失敗時は
+  pull --rebaseして5回までリトライ、ローカル版との衝突に備えた)。
+- **非公開state(position.json/history.jsonl/position_regime_shift.json/
+  history_regime_shift.jsonl、金額・数量を含む)の扱いが課題だった**: GitHub Actionsの
+  ランナーは毎回まっさらな状態(gitに乗っていないファイルは前回の実行から一切
+  引き継がれない)。これらのファイルは意図的に非公開(.gitignore対象)にしてきた
+  ものなので、そのままpublicリポジトリにコミットする選択肢は取らず、代わりに
+  **GitHub Actionsのキャッシュ機能(actions/cache)で引き継ぐ**設計にした
+  (git履歴には一切乗らない、公開されない)。
+- **research_result.json(1306本番戦略のパラメータ・バックテスト指標)が実は
+  .gitignore対象で、GitHub Actions上には存在しないと判明**: 中身を確認したところ
+  金額・数量等の非公開情報は一切含まれておらず(戦略名・RSI閾値・バックテストの
+  %指標のみ、しかもREADME.md/SESSION_LOG.mdで既に公開済みの内容)、
+  この1ファイルだけ`.gitignore`の除外パターンから復帰させてリポジトリに追加した
+  (他の実験用`research_result_*.json`群は引き続き非公開のまま)。これが無いと
+  trading_agents.pyは判定UNKNOWN扱いになり新規買いをしなくなるため、見落として
+  いたら気づかないまま機能しなくなるところだった。
+- `requirements.txt`(新規): `yfinance`のみ(fetch_yf.py/regime_shift_agent.pyが
+  必要とする唯一の外部パッケージ、trading_agents.py自体はキャッシュCSVを読むだけで
+  yfinance不要と判明)。
+
+**ユーザーに要お願いの作業(実施できず)**: GitHubリポジトリの
+Settings→Actions→General→Workflow permissionsが「Read and write permissions」に
+なっているか確認が必要(デフォルトのRead-onlyのままだとpushが失敗する)。gh CLIの
+認証トークンが無効でこのローカルセッションからは確認・変更ができなかったため、
+ユーザー自身の確認をお願いする形にした。
+
+**現時点では実弾発注は関係ない**: 1306・regime_shiftとも引き続きDRY-RUNのみで、
+今回の変更は「紙トレードの判定・記録をPCの電源と切り離す」ことが目的。将来
+実弾化する場合は、立花証券APIの認証情報をGitHubの暗号化されたSecretsに置くかどうかを
+別途判断する必要がある(リポジトリはpublicと確認済み、Secrets自体はログに出ず
+非公開だが、ローカルのsettings.yamlのみに置く現状より一段信頼範囲が広がる判断になる
+点は要相談として記録)。
+
 ---
 
 ## ファイル一覧

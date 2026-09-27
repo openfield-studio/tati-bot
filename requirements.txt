@@ -1,0 +1,3 @@
+# 日次自動実行(daily_run.bat / .github/workflows/daily.yml)に必要な最小限の依存関係。
+# yfinanceが内部でpandas/numpy/requests等を引き込む。
+yfinance>=1.4.0

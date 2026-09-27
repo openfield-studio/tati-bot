@@ -1,0 +1,115 @@
+name: tati-bot daily run
+
+# ユーザーのPCが起きていなくても、GitHub側のサーバーで毎日自動実行するためのワークフロー。
+# daily_run.bat(ローカルのタスクスケジューラ版)と同じ処理内容(fetch→判定→push)を
+# GitHub Actions上で行う。しばらくは両方を並行稼働し、安定を確認してから
+# ローカルのタスクスケジューラ(TatiBotDailyUpdate)を止める予定(2026-09-28導入)。
+#
+# 実行時刻をローカル版(20:00 JST)から15分ずらしている(20:15 JST)のは、
+# 同時刻に両方がpushしてコンフリクトするのを避けるため。
+
+on:
+  schedule:
+    - cron: "15 11 * * 1-5"  # 20:15 JST、平日のみ(ローカル版と同じ頻度)
+  workflow_dispatch: {}       # GitHub上の「Run workflow」ボタンで手動実行も可能
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tati-bot-daily
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check kill switch
+        id: stopcheck
+        run: |
+          if [ -f STOP ]; then
+            echo "STOPファイルを検出、全停止します。"
+            echo "stop=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "stop=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # position.json / history.jsonl / position_regime_shift.json /
+      # history_regime_shift.jsonl は非公開情報(金額・数量を含む)のため
+      # 従来通りgit管理はしない(.gitignore対象のまま)。GitHub Actionsの
+      # ランナーは毎回まっさらな状態から始まるので、代わりにActionsの
+      # キャッシュ機能で「前回実行時の状態」だけを引き継ぐ(publicリポジトリの
+      # git履歴には一切乗らない)。
+      - name: Restore private position/history state
+        if: steps.stopcheck.outputs.stop == 'false'
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            position.json
+            history.jsonl
+            position_regime_shift.json
+            history_regime_shift.jsonl
+          key: tati-bot-position-${{ github.run_id }}
+          restore-keys: |
+            tati-bot-position-
+
+      - name: 1306ボット(fetch→判定)
+        if: steps.stopcheck.outputs.stop == 'false'
+        run: |
+          python fetch_yf.py 1306 10
+          python trading_agents.py
+
+      - name: レジームシフト・ボット(1321/1571デッドクロス)
+        if: steps.stopcheck.outputs.stop == 'false'
+        run: |
+          python regime_shift_agent.py
+
+      - name: Save private position/history state
+        if: always() && steps.stopcheck.outputs.stop == 'false'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            position.json
+            history.jsonl
+            position_regime_shift.json
+            history_regime_shift.jsonl
+          key: tati-bot-position-${{ github.run_id }}
+
+      - name: Commit and push (state.json / state_regime_shift.json)
+        if: steps.stopcheck.outputs.stop == 'false'
+        run: |
+          git config user.name "tati-bot (GitHub Actions)"
+          git config user.email "actions@users.noreply.github.com"
+          git add state.json state_regime_shift.json
+
+          if git diff --cached --quiet; then
+            echo "変更なし、pushをスキップ"
+            exit 0
+          fi
+
+          git commit -m "daily update via GitHub Actions ($(date -u +%F))"
+
+          # ローカル版(daily_run.bat)と同時刻に近いタイミングでpushして
+          # 衝突した場合に備えて、pull --rebase→pushを数回リトライする。
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "push成功"
+              exit 0
+            fi
+            echo "push失敗、pull --rebaseして再試行 ($i回目)"
+            git pull --rebase origin main
+            sleep 5
+          done
+          echo "pushに5回失敗、諦める(次回の実行に持ち越し)"
+          exit 1
