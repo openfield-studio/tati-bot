@@ -78,3 +78,5 @@ value_turnaround_checkpoint.json
 btc_bitstamp_*.csv
 _tmp_jpx/
 jpx_investor_flow_cache.json
+market_breadth_cache.json
+market_breadth_series.json
