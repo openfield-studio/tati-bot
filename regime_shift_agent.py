@@ -23,10 +23,19 @@
   1. レジーム判定: 120日移動平均が350日移動平均を下回ったら(デッドクロス)「下落相場」、
      そうでなければ「通常相場」
   2. ショック検知: 1日の下落が-2.5%以下、cooldown15営業日(同じ下落局面の重複検知を防ぐ)
-  3. ノーポジ時にショックを検知したら:
-       通常相場 → 1321を新規購入(損切り30%、利確なし)
-       下落相場 → 1571を新規購入(利確5%・損切り18%、単純-1倍なので「買うだけ」でベア相当)
-  4. 保有中は、利確/損切り/最大保有20営業日のいずれかに達したら手仕舞い
+  3. **デフォルト状態は常に1321を保有する(買い持ち)。**ショック検知時、下落相場(デッドクロス)
+     ならcooldown確認の上で1571へ一時的に切り替え(利確5%・損切り18%・最大保有20営業日の
+     いずれかで1321保有に復帰)。通常相場でのショックは1321を継続保有するだけで変化なし。
+
+  **2026-09-28修正(項目125)**: 当初の実装は「ノーポジ(現金)で待機→ショック時だけ新規購入→
+  手仕舞いしたら現金に戻る」という設計になっており、これは家族向け説明資料やバックテスト
+  (2000/2006/1965年開始の検証、etf_regime_lab.py「普段は買い持ち+ショック時だけベア反転」)
+  が前提としていた「常に1321を保有し、下落相場のショック時だけ一時的にベアへ切り替える」
+  design と食い違っていた(ユーザーの「1321のデッドクロスはうまくいくのにこっちは何で?」
+  からの検証で発覚)。現金待機型だと市場の長期的な成長をほとんど取れず、1965年開始の
+  検証で単純買い持ち(52.4倍)を大きく下回る結果(2.1倍)になってしまうことが判明したため、
+  「デフォルトは常に1321保有」に修正した。旧設定の`long_stop_loss`(1321保有時の損切り30%)
+  は、デフォルト状態が買い持ちに変わったことで意味を持たなくなったため撤廃した。
 
 ★安全設計(trading_agents.pyと同じ考え方)★
  - 既定は DRY_RUN=True(紙トレード)。実弾発注はまだ実装していない(口座・銘柄追加の
@@ -76,10 +85,12 @@ class Config:
     ma_slow_days: int = 350              # 長期移動平均(これより短期MAが下回ったら「下落相場」)
     shock_threshold: float = -0.025      # 1日でこの下落率以下を「ショック」とみなす
     cooldown_days: int = 15              # 同じ下落局面の重複検知を防ぐ営業日数
-    max_hold_days: int = 20              # 最大保有営業日数(これに達したら強制手仕舞い)
-    long_stop_loss: float = 0.30         # 1321側の損切り(過去最悪-26.77%に余裕を持たせた値)
+    max_hold_days: int = 20              # 1571の最大保有営業日数(これに達したら1321に戻す)
     bear_take_profit: float = 0.05       # 1571側の利確
     bear_stop_loss: float = 0.18         # 1571側の損切り(過去最悪-13.79%に余裕を持たせた値)
+    # 2026-09-28: long_stop_loss(旧: 1321保有時の損切り30%)は撤廃(項目125参照)。
+    # デフォルト状態が「常に1321保有」に変わったため、買い持ちに損切りを掛ける設計は
+    # そもそも矛盾する(下がったら現金に逃げてまた買い直す、という未検証の別戦略になってしまう)。
 
     state_path: str = "state_regime_shift.json"          # 公開・シグナルのみ
     position_path: str = "position_regime_shift.json"    # 非公開・.gitignore対象
@@ -122,10 +133,17 @@ def load_position() -> dict:
     if os.path.exists(CFG.position_path):
         try:
             with open(CFG.position_path, encoding="utf-8") as f:
-                return json.load(f)
+                pos = json.load(f)
+            if pos.get("holding") not in ("long", "bear"):
+                # 旧実装(holding=None=現金待機型)からの移行。次回decide_signalで
+                # INIT_LONGが発行され、デフォルト状態(1321保有)を新たに開始する。
+                pos = {"holding": "long", "entry_date": None, "entry_price": 0.0,
+                       "quantity": 0, "last_shock_index": pos.get("last_shock_index", -10**9)}
+                log.info("旧形式のpositionを検出、デフォルト状態(1321保有)への移行を開始します")
+            return pos
         except Exception as e:
             log.warning("position読み込み失敗(新規扱い): %s", e)
-    return {"holding": None, "entry_date": None, "entry_price": 0.0, "quantity": 0,
+    return {"holding": "long", "entry_date": None, "entry_price": 0.0, "quantity": 0,
             "last_shock_index": -10**9}
 
 
@@ -157,77 +175,70 @@ def decide_signal(closes_long: list[tuple[dt.date, float]],
         regime = "bear" if ma_fast < ma_slow else "bull"
         dd = ma_slow / ma_fast - 1  # 参考値として、短期MAが長期MAをどれだけ下回っているか
 
-    # --- 保有中: 手仕舞い判定 ---
-    if pos["holding"] is not None:
+    # --- 初回起動: デフォルト状態(1321保有)をまだ開始していない ---
+    if pos.get("entry_date") is None:
+        return {"action": "INIT_LONG", "target": "1321", "regime": regime, "ma_gap": dd,
+                "reason": "初回起動(または旧形式からの移行): デフォルト状態(1321保有)を開始"}
+
+    # --- 1571を一時保有中: 利確/損切り/最大保有のいずれかで1321保有に戻す ---
+    if pos["holding"] == "bear":
+        if today not in px_bear:
+            return {"action": "HOLD", "target": "1571", "regime": regime, "ma_gap": dd,
+                    "reason": "1571の本日データ未取得"}
         held_days = i_today - dates_long.index(dt.date.fromisoformat(pos["entry_date"])) \
             if pos["entry_date"] in [d.isoformat() for d in dates_long] else CFG.max_hold_days
         entry_price = pos["entry_price"]
-        if pos["holding"] == "long":
-            cur_price = today_price_long
-            r = cur_price / entry_price - 1
-            if r <= -CFG.long_stop_loss:
-                return {"action": "SELL", "target": "1321", "regime": regime, "ma_gap": dd,
-                        "reason": f"損切り(1321、取得比{r*100:+.1f}% <= -{CFG.long_stop_loss*100:.0f}%)"}
-            if held_days >= CFG.max_hold_days:
-                return {"action": "SELL", "target": "1321", "regime": regime, "ma_gap": dd,
-                        "reason": f"最大保有{CFG.max_hold_days}営業日に到達(取得比{r*100:+.1f}%)"}
-            return {"action": "HOLD", "target": "1321", "regime": regime, "ma_gap": dd,
-                    "reason": f"1321保有継続(取得比{r*100:+.1f}%、{held_days}日目)"}
-        else:  # holding == "bear"(1571保有)
-            if today not in px_bear:
-                return {"action": "HOLD", "target": "1571", "regime": regime, "ma_gap": dd,
-                        "reason": "1571の本日データ未取得"}
-            cur_price = px_bear[today]
-            r = cur_price / entry_price - 1
-            if r >= CFG.bear_take_profit:
-                return {"action": "SELL", "target": "1571", "regime": regime, "ma_gap": dd,
-                        "reason": f"利確(1571、取得比{r*100:+.1f}% >= +{CFG.bear_take_profit*100:.0f}%)"}
-            if r <= -CFG.bear_stop_loss:
-                return {"action": "SELL", "target": "1571", "regime": regime, "ma_gap": dd,
-                        "reason": f"損切り(1571、取得比{r*100:+.1f}% <= -{CFG.bear_stop_loss*100:.0f}%)"}
-            if held_days >= CFG.max_hold_days:
-                return {"action": "SELL", "target": "1571", "regime": regime, "ma_gap": dd,
-                        "reason": f"最大保有{CFG.max_hold_days}営業日に到達(取得比{r*100:+.1f}%)"}
-            return {"action": "HOLD", "target": "1571", "regime": regime, "ma_gap": dd,
-                    "reason": f"1571保有継続(取得比{r*100:+.1f}%、{held_days}日目)"}
+        cur_price = px_bear[today]
+        r = cur_price / entry_price - 1
+        if r >= CFG.bear_take_profit:
+            return {"action": "SWITCH_TO_LONG", "target": "1321", "regime": regime, "ma_gap": dd,
+                    "reason": f"利確(1571、取得比{r*100:+.1f}% >= +{CFG.bear_take_profit*100:.0f}%)、1321保有に戻す"}
+        if r <= -CFG.bear_stop_loss:
+            return {"action": "SWITCH_TO_LONG", "target": "1321", "regime": regime, "ma_gap": dd,
+                    "reason": f"損切り(1571、取得比{r*100:+.1f}% <= -{CFG.bear_stop_loss*100:.0f}%)、1321保有に戻す"}
+        if held_days >= CFG.max_hold_days:
+            return {"action": "SWITCH_TO_LONG", "target": "1321", "regime": regime, "ma_gap": dd,
+                    "reason": f"最大保有{CFG.max_hold_days}営業日に到達(取得比{r*100:+.1f}%)、1321保有に戻す"}
+        return {"action": "HOLD", "target": "1571", "regime": regime, "ma_gap": dd,
+                "reason": f"1571保有継続(取得比{r*100:+.1f}%、{held_days}日目)"}
 
-    # --- ノーポジ時: ショック検知(cooldown考慮) ---
+    # --- 1321をデフォルト保有中: ショック検知(cooldown考慮) ---
     day_ret = today_price_long / px_long[dates_long[i_today - 1]] - 1 if i_today > 0 else 0.0
     is_shock = day_ret <= CFG.shock_threshold
     cooldown_ok = (i_today - pos.get("last_shock_index", -10**9)) >= CFG.cooldown_days
 
-    if is_shock and cooldown_ok:
-        target = "1571" if regime == "bear" else "1321"
-        return {"action": "BUY", "target": target, "regime": regime, "ma_gap": dd,
-                "reason": f"ショック検知(本日{day_ret*100:+.2f}%)、レジーム={regime}→{target}を新規購入",
+    if is_shock and cooldown_ok and regime == "bear":
+        return {"action": "SWITCH_TO_BEAR", "target": "1571", "regime": regime, "ma_gap": dd,
+                "reason": f"ショック検知(本日{day_ret*100:+.2f}%)、下落相場(デッドクロス)のため1571へ一時切替",
+                "shock_index": i_today}
+    elif is_shock and cooldown_ok:
+        return {"action": "HOLD", "target": "1321", "regime": regime, "ma_gap": dd,
+                "reason": f"ショック検知(本日{day_ret*100:+.2f}%)だが通常相場のため1321継続保有",
                 "shock_index": i_today}
     elif is_shock:
-        return {"action": "NONE", "target": None, "regime": regime, "ma_gap": dd,
-                "reason": f"ショック検知したがcooldown中(本日{day_ret*100:+.2f}%)",
-                "shock_index": i_today}  # cooldownタイマーは更新する
+        return {"action": "HOLD", "target": "1321", "regime": regime, "ma_gap": dd,
+                "reason": f"ショック検知したがcooldown中(本日{day_ret*100:+.2f}%)、1321継続保有",
+                "shock_index": i_today}
     else:
-        return {"action": "NONE", "target": None, "regime": regime, "ma_gap": dd,
-                "reason": f"ショックなし(本日{day_ret*100:+.2f}%、MA差={dd*100:+.1f}%、レジーム={regime})"}
+        return {"action": "HOLD", "target": "1321", "regime": regime, "ma_gap": dd,
+                "reason": f"1321継続保有(通常のデフォルト状態、本日{day_ret*100:+.2f}%、レジーム={regime})"}
 
 
 # ======================================================================
 # 4. 実行(DRY-RUNのpaper-fill、実発注はまだ未実装)
 # ======================================================================
 def apply_paper_fill(decision: dict, pos: dict, px_long: dict, px_bear: dict, today: dt.date) -> dict:
-    if decision["action"] == "BUY":
-        price = px_long[today] if decision["target"] == "1321" else px_bear[today]
+    if decision["action"] in ("INIT_LONG", "SWITCH_TO_LONG", "SWITCH_TO_BEAR"):
+        target_leg = "long" if decision["target"] == "1321" else "bear"
+        price = px_long[today] if target_leg == "long" else px_bear[today]
         qty = int(CFG.capital_yen // (price * CFG.trade_unit)) * CFG.trade_unit
-        pos["holding"] = "long" if decision["target"] == "1321" else "bear"
+        pos["holding"] = target_leg
         pos["entry_date"] = today.isoformat()
         pos["entry_price"] = price
         pos["quantity"] = qty
-        pos["last_shock_index"] = decision.get("shock_index", pos.get("last_shock_index"))
-    elif decision["action"] == "SELL":
-        pos["holding"] = None
-        pos["entry_date"] = None
-        pos["entry_price"] = 0.0
-        pos["quantity"] = 0
-    elif decision["action"] == "NONE" and "shock_index" in decision:
+        if "shock_index" in decision:
+            pos["last_shock_index"] = decision["shock_index"]
+    elif decision["action"] == "HOLD" and "shock_index" in decision:
         pos["last_shock_index"] = decision["shock_index"]
     return pos
 
@@ -280,10 +291,10 @@ def main() -> None:
     if not CFG.dry_run and CFG.enable_live_trading:
         raise NotImplementedError("実発注はまだ実装していない(口座・銘柄追加の判断が別途必要)")
 
-    if decision["action"] in ("BUY", "SELL"):
+    if decision["action"] in ("INIT_LONG", "SWITCH_TO_LONG", "SWITCH_TO_BEAR"):
         pos = apply_paper_fill(decision, pos, px_long, px_bear, today)
-        log.info("[DRY-RUN] %s %s を紙トレードで記録", decision["action"], decision["target"])
-    elif decision["action"] == "NONE" and "shock_index" in decision:
+        log.info("[DRY-RUN] %s → %s を紙トレードで記録", decision["action"], decision["target"])
+    elif decision["action"] == "HOLD" and "shock_index" in decision:
         pos["last_shock_index"] = decision["shock_index"]
     save_position(pos)
 
