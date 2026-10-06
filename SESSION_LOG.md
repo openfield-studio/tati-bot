@@ -4621,6 +4621,34 @@ Portfolios", Journal of Finance 72(4)。既存26候補(#1〜#26、いずれも�
 value_screener.py・regime_shift_agent.pyの実弾/スコアリングロジックは変更なし。
 factor_research_summary.jsonを最新化。
 
+### 154. クラウド日次探索: CPPI(フロア基準のポジションサイズ連続調整)を新規追加(2026-10-06)
+
+まずFACTOR_RESEARCH_LESSONS.md(教訓集)を読み、第4節の横断的結論(既存の「ショック検知+
+デッドクロス」に追加トリガーを1つ足すという枠組み自体が限界、23案全てNO-GO)と前日(項目153)
+追加した調査待ちキュー#27(ボラティリティ・ターゲティング)の内容を確認。ユーザー指示に従い
+同じ優先テーマ(追加トリガー型ではない発想: ポジションサイズの段階的縮小・ベア側保有ルールの
+見直し・下落を許容した上で長期期待値を最大化する設計)を継続探索。クラウド環境はyfinance・
+J-Quants接続不可(既知の制約)のため文献調査のみ。
+
+**発見**: CPPI(Constant Proportion Portfolio Insurance、フロア基準のポジションサイズ連続調整)。
+原典Perold (1986)・Black & Perold (1992) "Theory of Constant Proportion Portfolio Insurance",
+Journal of Economic Dynamics and Control 16(3-4)。実証的裏付けとしてDi Persio, Oliva &
+Wallbaum (2019) "Options on CPPI with guaranteed minimum equity exposure", arXiv:1902.06505
+が、2000〜2002年のじわじわ型下落(dot-comクラッシュ、指数-50%)に対し標準CPPIのリスク資産
+比率が2003年までに20%未満へ段階的に縮小し、10年後の成績が指数・保証水準をともに上回ったと
+報告している点を確認。
+
+**#27との重複確認**: 状態変数が異なる(ボラティリティ・ターゲティングは実現ボラティリティ、
+CPPIは資産価値のフロアからの距離)ため、どちらも「追加トリガーではない連続的ポジションサイズ
+決定」という同じ大分類に入るが、検知する市場の特徴が異なり質的に別物と判断。教訓集第4節の
+既存10分類にも該当しない。
+
+教訓集第1節のふるい5項目に回答した上でFACTOR_RESEARCH_LOG.mdの調査待ちキューに出典付きで
+記録(→#28)。累積試行数は文献調査のみのため101のまま変化なし。ユーザーにPushNotification
+済み。「本体組み込みの昇格基準」を満たす新規ファクターは今回なし。trading_agents.py・
+research_agents.py・value_screener.py・regime_shift_agent.pyの実弾/スコアリングロジックは
+変更なし。factor_research_summary.jsonを最新化。
+
 ## ファイル一覧
 
 | ファイル | 役割 | 変更 |

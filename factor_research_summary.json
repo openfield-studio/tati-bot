@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-05T12:40:00",
+  "updated": "2026-10-06T12:22:00",
   "cumulative_trials": 101,
   "loop_schedule": "クラウド探索: 毎日実行(2026-09-24に週次→日次へ変更) / ローカル検証待ち候補チェック(通知のみ): 毎日20:00 JST",
   "latest_run": {
-    "date": "2026-10-05",
+    "date": "2026-10-06",
     "status": "cloud_literature_only_new_candidate_found",
-    "summary": "クラウド日次探索実行(データ接続不可のため文献調査モード)。まず教訓集FACTOR_RESEARCH_LESSONS.mdを読み、第4節の横断的結論(既存の「ショック検知+デッドクロス」に追加トリガーを1つ足すという枠組み自体が限界、23案全てNO-GO)を確認。ユーザー指示に従い追加トリガー型ではない発想(ポジションサイズの段階的縮小・ベア側保有ルールの見直し・下落を許容した上で長期期待値を最大化する設計)を優先してWebSearchを実施し、新規候補を発見: ボラティリティ・ターゲティング(Volatility Targeting/Scaling)。Harvey, Hoyle, Korgaonkar, Rattray, Sargaison & Van Hemert (2018) \"The Impact of Volatility Targeting\", Journal of Portfolio Management 45(1)が原典(60資産・最長1926〜2017年、米国株式のシャープレシオ0.40→0.48〜0.51に改善と報告)、補強としてMoreira & Muir (2017) \"Volatility-Managed Portfolios\", Journal of Finance 72(4)。既存26候補(いずれも「下落を検知して二値で反応する」追加トリガー型)とは異なり、検知・判定を一切行わず常時「実現ボラティリティが高いほど1321の保有比率を連続的に下げる」というポジションサイズ決定方法自体の置き換えを提案する点で質的に新規性があると判断。教訓集第1節のふるい5項目に回答した上でFACTOR_RESEARCH_LOG.mdの調査待ちキューに出典付きで追加(→#27)、ユーザーにPushNotification済み。累積試行数は文献調査のみのため101のまま変化なし。",
-    "note": "このクラウド環境は引き続きyfinance・J-Quants接続不可。実証テストは行っていない(ユーザーがローカルセッションで明示的に依頼した場合のみ実施)。調査待ちキュー表上部の「累積試行数」記載が2026-10-02時点の96のまま更新されていなかった記録のズレ(ローカルセッションの試行#100・#101追記時に見出し更新漏れ)を101に訂正した(試行数そのものの変更ではない)。"
+    "summary": "クラウド日次探索実行(データ接続不可のため文献調査モード)。まず教訓集FACTOR_RESEARCH_LESSONS.mdを読み、第4節の横断的結論(既存の「ショック検知+デッドクロス」に追加トリガーを1つ足すという枠組み自体が限界、23案全てNO-GO)と前日(2026-10-05)追加した調査待ちキュー#27(ボラティリティ・ターゲティング)の内容を確認。ユーザー指示に従い同じ優先テーマ(追加トリガー型ではない発想: ポジションサイズの段階的縮小・ベア側保有ルールの見直し・下落を許容した上で長期期待値を最大化する設計)を継続探索し、新規候補を発見: CPPI(Constant Proportion Portfolio Insurance、フロア基準のポジションサイズ連続調整)。原典Perold (1986)・Black & Perold (1992) \"Theory of Constant Proportion Portfolio Insurance\", Journal of Economic Dynamics and Control 16(3-4)。実証的裏付けとしてDi Persio, Oliva & Wallbaum (2019) \"Options on CPPI with guaranteed minimum equity exposure\", arXiv:1902.06505が、2000〜2002年のじわじわ型下落(dot-comクラッシュ、指数-50%)に対し標準CPPIのリスク資産比率が2003年までに20%未満へ段階的に縮小し、10年後の成績が指数・保証水準をともに上回ったと報告している点を確認。#27とは状態変数が異なる(実現ボラティリティ vs 資産価値のフロアからの距離)ため重複ではないと判断。教訓集第1節のふるい5項目に回答した上でFACTOR_RESEARCH_LOG.mdの調査待ちキューに出典付きで追加(→#28)、ユーザーにPushNotification済み。累積試行数は文献調査のみのため101のまま変化なし。",
+    "note": "このクラウド環境は引き続きyfinance・J-Quants接続不可。実証テストは行っていない(ユーザーがローカルセッションで明示的に依頼した場合のみ実施)。"
   },
   "leaderboard": [
     {
