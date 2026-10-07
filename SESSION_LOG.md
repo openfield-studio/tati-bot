@@ -1270,6 +1270,38 @@ research_agents.py・value_screener.py・regime_shift_agent.pyの実弾/スコ�
 FACTOR_RESEARCH_LOG.mdに試行#102・#103、累積試行数101→103。「じわじわ型下落」対抗策は25案連続NO-GO。
 本体コードは変更なし。
 
+### 156. クラウド日次探索: Constant Mix(固定比率リバランス、CPPIの対称的な代替)を新規追加(2026-10-07)
+
+まずFACTOR_RESEARCH_LESSONS.md(教訓集)を読み、第4節の横断的結論(既存の「ショック検知+デッドク
+ロス」に追加トリガーを1つ足すという枠組み自体が限界)と、前回(項目155)の検証結果——#27ボラティリ
+ティ・ターゲティング・#28 CPPIがともに段階①でNO-GO(#28は「平時の保有比率がほぼ0%に張り付くキャ
+ッシュロック」、新パターンP8として教訓集に追加済み)——を確認。ユーザー指示に従い同じ優先テーマ
+(追加トリガー型ではない発想: ポジションサイズの段階的縮小・ベア側保有ルールの見直し・下落を許容
+した上で長期期待値を最大化する設計)を継続探索。クラウド環境はyfinance・J-Quants接続不可のため
+文献調査のみ。
+
+**発見**: Constant Mix(固定比率リバランス)。原典Perold, A.F. & Sharpe, W.F. (1988) "Dynamic
+Strategies for Asset Allocation", Financial Analysts Journal 44(1), 16-27。この論文はBuy-and-
+Hold・Constant Mix・CPPI・オプション型保険の4戦略を比較し、**Constant Mixは下落時に買い増し・上昇
+時に売却するため「トレンドが弱いが値動きの荒い(trendless but volatile)」市場で最も良い成績を出
+し、CPPIは逆に強いトレンド市場で良い一方トレンドレスな市場では劣る**と報告している。これは直前の
+#28 CPPIが陥った「キャッシュロック」の**理論的に対称な代替**であり、固定目標比率へのリバランスは
+過去の最高値を基準にしないため同じ罠に陥らない可能性がある。補強としてWillenbrock (2011)
+"Diversification Return, Portfolio Rebalancing, and the Commodity Return Puzzle" (FAJ 67(4))
+のリバランス・プレミアムの定式化も確認。
+
+**#27・#28との重複確認**: #27・#28はいずれも「ブル側(1321)の保有比率を連続的に下げる」設計だっ
+たのに対し、本候補は既存のショック検知+デッドクロス判定は一切変更せず、**確定済みのベア相場区間
+(SWITCH_TO_BEAR後の1571保有)内で、現行の「1571固定100%保有(利確+5%/損切り-18%/最大20営業日)」
+ルールの代わりに固定目標比率へのリバランスを行う**設計のため、ユーザーが優先指示した「ベア側保有
+ルールの見直し」に直接該当する初めての候補と判断。
+
+教訓集第1節のふるい5項目に回答した上でFACTOR_RESEARCH_LOG.mdの調査待ちキューに出典付きで記録
+(→#29)。累積試行数は文献調査のみのため103のまま変化なし。ユーザーにPushNotification済み。
+「本体組み込みの昇格基準」を満たす新規ファクターは今回なし。trading_agents.py・research_agents.py・
+value_screener.py・regime_shift_agent.pyの実弾/スコアリングロジックは変更なし。
+factor_research_summary.jsonを最新化。
+
 ## ファイル一覧
 
 | ファイル | 役割 | 変更 |
