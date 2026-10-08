@@ -1,11 +1,11 @@
 {
-  "updated": "2026-10-07T17:49:44",
-  "date": "2026-10-06",
+  "updated": "2026-10-08T17:53:02",
+  "date": "2026-10-07",
   "regime": "bull",
-  "ma_gap_pct": -19.1,
+  "ma_gap_pct": -32.9,
   "action": "HOLD",
   "target": "1321",
-  "reason": "1321継続保有(通常のデフォルト状態、本日+0.99%、レジーム=bull)",
+  "reason": "1321継続保有(通常のデフォルト状態、本日-0.73%、レジーム=bull)",
   "holding": "long",
   "mode": "DRY-RUN"
 }
