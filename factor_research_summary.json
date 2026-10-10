@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-09T12:27:00",
+  "updated": "2026-10-10T12:20:00",
   "cumulative_trials": 104,
   "loop_schedule": "クラウド探索: 毎日実行(2026-09-24に週次→日次へ変更) / ローカル検証待ち候補チェック(通知のみ): 毎日20:00 JST",
   "latest_run": {
-    "date": "2026-10-09",
-    "status": "cloud_literature_only_new_candidate_found",
-    "summary": "クラウド日次探索実行(データ接続不可のため文献調査モード)。まず教訓集FACTOR_RESEARCH_LESSONS.mdを読み、前回(2026-10-09午前、SESSION_LOG項目158)でキュー#29(Constant Mix)が試行#104としてNO-GOになった経緯(リバランス11回のみ、実質保有延長型と同じ)を確認。ユーザー指示の優先テーマ(追加トリガー型ではない発想: ①ポジションサイズの段階的縮小〈#27・#28で既出〉、②ベア側保有ルールの見直し〈#29で既出〉、③下落を避けるのでなく許容した上で長期期待値を最大化する設計)のうち、まだ着手していない③の方向でWebSearchを実施し、新規候補を発見: 静的な多資産構造分散(Permanentポートフォリオ/リスクパリティ型)。Harry BrowneのPermanent Portfolio(株式・長期国債・金・現金を各25%の固定配分)、Bridgewater All Weather戦略が概念的原型。学術的基礎はAsness, Frazzini & Pedersen (2012) \"Leverage Aversion and Risk Parity\", Financial Analysts Journal 68(1), 47-59(リスクパリティ配分が市場ポートフォリオよりリスク調整後リターンで優れると報告)。既存30候補はいずれも「いつ・どれだけ切り替えるか」という判定(タイミング)問題だったのに対し、本候補は判定を一切行わず常時固定比率で複数資産に配分する構造的分散で、教訓集第4節の既存12分類のどれにも当てはまらない新しい軸と判断。教訓集第1節のふるい5項目に回答した上でFACTOR_RESEARCH_LOG.mdの調査待ちキューに出典付きで追加(→#31)、ユーザーにPushNotification済み。累積試行数は文献調査のみのため104のまま変化なし。",
-    "note": "このクラウド環境は引き続きyfinance・J-Quants接続不可。実証テストは行っていない(ユーザーがローカルセッションで明示的に依頼した場合のみ実施)。データ入手性は未確認(長期国債・金の61年分データの取得可否は次回以降に確認が必要)。"
+    "date": "2026-10-10",
+    "status": "cloud_literature_only_no_new_candidate",
+    "summary": "クラウド日次探索実行(データ接続不可のため文献調査モード)。まず教訓集FACTOR_RESEARCH_LESSONS.mdを読み、前回(2026-10-09、SESSION_LOG項目159)でキュー#31(静的な多資産構造分散)を追加した経緯を確認。ユーザー指示の優先テーマ③「下落を許容した上で長期期待値を最大化する設計」の方向でKelly基準(Kelly Criterion)によるポジションサイズ連続調整を検討したが、WebSearchで裏取りした結果「The Kelly growth optimal strategy with a stop-loss rule」(arXiv:1311.2550)がストップロス付きKelly最適戦略とCPPIの数学的等価性を示していることが判明し、既にNO-GO済みの#28 CPPI(試行#103、P8キャッシュロック)と別枠組みとは言えないと判断してキューに追加しなかった。推定誤差・分数Kellyの論点もMacLean, Ziemba & Blazenko (1992)以来の既知の論点で新規性が薄い。バックアップ候補のValue Averaging(Edleson)も積立前提のため本プロジェクトの切替型設計には再設計が必要で見送った。教訓集第1節のふるいを通過する新規候補が見つからなかったため、低品質な候補を無理に絞り出さず調査待ちキューへの追加は行わなかった(この場合はユーザー指示によりPushNotification不要)。累積試行数は文献調査のみのため104のまま変化なし。",
+    "note": "このクラウド環境は引き続きyfinance・J-Quants接続不可。実証テストは行っていない。本日は新規候補の追加なし(SESSION_LOG項目160参照)。"
   },
   "leaderboard": [
     {

@@ -1398,6 +1398,40 @@ Constant Mixはデッドクロス判定の結果を前提にベア側(1571)保�
 research_agents.py・value_screener.py・regime_shift_agent.pyの実弾/スコアリングロジックは
 変更なし。factor_research_summary.jsonを最新化。
 
+### 160. クラウド日次探索: 今日は新規性のある候補が見つからなかった(2026-10-10)
+
+まずFACTOR_RESEARCH_LESSONS.md(教訓集)を読み、第4節の横断的結論と前回(項目159)のキュー#31
+(静的な多資産構造分散)追加の経緯を確認。ユーザー指示の優先テーマ(追加トリガー型ではない発想)
+のうち③「下落を許容した上で長期期待値を最大化する設計」の方向で候補を探し、**Kelly基準
+(Kelly Criterion)**によるポジションサイズの連続調整(資本の期待対数成長率を最大化するベット
+サイズ)を検討した。原典J.L. Kelly Jr. (1956) "A New Interpretation of Information Rate",
+Bell System Technical Journal 35、株式市場への応用はRotando & Thorp (1992) "The Kelly
+Criterion and the Stock Market", American Mathematical Monthly 99(10)、分数Kelly
+(fractional Kelly)の理論的基礎はZiemba, MacLean & Blazenko (1992) "Growth versus Security
+in Dynamic Investment Analysis", Management Science 38(11)。
+
+**教訓集第1節のふるい(項目1)で不合格と判断**: WebSearchで裏取りしたところ、「The Kelly
+growth optimal strategy with a stop-loss rule」(arXiv:1311.2550)が、ストップロス付きKelly
+最適戦略はCPPI戦略と数学的に等価(CPPIの乗数mがfree Kellyの最適解に等しい)であることを示して
+いた。CPPIは既に調査待ちキュー#28として検証済み・NO-GO(試行#103、P8キャッシュロック、
+2026-10-07)であり、Kelly基準は「ポジションサイズの段階的縮小」型(教訓集第4節)の既存試行と
+別の枠組みとは言えないと判断し、キューに追加しなかった。また推定誤差(期待リターンμの事前
+固定が困難)の問題はMacLean, Ziemba & Blazenko (1992)以来の既知の論点であり、分数Kelly
+(1/2Kelly等)という標準的対処法も既に確立済みのため、ふるい項目3(自由パラメータの事前固定
+方法)の観点でも新規性は薄いと判断。
+
+バックアップとして検討したValue Averaging(Michael Edleson、原典は1988年論文/1991年刊行の
+書籍、2006年Wiley Investment Classics版で再刊)も、積立(新規資金の投入ペース調整)を前提とした
+手法であり、既存資金の1321↔1571切替という本プロジェクトの設計とは前提が異なり、転用には
+大幅な再設計が必要なため今回は見送った。
+
+**結論**: 教訓集第1節のふるい5項目に明確に答えられる新規候補は見つからなかったため、低品質な
+候補を無理に絞り出さず、調査待ちキューへの追加は行わなかった(ユーザー指示に基づきこの場合は
+PushNotification不要)。累積試行数は文献調査のみのため104のまま変化なし。「本体組み込みの
+昇格基準」を満たす新規ファクターも今回なし。trading_agents.py・research_agents.py・
+value_screener.py・regime_shift_agent.pyの実弾/スコアリングロジックは変更なし。
+factor_research_summary.jsonを最新化。
+
 ## ファイル一覧
 
 | ファイル | 役割 | 変更 |
