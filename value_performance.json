@@ -1,7 +1,7 @@
 {
-  "updated": "2026-11-20T20:37:55",
+  "updated": "2026-11-23T20:40:13",
   "tracked_stocks": 217,
-  "history_runs": 48,
+  "history_runs": 49,
   "oldest_run_date": "2026-09-16",
   "avg_return_pct": -7.9,
   "median_return_pct": -6.96,
@@ -21,7 +21,7 @@
       "return_pct": 20.9,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 32.61,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9201",
@@ -33,7 +33,7 @@
       "return_pct": 16.77,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 28.48,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "4151",
@@ -45,7 +45,7 @@
       "return_pct": 14.11,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 25.82,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9022",
@@ -57,7 +57,7 @@
       "return_pct": 13.72,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 25.43,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9202",
@@ -69,7 +69,7 @@
       "return_pct": 11.3,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 23.02,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9009",
@@ -81,7 +81,7 @@
       "return_pct": 10.58,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 22.29,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7844",
@@ -93,7 +93,7 @@
       "return_pct": 9.57,
       "benchmark_return_pct": -9.25,
       "excess_return_pct": 18.82,
-      "days_held": 16
+      "days_held": 19
     },
     {
       "code": "2120",
@@ -105,7 +105,7 @@
       "return_pct": 9.48,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 23.34,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "2502",
@@ -117,7 +117,7 @@
       "return_pct": 9.38,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 21.09,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "4410",
@@ -129,7 +129,7 @@
       "return_pct": 9.29,
       "benchmark_return_pct": -16.73,
       "excess_return_pct": 26.02,
-      "days_held": 39
+      "days_held": 42
     },
     {
       "code": "6418",
@@ -141,7 +141,7 @@
       "return_pct": 8.81,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 22.67,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "7203",
@@ -153,7 +153,7 @@
       "return_pct": 8.38,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 20.09,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7606",
@@ -165,7 +165,7 @@
       "return_pct": 8.16,
       "benchmark_return_pct": -11.75,
       "excess_return_pct": 19.91,
-      "days_held": 23
+      "days_held": 26
     },
     {
       "code": "7269",
@@ -177,7 +177,7 @@
       "return_pct": 7.67,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 19.38,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7751",
@@ -189,7 +189,7 @@
       "return_pct": 7.39,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 19.1,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9021",
@@ -201,7 +201,7 @@
       "return_pct": 7.35,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 19.06,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "2121",
@@ -213,7 +213,7 @@
       "return_pct": 5.73,
       "benchmark_return_pct": -18.24,
       "excess_return_pct": 23.98,
-      "days_held": 42
+      "days_held": 45
     },
     {
       "code": "9273",
@@ -225,7 +225,7 @@
       "return_pct": 5.48,
       "benchmark_return_pct": -15.46,
       "excess_return_pct": 20.93,
-      "days_held": 51
+      "days_held": 54
     },
     {
       "code": "8057",
@@ -237,7 +237,7 @@
       "return_pct": 5.41,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 19.27,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "8016",
@@ -249,7 +249,7 @@
       "return_pct": 4.4,
       "benchmark_return_pct": -11.92,
       "excess_return_pct": 16.32,
-      "days_held": 31
+      "days_held": 34
     },
     {
       "code": "1928",
@@ -261,7 +261,7 @@
       "return_pct": 2.11,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 13.82,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "1814",
@@ -273,7 +273,7 @@
       "return_pct": 1.79,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 15.64,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "4249",
@@ -285,7 +285,7 @@
       "return_pct": 1.79,
       "benchmark_return_pct": -18.24,
       "excess_return_pct": 20.03,
-      "days_held": 42
+      "days_held": 45
     },
     {
       "code": "6417",
@@ -297,7 +297,7 @@
       "return_pct": 1.64,
       "benchmark_return_pct": -1.74,
       "excess_return_pct": 3.37,
-      "days_held": 14
+      "days_held": 17
     },
     {
       "code": "9065",
@@ -309,7 +309,7 @@
       "return_pct": 1.63,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": 15.44,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "7270",
@@ -321,7 +321,7 @@
       "return_pct": 1.54,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 13.25,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "4725",
@@ -333,7 +333,7 @@
       "return_pct": 1.25,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 15.11,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "1926",
@@ -345,7 +345,7 @@
       "return_pct": 1.05,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": 14.87,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "9534",
@@ -357,7 +357,7 @@
       "return_pct": 1.03,
       "benchmark_return_pct": -10.53,
       "excess_return_pct": 11.57,
-      "days_held": 18
+      "days_held": 21
     },
     {
       "code": "8425",
@@ -369,7 +369,7 @@
       "return_pct": 0.95,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 14.81,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "1873",
@@ -381,7 +381,7 @@
       "return_pct": 0.94,
       "benchmark_return_pct": -7.6,
       "excess_return_pct": 8.54,
-      "days_held": 15
+      "days_held": 18
     },
     {
       "code": "5101",
@@ -393,7 +393,7 @@
       "return_pct": 0.77,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 12.48,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "2429",
@@ -405,7 +405,7 @@
       "return_pct": 0.45,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 14.31,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "3232",
@@ -417,7 +417,7 @@
       "return_pct": 0.36,
       "benchmark_return_pct": -10.83,
       "excess_return_pct": 11.18,
-      "days_held": 21
+      "days_held": 24
     },
     {
       "code": "2108",
@@ -429,7 +429,7 @@
       "return_pct": 0.34,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": 14.15,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "2384",
@@ -441,7 +441,7 @@
       "return_pct": 0.19,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 14.04,
-      "days_held": 57
+      "days_held": 60
     },
     {
       "code": "9991",
@@ -453,7 +453,7 @@
       "return_pct": 0.17,
       "benchmark_return_pct": -15.46,
       "excess_return_pct": 15.62,
-      "days_held": 51
+      "days_held": 54
     },
     {
       "code": "7240",
@@ -465,7 +465,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": -17.38,
       "excess_return_pct": 17.38,
-      "days_held": 49
+      "days_held": 52
     },
     {
       "code": "7537",
@@ -477,7 +477,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": 0.0,
       "excess_return_pct": 0.0,
-      "days_held": 0
+      "days_held": 3
     },
     {
       "code": "5741",
@@ -489,7 +489,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": 0.0,
       "excess_return_pct": 0.0,
-      "days_held": 0
+      "days_held": 3
     },
     {
       "code": "3150",
@@ -501,7 +501,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": 0.0,
       "excess_return_pct": 0.0,
-      "days_held": 0
+      "days_held": 3
     },
     {
       "code": "4064",
@@ -513,7 +513,7 @@
       "return_pct": 0.0,
       "benchmark_return_pct": 0.0,
       "excess_return_pct": 0.0,
-      "days_held": 0
+      "days_held": 3
     },
     {
       "code": "3817",
@@ -525,7 +525,7 @@
       "return_pct": -0.1,
       "benchmark_return_pct": -11.92,
       "excess_return_pct": 11.82,
-      "days_held": 31
+      "days_held": 34
     },
     {
       "code": "3443",
@@ -537,7 +537,7 @@
       "return_pct": -0.51,
       "benchmark_return_pct": -20.16,
       "excess_return_pct": 19.64,
-      "days_held": 45
+      "days_held": 48
     },
     {
       "code": "4540",
@@ -549,7 +549,7 @@
       "return_pct": -0.55,
       "benchmark_return_pct": -5.41,
       "excess_return_pct": 4.86,
-      "days_held": 4
+      "days_held": 7
     },
     {
       "code": "8014",
@@ -561,7 +561,7 @@
       "return_pct": -0.59,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 13.27,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "256A",
@@ -573,7 +573,7 @@
       "return_pct": -0.61,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 13.24,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "6419",
@@ -585,7 +585,7 @@
       "return_pct": -0.77,
       "benchmark_return_pct": -9.25,
       "excess_return_pct": 8.48,
-      "days_held": 16
+      "days_held": 19
     },
     {
       "code": "7482",
@@ -597,7 +597,7 @@
       "return_pct": -0.82,
       "benchmark_return_pct": -4.38,
       "excess_return_pct": 3.57,
-      "days_held": 2
+      "days_held": 5
     },
     {
       "code": "4116",
@@ -609,7 +609,7 @@
       "return_pct": -1.0,
       "benchmark_return_pct": -19.42,
       "excess_return_pct": 18.42,
-      "days_held": 44
+      "days_held": 47
     },
     {
       "code": "8253",
@@ -621,7 +621,7 @@
       "return_pct": -1.07,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 10.64,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "6070",
@@ -633,7 +633,7 @@
       "return_pct": -1.31,
       "benchmark_return_pct": -13.61,
       "excess_return_pct": 12.3,
-      "days_held": 35
+      "days_held": 38
     },
     {
       "code": "5857",
@@ -645,7 +645,7 @@
       "return_pct": -1.42,
       "benchmark_return_pct": -10.8,
       "excess_return_pct": 9.37,
-      "days_held": 24
+      "days_held": 27
     },
     {
       "code": "6902",
@@ -657,7 +657,7 @@
       "return_pct": -1.5,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 10.21,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "4318",
@@ -669,7 +669,7 @@
       "return_pct": -1.56,
       "benchmark_return_pct": -18.26,
       "excess_return_pct": 16.69,
-      "days_held": 43
+      "days_held": 46
     },
     {
       "code": "8804",
@@ -681,7 +681,7 @@
       "return_pct": -1.66,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 10.06,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9045",
@@ -693,7 +693,7 @@
       "return_pct": -1.67,
       "benchmark_return_pct": -6.65,
       "excess_return_pct": 4.99,
-      "days_held": 10
+      "days_held": 13
     },
     {
       "code": "8934",
@@ -705,7 +705,7 @@
       "return_pct": -1.85,
       "benchmark_return_pct": -6.65,
       "excess_return_pct": 4.8,
-      "days_held": 10
+      "days_held": 13
     },
     {
       "code": "8725",
@@ -717,7 +717,7 @@
       "return_pct": -2.08,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 9.63,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7296",
@@ -729,7 +729,7 @@
       "return_pct": -2.14,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 11.71,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "8075",
@@ -741,7 +741,7 @@
       "return_pct": -2.35,
       "benchmark_return_pct": -19.42,
       "excess_return_pct": 17.07,
-      "days_held": 44
+      "days_held": 47
     },
     {
       "code": "7942",
@@ -753,7 +753,7 @@
       "return_pct": -2.47,
       "benchmark_return_pct": -18.24,
       "excess_return_pct": 15.78,
-      "days_held": 42
+      "days_held": 45
     },
     {
       "code": "7525",
@@ -765,7 +765,7 @@
       "return_pct": -2.52,
       "benchmark_return_pct": -18.16,
       "excess_return_pct": 15.64,
-      "days_held": 50
+      "days_held": 53
     },
     {
       "code": "1887",
@@ -777,7 +777,7 @@
       "return_pct": -2.55,
       "benchmark_return_pct": -7.6,
       "excess_return_pct": 5.05,
-      "days_held": 15
+      "days_held": 18
     },
     {
       "code": "9007",
@@ -789,7 +789,7 @@
       "return_pct": -2.69,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 9.03,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9622",
@@ -801,7 +801,7 @@
       "return_pct": -2.84,
       "benchmark_return_pct": -7.7,
       "excess_return_pct": 4.85,
-      "days_held": 7
+      "days_held": 10
     },
     {
       "code": "543A",
@@ -813,7 +813,7 @@
       "return_pct": -2.92,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 8.79,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8091",
@@ -825,7 +825,7 @@
       "return_pct": -2.93,
       "benchmark_return_pct": -4.12,
       "excess_return_pct": 1.19,
-      "days_held": 3
+      "days_held": 6
     },
     {
       "code": "8174",
@@ -837,7 +837,7 @@
       "return_pct": -2.97,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": 10.84,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "5401",
@@ -849,7 +849,7 @@
       "return_pct": -2.98,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 8.73,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5214",
@@ -861,7 +861,7 @@
       "return_pct": -3.09,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 8.63,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "4763",
@@ -873,7 +873,7 @@
       "return_pct": -3.28,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 10.58,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "2153",
@@ -885,7 +885,7 @@
       "return_pct": -3.33,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 10.52,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "9031",
@@ -897,7 +897,7 @@
       "return_pct": -3.33,
       "benchmark_return_pct": -14.96,
       "excess_return_pct": 11.63,
-      "days_held": 56
+      "days_held": 59
     },
     {
       "code": "8142",
@@ -909,7 +909,7 @@
       "return_pct": -3.41,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": 10.4,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "3182",
@@ -921,7 +921,7 @@
       "return_pct": -3.6,
       "benchmark_return_pct": -4.38,
       "excess_return_pct": 0.79,
-      "days_held": 2
+      "days_held": 5
     },
     {
       "code": "166A",
@@ -933,7 +933,7 @@
       "return_pct": -3.66,
       "benchmark_return_pct": -7.7,
       "excess_return_pct": 4.03,
-      "days_held": 7
+      "days_held": 10
     },
     {
       "code": "5902",
@@ -945,7 +945,7 @@
       "return_pct": -3.71,
       "benchmark_return_pct": -10.29,
       "excess_return_pct": 6.58,
-      "days_held": 29
+      "days_held": 32
     },
     {
       "code": "7272",
@@ -957,7 +957,7 @@
       "return_pct": -3.87,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 7.84,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7239",
@@ -969,7 +969,7 @@
       "return_pct": -3.91,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 9.94,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "1762",
@@ -981,7 +981,7 @@
       "return_pct": -4.04,
       "benchmark_return_pct": -7.21,
       "excess_return_pct": 3.16,
-      "days_held": 8
+      "days_held": 11
     },
     {
       "code": "1885",
@@ -993,7 +993,7 @@
       "return_pct": -4.1,
       "benchmark_return_pct": -18.16,
       "excess_return_pct": 14.06,
-      "days_held": 50
+      "days_held": 53
     },
     {
       "code": "4044",
@@ -1005,7 +1005,7 @@
       "return_pct": -4.15,
       "benchmark_return_pct": -4.38,
       "excess_return_pct": 0.23,
-      "days_held": 2
+      "days_held": 5
     },
     {
       "code": "1820",
@@ -1017,7 +1017,7 @@
       "return_pct": -4.22,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 9.63,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "9001",
@@ -1029,7 +1029,7 @@
       "return_pct": -4.27,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 7.44,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7752",
@@ -1041,7 +1041,7 @@
       "return_pct": -4.35,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 7.36,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8001",
@@ -1053,7 +1053,7 @@
       "return_pct": -4.64,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 7.07,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5480",
@@ -1065,7 +1065,7 @@
       "return_pct": -4.71,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 9.15,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "3696",
@@ -1077,7 +1077,7 @@
       "return_pct": -4.85,
       "benchmark_return_pct": -4.12,
       "excess_return_pct": -0.74,
-      "days_held": 3
+      "days_held": 6
     },
     {
       "code": "1878",
@@ -1089,7 +1089,7 @@
       "return_pct": -4.9,
       "benchmark_return_pct": -10.53,
       "excess_return_pct": 5.63,
-      "days_held": 18
+      "days_held": 21
     },
     {
       "code": "4516",
@@ -1101,7 +1101,7 @@
       "return_pct": -4.92,
       "benchmark_return_pct": -7.6,
       "excess_return_pct": 2.68,
-      "days_held": 15
+      "days_held": 18
     },
     {
       "code": "9997",
@@ -1113,7 +1113,7 @@
       "return_pct": -5.19,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 8.67,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "3245",
@@ -1125,7 +1125,7 @@
       "return_pct": -5.22,
       "benchmark_return_pct": -7.6,
       "excess_return_pct": 2.38,
-      "days_held": 15
+      "days_held": 18
     },
     {
       "code": "1719",
@@ -1137,7 +1137,7 @@
       "return_pct": -5.27,
       "benchmark_return_pct": -7.21,
       "excess_return_pct": 1.94,
-      "days_held": 8
+      "days_held": 11
     },
     {
       "code": "6379",
@@ -1149,7 +1149,7 @@
       "return_pct": -5.31,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": 8.5,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "7282",
@@ -1161,7 +1161,7 @@
       "return_pct": -5.32,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": 8.5,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "1870",
@@ -1173,7 +1173,7 @@
       "return_pct": -5.34,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 8.52,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "2053",
@@ -1185,7 +1185,7 @@
       "return_pct": -5.39,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 8.46,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "9432",
@@ -1197,7 +1197,7 @@
       "return_pct": -5.73,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 5.98,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5411",
@@ -1209,7 +1209,7 @@
       "return_pct": -6.09,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 5.63,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "1939",
@@ -1221,7 +1221,7 @@
       "return_pct": -6.22,
       "benchmark_return_pct": -6.65,
       "excess_return_pct": 0.43,
-      "days_held": 10
+      "days_held": 13
     },
     {
       "code": "7595",
@@ -1233,7 +1233,7 @@
       "return_pct": -6.28,
       "benchmark_return_pct": -10.8,
       "excess_return_pct": 4.52,
-      "days_held": 24
+      "days_held": 27
     },
     {
       "code": "6706",
@@ -1245,7 +1245,7 @@
       "return_pct": -6.49,
       "benchmark_return_pct": -18.24,
       "excess_return_pct": 11.76,
-      "days_held": 42
+      "days_held": 45
     },
     {
       "code": "8150",
@@ -1257,7 +1257,7 @@
       "return_pct": -6.52,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 7.34,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "9119",
@@ -1269,7 +1269,7 @@
       "return_pct": -6.56,
       "benchmark_return_pct": -13.06,
       "excess_return_pct": 6.5,
-      "days_held": 32
+      "days_held": 35
     },
     {
       "code": "7231",
@@ -1281,7 +1281,7 @@
       "return_pct": -6.71,
       "benchmark_return_pct": -3.98,
       "excess_return_pct": -2.73,
-      "days_held": 11
+      "days_held": 14
     },
     {
       "code": "1720",
@@ -1293,7 +1293,7 @@
       "return_pct": -6.83,
       "benchmark_return_pct": -18.16,
       "excess_return_pct": 11.33,
-      "days_held": 50
+      "days_held": 53
     },
     {
       "code": "7130",
@@ -1305,7 +1305,7 @@
       "return_pct": -6.84,
       "benchmark_return_pct": -10.83,
       "excess_return_pct": 3.99,
-      "days_held": 21
+      "days_held": 24
     },
     {
       "code": "1860",
@@ -1317,7 +1317,7 @@
       "return_pct": -6.96,
       "benchmark_return_pct": -7.21,
       "excess_return_pct": 0.24,
-      "days_held": 8
+      "days_held": 11
     },
     {
       "code": "6616",
@@ -1329,7 +1329,7 @@
       "return_pct": -6.97,
       "benchmark_return_pct": -4.38,
       "excess_return_pct": -2.58,
-      "days_held": 2
+      "days_held": 5
     },
     {
       "code": "1888",
@@ -1341,7 +1341,7 @@
       "return_pct": -7.18,
       "benchmark_return_pct": -17.38,
       "excess_return_pct": 10.2,
-      "days_held": 49
+      "days_held": 52
     },
     {
       "code": "9008",
@@ -1353,7 +1353,7 @@
       "return_pct": -7.23,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 4.48,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "2307",
@@ -1365,7 +1365,7 @@
       "return_pct": -7.38,
       "benchmark_return_pct": -12.72,
       "excess_return_pct": 5.34,
-      "days_held": 22
+      "days_held": 25
     },
     {
       "code": "3946",
@@ -1377,7 +1377,7 @@
       "return_pct": -7.53,
       "benchmark_return_pct": -17.38,
       "excess_return_pct": 9.86,
-      "days_held": 49
+      "days_held": 52
     },
     {
       "code": "6750",
@@ -1389,7 +1389,7 @@
       "return_pct": -7.63,
       "benchmark_return_pct": -14.33,
       "excess_return_pct": 6.7,
-      "days_held": 53
+      "days_held": 56
     },
     {
       "code": "3861",
@@ -1401,7 +1401,7 @@
       "return_pct": -7.65,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 4.06,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "4228",
@@ -1413,7 +1413,7 @@
       "return_pct": -7.69,
       "benchmark_return_pct": -10.53,
       "excess_return_pct": 2.84,
-      "days_held": 18
+      "days_held": 21
     },
     {
       "code": "3407",
@@ -1425,7 +1425,7 @@
       "return_pct": -7.74,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 3.97,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9532",
@@ -1437,7 +1437,7 @@
       "return_pct": -7.79,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 3.93,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5288",
@@ -1449,7 +1449,7 @@
       "return_pct": -7.81,
       "benchmark_return_pct": -14.96,
       "excess_return_pct": 7.14,
-      "days_held": 56
+      "days_held": 59
     },
     {
       "code": "1332",
@@ -1461,7 +1461,7 @@
       "return_pct": -7.88,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 3.83,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5195",
@@ -1473,7 +1473,7 @@
       "return_pct": -7.91,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 5.95,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "1815",
@@ -1485,7 +1485,7 @@
       "return_pct": -7.92,
       "benchmark_return_pct": -15.46,
       "excess_return_pct": 7.53,
-      "days_held": 51
+      "days_held": 54
     },
     {
       "code": "1879",
@@ -1497,7 +1497,7 @@
       "return_pct": -7.95,
       "benchmark_return_pct": -19.31,
       "excess_return_pct": 11.37,
-      "days_held": 46
+      "days_held": 49
     },
     {
       "code": "1808",
@@ -1509,7 +1509,7 @@
       "return_pct": -8.56,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 3.15,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8309",
@@ -1521,7 +1521,7 @@
       "return_pct": -8.56,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 3.15,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5406",
@@ -1533,7 +1533,7 @@
       "return_pct": -8.59,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 3.12,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7202",
@@ -1545,7 +1545,7 @@
       "return_pct": -8.66,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 3.05,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "1518",
@@ -1557,7 +1557,7 @@
       "return_pct": -8.78,
       "benchmark_return_pct": -14.96,
       "excess_return_pct": 6.18,
-      "days_held": 56
+      "days_held": 59
     },
     {
       "code": "1964",
@@ -1569,7 +1569,7 @@
       "return_pct": -9.16,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 4.7,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "8601",
@@ -1581,7 +1581,7 @@
       "return_pct": -9.21,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 2.5,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "1938",
@@ -1593,7 +1593,7 @@
       "return_pct": -9.26,
       "benchmark_return_pct": -6.65,
       "excess_return_pct": -2.61,
-      "days_held": 10
+      "days_held": 13
     },
     {
       "code": "5702",
@@ -1605,7 +1605,7 @@
       "return_pct": -9.29,
       "benchmark_return_pct": -4.12,
       "excess_return_pct": -5.18,
-      "days_held": 3
+      "days_held": 6
     },
     {
       "code": "3289",
@@ -1617,7 +1617,7 @@
       "return_pct": -9.34,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 2.37,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7261",
@@ -1629,7 +1629,7 @@
       "return_pct": -9.51,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 2.2,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "2270",
@@ -1641,7 +1641,7 @@
       "return_pct": -9.58,
       "benchmark_return_pct": -7.6,
       "excess_return_pct": -1.98,
-      "days_held": 15
+      "days_held": 18
     },
     {
       "code": "4208",
@@ -1653,7 +1653,7 @@
       "return_pct": -9.73,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 1.99,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5334",
@@ -1665,7 +1665,7 @@
       "return_pct": -9.77,
       "benchmark_return_pct": -18.24,
       "excess_return_pct": 8.47,
-      "days_held": 42
+      "days_held": 45
     },
     {
       "code": "4246",
@@ -1677,7 +1677,7 @@
       "return_pct": -9.79,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 4.07,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "9619",
@@ -1689,7 +1689,7 @@
       "return_pct": -9.81,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 4.05,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "6209",
@@ -1701,7 +1701,7 @@
       "return_pct": -10.08,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 3.78,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "9104",
@@ -1713,7 +1713,7 @@
       "return_pct": -10.21,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 1.5,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "6178",
@@ -1725,7 +1725,7 @@
       "return_pct": -10.28,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 1.43,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8750",
@@ -1737,7 +1737,7 @@
       "return_pct": -10.5,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 1.21,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "4631",
@@ -1749,7 +1749,7 @@
       "return_pct": -10.72,
       "benchmark_return_pct": -18.26,
       "excess_return_pct": 7.54,
-      "days_held": 43
+      "days_held": 46
     },
     {
       "code": "9101",
@@ -1761,7 +1761,7 @@
       "return_pct": -10.78,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 0.93,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "547A",
@@ -1773,7 +1773,7 @@
       "return_pct": -10.93,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 2.92,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "2060",
@@ -1785,7 +1785,7 @@
       "return_pct": -11.0,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 2.86,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "8065",
@@ -1797,7 +1797,7 @@
       "return_pct": -11.01,
       "benchmark_return_pct": -6.65,
       "excess_return_pct": -4.36,
-      "days_held": 10
+      "days_held": 13
     },
     {
       "code": "4689",
@@ -1809,7 +1809,7 @@
       "return_pct": -11.16,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": 0.55,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "6331",
@@ -1821,7 +1821,7 @@
       "return_pct": -11.2,
       "benchmark_return_pct": -6.65,
       "excess_return_pct": -4.54,
-      "days_held": 10
+      "days_held": 13
     },
     {
       "code": "9507",
@@ -1833,7 +1833,7 @@
       "return_pct": -11.44,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 2.42,
-      "days_held": 57
+      "days_held": 60
     },
     {
       "code": "5233",
@@ -1845,7 +1845,7 @@
       "return_pct": -11.84,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -0.13,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8084",
@@ -1857,7 +1857,7 @@
       "return_pct": -12.02,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": 1.79,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "4251",
@@ -1869,7 +1869,7 @@
       "return_pct": -12.1,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 1.75,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "5970",
@@ -1881,7 +1881,7 @@
       "return_pct": -12.11,
       "benchmark_return_pct": -14.33,
       "excess_return_pct": 2.22,
-      "days_held": 53
+      "days_held": 56
     },
     {
       "code": "4849",
@@ -1893,7 +1893,7 @@
       "return_pct": -12.3,
       "benchmark_return_pct": -18.24,
       "excess_return_pct": 5.95,
-      "days_held": 42
+      "days_held": 45
     },
     {
       "code": "8154",
@@ -1905,7 +1905,7 @@
       "return_pct": -12.34,
       "benchmark_return_pct": -18.26,
       "excess_return_pct": 5.92,
-      "days_held": 43
+      "days_held": 46
     },
     {
       "code": "8935",
@@ -1917,7 +1917,7 @@
       "return_pct": -12.7,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 1.15,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "7102",
@@ -1929,7 +1929,7 @@
       "return_pct": -12.95,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 0.91,
-      "days_held": 59
+      "days_held": 62
     },
     {
       "code": "5351",
@@ -1941,7 +1941,7 @@
       "return_pct": -13.16,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 0.7,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "3036",
@@ -1953,7 +1953,7 @@
       "return_pct": -13.38,
       "benchmark_return_pct": -18.24,
       "excess_return_pct": 4.86,
-      "days_held": 42
+      "days_held": 45
     },
     {
       "code": "8070",
@@ -1965,7 +1965,7 @@
       "return_pct": -13.7,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 0.16,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "9107",
@@ -1977,7 +1977,7 @@
       "return_pct": -13.72,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -2.01,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8614",
@@ -1989,7 +1989,7 @@
       "return_pct": -13.84,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": 0.01,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "1803",
@@ -2001,7 +2001,7 @@
       "return_pct": -13.9,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -2.19,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "6770",
@@ -2013,7 +2013,7 @@
       "return_pct": -13.99,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -2.28,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7236",
@@ -2025,7 +2025,7 @@
       "return_pct": -14.13,
       "benchmark_return_pct": -20.16,
       "excess_return_pct": 6.02,
-      "days_held": 45
+      "days_held": 48
     },
     {
       "code": "8078",
@@ -2037,7 +2037,7 @@
       "return_pct": -14.17,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -0.32,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "5989",
@@ -2049,7 +2049,7 @@
       "return_pct": -14.3,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -0.45,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "8031",
@@ -2061,7 +2061,7 @@
       "return_pct": -14.38,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -2.67,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7246",
@@ -2073,7 +2073,7 @@
       "return_pct": -14.68,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -0.83,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "4008",
@@ -2085,7 +2085,7 @@
       "return_pct": -14.88,
       "benchmark_return_pct": -19.42,
       "excess_return_pct": 4.54,
-      "days_held": 44
+      "days_held": 47
     },
     {
       "code": "5541",
@@ -2097,7 +2097,7 @@
       "return_pct": -15.17,
       "benchmark_return_pct": -18.24,
       "excess_return_pct": 3.08,
-      "days_held": 42
+      "days_held": 45
     },
     {
       "code": "9503",
@@ -2109,7 +2109,7 @@
       "return_pct": -15.29,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -3.58,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8604",
@@ -2121,7 +2121,7 @@
       "return_pct": -15.74,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -4.02,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5142",
@@ -2133,7 +2133,7 @@
       "return_pct": -16.02,
       "benchmark_return_pct": -7.7,
       "excess_return_pct": -8.32,
-      "days_held": 7
+      "days_held": 10
     },
     {
       "code": "5831",
@@ -2145,7 +2145,7 @@
       "return_pct": -16.56,
       "benchmark_return_pct": -12.01,
       "excess_return_pct": -4.55,
-      "days_held": 64
+      "days_held": 67
     },
     {
       "code": "8354",
@@ -2157,7 +2157,7 @@
       "return_pct": -16.59,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -4.88,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8304",
@@ -2169,7 +2169,7 @@
       "return_pct": -16.71,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -5.0,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5975",
@@ -2181,7 +2181,7 @@
       "return_pct": -17.3,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -3.45,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "6390",
@@ -2193,7 +2193,7 @@
       "return_pct": -17.59,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -3.74,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "6305",
@@ -2205,7 +2205,7 @@
       "return_pct": -17.71,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -6.0,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "6472",
@@ -2217,7 +2217,7 @@
       "return_pct": -17.88,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -6.17,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8306",
@@ -2229,7 +2229,7 @@
       "return_pct": -18.12,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -6.4,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "9502",
@@ -2241,7 +2241,7 @@
       "return_pct": -18.47,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -6.76,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8053",
@@ -2253,7 +2253,7 @@
       "return_pct": -18.57,
       "benchmark_return_pct": -12.01,
       "excess_return_pct": -6.56,
-      "days_held": 64
+      "days_held": 67
     },
     {
       "code": "7241",
@@ -2265,7 +2265,7 @@
       "return_pct": -18.59,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -4.74,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "1605",
@@ -2277,7 +2277,7 @@
       "return_pct": -18.6,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -6.89,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "2768",
@@ -2289,7 +2289,7 @@
       "return_pct": -19.02,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -7.31,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7095",
@@ -2301,7 +2301,7 @@
       "return_pct": -19.2,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -5.35,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "4902",
@@ -2313,7 +2313,7 @@
       "return_pct": -19.64,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -7.93,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8473",
@@ -2325,7 +2325,7 @@
       "return_pct": -19.93,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -6.07,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "5201",
@@ -2337,7 +2337,7 @@
       "return_pct": -19.94,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -8.23,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5714",
@@ -2349,7 +2349,7 @@
       "return_pct": -19.98,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -8.27,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "4005",
@@ -2361,7 +2361,7 @@
       "return_pct": -20.33,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -8.62,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "7244",
@@ -2373,7 +2373,7 @@
       "return_pct": -20.67,
       "benchmark_return_pct": -14.33,
       "excess_return_pct": -6.33,
-      "days_held": 53
+      "days_held": 56
     },
     {
       "code": "8616",
@@ -2385,7 +2385,7 @@
       "return_pct": -21.16,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -7.3,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "8624",
@@ -2397,7 +2397,7 @@
       "return_pct": -21.17,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -7.32,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "6326",
@@ -2409,7 +2409,7 @@
       "return_pct": -21.2,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -9.48,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5020",
@@ -2421,7 +2421,7 @@
       "return_pct": -22.14,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -10.42,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "8370",
@@ -2433,7 +2433,7 @@
       "return_pct": -22.72,
       "benchmark_return_pct": -13.81,
       "excess_return_pct": -8.91,
-      "days_held": 52
+      "days_held": 55
     },
     {
       "code": "6302",
@@ -2445,7 +2445,7 @@
       "return_pct": -22.73,
       "benchmark_return_pct": -12.01,
       "excess_return_pct": -10.73,
-      "days_held": 64
+      "days_held": 67
     },
     {
       "code": "7004",
@@ -2457,7 +2457,7 @@
       "return_pct": -22.79,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -11.08,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5632",
@@ -2469,7 +2469,7 @@
       "return_pct": -23.35,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -9.49,
-      "days_held": 57
+      "days_held": 60
     },
     {
       "code": "6364",
@@ -2481,7 +2481,7 @@
       "return_pct": -24.72,
       "benchmark_return_pct": -18.16,
       "excess_return_pct": -6.57,
-      "days_held": 50
+      "days_held": 53
     },
     {
       "code": "7148",
@@ -2493,7 +2493,7 @@
       "return_pct": -24.78,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -10.93,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "8707",
@@ -2505,7 +2505,7 @@
       "return_pct": -25.63,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -11.78,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "8609",
@@ -2517,7 +2517,7 @@
       "return_pct": -26.65,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -12.79,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "2929",
@@ -2529,7 +2529,7 @@
       "return_pct": -27.21,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -13.35,
-      "days_held": 57
+      "days_held": 60
     },
     {
       "code": "5076",
@@ -2541,7 +2541,7 @@
       "return_pct": -27.28,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -13.43,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "5021",
@@ -2553,7 +2553,7 @@
       "return_pct": -27.81,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -13.95,
-      "days_held": 62
+      "days_held": 65
     },
     {
       "code": "5711",
@@ -2565,7 +2565,7 @@
       "return_pct": -29.44,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -17.72,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5019",
@@ -2577,7 +2577,7 @@
       "return_pct": -31.69,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -19.97,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "5713",
@@ -2589,7 +2589,7 @@
       "return_pct": -43.2,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -31.48,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "1925",
@@ -2601,7 +2601,7 @@
       "return_pct": -49.96,
       "benchmark_return_pct": -11.71,
       "excess_return_pct": -38.25,
-      "days_held": 65
+      "days_held": 68
     },
     {
       "code": "3932",
@@ -2613,7 +2613,7 @@
       "return_pct": -64.05,
       "benchmark_return_pct": -13.86,
       "excess_return_pct": -50.2,
-      "days_held": 62
+      "days_held": 65
     }
   ]
 }
